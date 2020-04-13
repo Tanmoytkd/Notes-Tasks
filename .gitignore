@@ -1,0 +1,15 @@
+out/
+build/
+bin/
+.gradle/
+gradle/
+
+
+.idea/
+.vscode/
+
+.project
+.settings/
+
+*.class
+*.iml
