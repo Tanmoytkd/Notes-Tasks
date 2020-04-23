@@ -29,7 +29,6 @@ public class AuthFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
         String url = req.getServletPath();
 
-        System.out.println(url);
 
         if (url.startsWith("/lib/") || url.startsWith("/css/") || url.startsWith("/js/") || url.startsWith("/img/")) {
             chain.doFilter(request, response);
