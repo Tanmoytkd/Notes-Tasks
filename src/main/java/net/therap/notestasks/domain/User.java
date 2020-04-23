@@ -3,6 +3,7 @@ package net.therap.notestasks.domain;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,9 +11,7 @@ import java.util.List;
  * @since 4/12/20
  */
 @Entity
-@Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"email"})
-})
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 public class User extends BasicEntity {
 
     @NotNull
@@ -43,13 +42,8 @@ public class User extends BasicEntity {
     @OneToMany(mappedBy = "target", cascade = {CascadeType.ALL})
     private List<Report> targetedReports;
 
-    @ManyToMany(mappedBy = "connections")
-    @JoinTable(
-            name = "connections",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "friend_id")}
-    )
-    private List<User> connections;
+    @ManyToMany(cascade = {CascadeType.ALL}, mappedBy = "users")
+    private List<UserConnection> connections;
 
     @OneToMany(mappedBy = "creator", cascade = {CascadeType.ALL})
     private List<Task> ownTasks;
@@ -68,6 +62,22 @@ public class User extends BasicEntity {
 
     @OneToMany(mappedBy = "writer", cascade = {CascadeType.ALL})
     private List<ReportComment> reportComments;
+
+    public User() {
+        this.ownNotes = new ArrayList<>();
+        this.sharedNoteAccesses = new ArrayList<>();
+        this.sentConnectionRequests = new ArrayList<>();
+        this.receivedConnectionRequests = new ArrayList<>();
+        this.sentReports = new ArrayList<>();
+        this.targetedReports = new ArrayList<>();
+        this.connections = new ArrayList<>();
+        this.ownTasks = new ArrayList<>();
+        this.taskAssignments = new ArrayList<>();
+        this.role = Role.BASIC_USER;
+        this.noteComments = new ArrayList<>();
+        this.taskComments = new ArrayList<>();
+        this.reportComments = new ArrayList<>();
+    }
 
     public List<Note> getOwnNotes() {
         return ownNotes;
@@ -165,11 +175,11 @@ public class User extends BasicEntity {
         this.role = role;
     }
 
-    public List<User> getConnections() {
+    public List<UserConnection> getConnections() {
         return connections;
     }
 
-    public void setConnections(List<User> connections) {
+    public void setConnections(List<UserConnection> connections) {
         this.connections = connections;
     }
 

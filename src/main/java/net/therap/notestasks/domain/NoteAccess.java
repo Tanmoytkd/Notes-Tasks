@@ -1,13 +1,15 @@
 package net.therap.notestasks.domain;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author tanmoy.das
  * @since 4/22/20
  */
 @Entity
+@Table(name = "note_accesses")
 public class NoteAccess extends BasicEntity {
 
     public enum AccessLevel {
@@ -29,7 +31,11 @@ public class NoteAccess extends BasicEntity {
     @JoinTable(name = "note_access_levels", joinColumns = @JoinColumn(name = "note_id"))
     @Column(name = "access_level", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Set<AccessLevel> accessLevels;
+    private List<AccessLevel> accessLevels;
+
+    public NoteAccess() {
+        this.accessLevels = new ArrayList<>();
+    }
 
     public Note getNote() {
         return note;
@@ -47,11 +53,11 @@ public class NoteAccess extends BasicEntity {
         this.user = user;
     }
 
-    public Set<AccessLevel> getAccessLevels() {
+    public List<AccessLevel> getAccessLevels() {
         return accessLevels;
     }
 
-    public void setAccessLevels(Set<AccessLevel> accessLevels) {
+    public void setAccessLevels(List<AccessLevel> accessLevels) {
         this.accessLevels = accessLevels;
     }
 }

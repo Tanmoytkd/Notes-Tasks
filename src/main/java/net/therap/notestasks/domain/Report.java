@@ -2,6 +2,7 @@ package net.therap.notestasks.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,6 +10,7 @@ import java.util.List;
  * @since 4/12/20
  */
 @Entity
+@Table(name = "reports")
 public class Report extends BasicEntity {
 
     public enum ReportStatus {
@@ -37,6 +39,11 @@ public class Report extends BasicEntity {
 
     @OneToMany(mappedBy = "report", cascade = {CascadeType.ALL})
     private List<ReportComment> comments;
+
+    public Report() {
+        this.comments = new ArrayList<>();
+        this.reportStatus = ReportStatus.OPEN;
+    }
 
     public boolean isOpen() {
         return reportStatus.equals(ReportStatus.OPEN);

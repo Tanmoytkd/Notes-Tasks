@@ -15,6 +15,10 @@ public class ReportContent {
     @Size(min = 3, max = 1000)
     private String text;
 
+    public ReportContent() {
+        this.text = "";
+    }
+
     public String getText() {
         return text;
     }

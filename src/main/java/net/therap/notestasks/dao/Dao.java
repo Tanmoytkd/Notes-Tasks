@@ -1,7 +1,5 @@
 package net.therap.notestasks.dao;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +9,7 @@ import java.util.Optional;
  */
 public interface Dao<T> {
 
-    Optional<T> find(Long id);
+    Optional<T> find(long id);
 
     Optional<T> find(T item);
 

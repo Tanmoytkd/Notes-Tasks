@@ -4,6 +4,7 @@ import javax.persistence.Embedded;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author tanmoy.das
@@ -12,10 +13,12 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public class Comment extends BasicEntity {
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "writer_id")
     private User writer;
 
+    @NotNull
     @Embedded
     private CommentContent content;
 

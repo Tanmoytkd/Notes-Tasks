@@ -13,6 +13,10 @@ public class CommentContent {
     @NotEmpty
     private String text;
 
+    public CommentContent() {
+        this.text = "";
+    }
+
     public String getText() {
         return text;
     }

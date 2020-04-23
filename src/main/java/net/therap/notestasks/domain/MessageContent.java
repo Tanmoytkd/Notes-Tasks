@@ -13,6 +13,10 @@ public class MessageContent {
     @NotEmpty
     private String text;
 
+    public MessageContent() {
+        this.text = "";
+    }
+
     public String getText() {
         return text;
     }

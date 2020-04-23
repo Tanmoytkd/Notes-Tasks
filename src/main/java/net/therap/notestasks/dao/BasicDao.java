@@ -24,7 +24,7 @@ public abstract class BasicDao<T extends BasicEntity> implements Dao<T> {
     }
 
     @Override
-    public Optional<T> find(Long id) {
+    public Optional<T> find(long id) {
         T item = em.find(persistentClass, id);
         return Optional.ofNullable(item);
     }
@@ -36,8 +36,8 @@ public abstract class BasicDao<T extends BasicEntity> implements Dao<T> {
 
     @Override
     public List<T> findAll() {
-        String queryString = persistentClass.getSimpleName() + ".findAll";
-        return em.createNamedQuery(queryString, persistentClass).getResultList();
+        String queryString = "FROM " + persistentClass.getSimpleName();
+        return em.createQuery(queryString, persistentClass).getResultList();
     }
 
     @Override

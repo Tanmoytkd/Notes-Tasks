@@ -1,25 +1,27 @@
 package net.therap.notestasks.domain;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author tanmoy.das
  * @since 4/12/20
  */
 @Entity
+@Table(name = "messages")
 public class Message extends BasicEntity {
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "sender_id")
     private User sender;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "receiver_id")
     private User receiver;
 
+    @NotNull
     @Embedded
     private MessageContent content;
 

@@ -12,7 +12,7 @@ public class BasicEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+    protected long id;
 
     @Column(name = "created_on")
     @Temporal(TemporalType.TIMESTAMP)
@@ -44,11 +44,11 @@ public class BasicEntity {
         this.deletedOn = new Date();
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

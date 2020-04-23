@@ -40,7 +40,7 @@ public class AppConfig {
 
     @Bean
     @Scope("prototype")
-    Logger logger(InjectionPoint injectionPoint){
+    Logger logger(InjectionPoint injectionPoint) {
         return LoggerFactory.getLogger(Objects.requireNonNull(injectionPoint.getField()).getDeclaringClass());
     }
 }

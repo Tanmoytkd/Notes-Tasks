@@ -13,6 +13,10 @@ public class NoteContent {
     @NotEmpty
     private String text;
 
+    public NoteContent() {
+        this.text = "";
+    }
+
     public String getText() {
         return text;
     }

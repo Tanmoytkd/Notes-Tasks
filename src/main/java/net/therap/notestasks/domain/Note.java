@@ -2,7 +2,9 @@ package net.therap.notestasks.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,13 +12,15 @@ import java.util.List;
  * @since 4/22/20
  */
 @Entity
+@Table(name = "notes")
 public class Note extends BasicEntity {
 
-
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "writer_id")
     private User writer;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Privacy privacy;
 
@@ -24,14 +28,21 @@ public class Note extends BasicEntity {
     @Size(min = 3, max = 100)
     private String title;
 
+    @NotNull
     @Embedded
     private NoteContent content;
 
     @OneToMany(mappedBy = "note", cascade = {CascadeType.ALL})
-    List<NoteComment> comments;
+    private List<NoteComment> comments;
 
     @OneToMany(mappedBy = "note", cascade = {CascadeType.ALL})
     private List<NoteAccess> noteAccesses;
+
+    public Note() {
+        this.privacy = Privacy.PRIVATE;
+        this.comments = new ArrayList<>();
+        this.noteAccesses = new ArrayList<>();
+    }
 
     public String getTitle() {
         return title;
