@@ -35,7 +35,7 @@ public class Report extends BasicEntity {
     @Enumerated(EnumType.STRING)
     private ReportStatus reportStatus;
 
-    @OneToMany(mappedBy = "report")
+    @OneToMany(mappedBy = "report", cascade = {CascadeType.ALL})
     private List<ReportComment> comments;
 
     public boolean isOpen() {

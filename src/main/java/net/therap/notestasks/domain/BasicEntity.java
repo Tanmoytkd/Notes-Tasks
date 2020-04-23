@@ -67,4 +67,8 @@ public class BasicEntity {
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
     }
+
+    public boolean isNew() {
+        return id == 0;
+    }
 }

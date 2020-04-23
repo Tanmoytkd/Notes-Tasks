@@ -1,9 +1,6 @@
 package net.therap.notestasks.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
@@ -22,8 +19,11 @@ public class Task extends BasicEntity {
     @JoinColumn(name = "creator_id")
     private User creator;
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", cascade = {CascadeType.ALL})
     private List<TaskAssignment> taskAssignments;
+
+    @OneToMany(mappedBy = "task", cascade = {CascadeType.ALL})
+    private List<TaskComment> taskComments;
 
     public String getTitle() {
         return title;
@@ -55,5 +55,13 @@ public class Task extends BasicEntity {
 
     public void setTaskAssignments(List<TaskAssignment> assignments) {
         this.taskAssignments = assignments;
+    }
+
+    public List<TaskComment> getTaskComments() {
+        return taskComments;
+    }
+
+    public void setTaskComments(List<TaskComment> taskComments) {
+        this.taskComments = taskComments;
     }
 }

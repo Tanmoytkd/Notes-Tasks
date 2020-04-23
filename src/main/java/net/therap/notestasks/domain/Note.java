@@ -27,10 +27,10 @@ public class Note extends BasicEntity {
     @Embedded
     private NoteContent content;
 
-    @OneToMany(mappedBy = "note")
+    @OneToMany(mappedBy = "note", cascade = {CascadeType.ALL})
     List<NoteComment> comments;
 
-    @OneToMany(mappedBy = "note")
+    @OneToMany(mappedBy = "note", cascade = {CascadeType.ALL})
     private List<NoteAccess> noteAccesses;
 
     public String getTitle() {

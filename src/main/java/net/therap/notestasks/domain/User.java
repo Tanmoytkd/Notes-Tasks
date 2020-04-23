@@ -25,22 +25,22 @@ public class User extends BasicEntity {
     private String phone;
 
 
-    @OneToMany(mappedBy = "writer")
+    @OneToMany(mappedBy = "writer", cascade = {CascadeType.ALL})
     List<Note> ownNotes;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
     List<NoteAccess> sharedNoteAccesses;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "sender")
+    @OneToMany(mappedBy = "sender", cascade = {CascadeType.ALL})
     private List<ConnectionRequest> sentConnectionRequests;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "receiver")
+    @OneToMany(mappedBy = "receiver", cascade = {CascadeType.ALL})
     private List<ConnectionRequest> receivedConnectionRequests;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "sender")
+    @OneToMany(mappedBy = "sender", cascade = {CascadeType.ALL})
     private List<Report> sentReports;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "target")
+    @OneToMany(mappedBy = "target", cascade = {CascadeType.ALL})
     private List<Report> targetedReports;
 
     @ManyToMany(mappedBy = "connections")
@@ -51,14 +51,23 @@ public class User extends BasicEntity {
     )
     private List<User> connections;
 
-    @OneToMany(mappedBy = "creator")
+    @OneToMany(mappedBy = "creator", cascade = {CascadeType.ALL})
     private List<Task> ownTasks;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
     private List<TaskAssignment> taskAssignments;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "writer", cascade = {CascadeType.ALL})
+    private List<NoteComment> noteComments;
+
+    @OneToMany(mappedBy = "writer", cascade = {CascadeType.ALL})
+    private List<TaskComment> taskComments;
+
+    @OneToMany(mappedBy = "writer", cascade = {CascadeType.ALL})
+    private List<ReportComment> reportComments;
 
     public List<Note> getOwnNotes() {
         return ownNotes;
@@ -178,5 +187,29 @@ public class User extends BasicEntity {
 
     public void setTaskAssignments(List<TaskAssignment> taskAssignments) {
         this.taskAssignments = taskAssignments;
+    }
+
+    public List<NoteComment> getNoteComments() {
+        return noteComments;
+    }
+
+    public void setNoteComments(List<NoteComment> noteComments) {
+        this.noteComments = noteComments;
+    }
+
+    public List<TaskComment> getTaskComments() {
+        return taskComments;
+    }
+
+    public void setTaskComments(List<TaskComment> taskComments) {
+        this.taskComments = taskComments;
+    }
+
+    public List<ReportComment> getReportComments() {
+        return reportComments;
+    }
+
+    public void setReportComments(List<ReportComment> reportComments) {
+        this.reportComments = reportComments;
     }
 }
