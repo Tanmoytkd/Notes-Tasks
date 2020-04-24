@@ -11,7 +11,7 @@ import java.util.Optional;
  * @since 4/23/20
  */
 @Repository
-public class ConnectionRequestDao extends BasicDao<ConnectionRequest> {
+public class ConnectionRequestDao extends GenericDao<ConnectionRequest> {
 
     @Override
     public Optional<ConnectionRequest> findByExample(ConnectionRequest request) {

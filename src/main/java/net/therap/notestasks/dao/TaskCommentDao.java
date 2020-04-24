@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * @since 4/23/20
  */
 @Repository
-public class TaskCommentDao extends BasicDao<TaskComment> {
+public class TaskCommentDao extends GenericDao<TaskComment> {
 
     protected TaskCommentDao() {
         super(TaskComment.class);

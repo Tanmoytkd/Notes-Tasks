@@ -11,7 +11,7 @@ import java.util.Optional;
  * @since 4/23/20
  */
 @Repository
-public class UserConnectionDao extends BasicDao<UserConnection> {
+public class UserConnectionDao extends GenericDao<UserConnection> {
 
     @Override
     public Optional<UserConnection> findByExample(UserConnection connection) {

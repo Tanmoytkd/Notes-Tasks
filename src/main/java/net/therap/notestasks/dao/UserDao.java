@@ -11,7 +11,7 @@ import java.util.Optional;
  * @since 4/23/20
  */
 @Repository
-public class UserDao extends BasicDao<User> {
+public class UserDao extends GenericDao<User> {
 
     public static final String EMAIL_TXT = "email";
     public static final String PASSWORD_TXT = "password";

@@ -12,14 +12,14 @@ import java.util.Optional;
  * @author tanmoy.das
  * @since 4/23/20
  */
-public abstract class BasicDao<T extends BasicEntity> implements Dao<T> {
+public abstract class GenericDao<T extends BasicEntity> implements Dao<T> {
 
     @PersistenceContext(unitName = "notestasks")
     protected EntityManager em;
 
     private final Class<T> persistentClass;
 
-    protected BasicDao(Class<T> persistentClass) {
+    protected GenericDao(Class<T> persistentClass) {
         this.persistentClass = persistentClass;
     }
 
