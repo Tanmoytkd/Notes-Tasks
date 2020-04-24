@@ -20,7 +20,7 @@ import java.util.Arrays;
  */
 @Service
 @Transactional
-public class ConnectionService {
+public class UserConnectionService {
 
     @Autowired
     private ConnectionRequestDao connectionRequestDao;
