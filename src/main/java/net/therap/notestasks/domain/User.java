@@ -13,13 +13,18 @@ import java.util.List;
  * @since 4/12/20
  */
 @NamedQueries({
+        @NamedQuery(name = "User.findAll",
+                query = "FROM User user WHERE user.isDeleted = false"),
         @NamedQuery(name = "User.findByEmail",
-                query = "FROM User user WHERE user.email = :email"),
+                query = "FROM User user WHERE user.email = :email AND user.isDeleted = false"),
         @NamedQuery(name = "User.findBySecret",
-                query = "FROM User user WHERE user.secret = :secret"),
+                query = "FROM User user WHERE user.secret = :secret AND user.isDeleted = false"),
         @NamedQuery(name = "User.findByEmailAndPassword",
-                query = "FROM User user WHERE user.email=:email AND user.password=:password"),
-
+                query = "FROM User user WHERE user.email=:email AND user.password=:password " +
+                        "AND user.isDeleted = false"),
+        @NamedQuery(name = "User.findByExample",
+                query = "FROM User user WHERE user.email=:email AND user.password=:password " +
+                        "AND user.isDeleted = false")
 })
 
 @Entity

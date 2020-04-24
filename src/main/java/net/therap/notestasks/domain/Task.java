@@ -10,6 +10,11 @@ import java.util.List;
  * @author tanmoy.das
  * @since 4/23/20
  */
+@NamedQueries({
+        @NamedQuery(name = "Task.findAll",
+                query = "FROM Task task WHERE task.isDeleted = false")
+})
+
 @Entity
 @Table(name = "tasks")
 public class Task extends BasicEntity {

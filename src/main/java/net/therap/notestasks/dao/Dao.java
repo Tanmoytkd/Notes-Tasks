@@ -11,7 +11,7 @@ public interface Dao<T> {
 
     Optional<T> find(long id);
 
-    Optional<T> find(T item);
+    Optional<T> findByExample(T item);
 
     T refresh(T item);
 

@@ -1,15 +1,20 @@
 package net.therap.notestasks.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
  * @author tanmoy.das
  * @since 4/12/20
  */
+@NamedQueries({
+        @NamedQuery(name = "ConnectionRequest.findAll",
+                query = "FROM ConnectionRequest request WHERE request.isDeleted = false"),
+        @NamedQuery(name = "ConnectionRequest.findByExample",
+                query = "FROM ConnectionRequest request WHERE request.sender=:sender AND request.receiver=:receiver " +
+                        "AND request.isDeleted = false")
+})
+
 @Entity
 @Table(name = "connection_requests")
 public class ConnectionRequest extends BasicEntity {

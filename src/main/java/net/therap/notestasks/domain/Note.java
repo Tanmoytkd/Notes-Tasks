@@ -11,6 +11,11 @@ import java.util.List;
  * @author tanmoy.das
  * @since 4/22/20
  */
+@NamedQueries({
+        @NamedQuery(name = "Note.findAll",
+                query = "FROM Note note WHERE note.isDeleted = false")
+})
+
 @Entity
 @Table(name = "notes")
 public class Note extends BasicEntity {

@@ -7,6 +7,14 @@ import java.util.List;
  * @author tanmoy.das
  * @since 4/23/20
  */
+@NamedQueries({
+        @NamedQuery(name = "UserConnection.findByExample",
+                query = "FROM UserConnection connection WHERE connection.users = :users " +
+                        "AND connection.isDeleted = false"),
+        @NamedQuery(name = "UserConnection.findAll",
+                query = "FROM UserConnection connection WHERE connection.isDeleted = false")
+})
+
 @Entity
 @Table(name = "user_connections")
 public class UserConnection extends BasicEntity {

@@ -7,6 +7,11 @@ import javax.validation.constraints.NotNull;
  * @author tanmoy.das
  * @since 4/23/20
  */
+@NamedQueries({
+        @NamedQuery(name = "TaskAssignment.findAll",
+                query = "FROM TaskAssignment taskAssignment WHERE taskAssignment.isDeleted = false")
+})
+
 @Entity
 @Table(name = "task_assignments")
 public class TaskAssignment extends BasicEntity {

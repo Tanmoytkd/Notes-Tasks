@@ -8,6 +8,11 @@ import java.util.List;
  * @author tanmoy.das
  * @since 4/22/20
  */
+@NamedQueries({
+        @NamedQuery(name = "NoteAccess.findAll",
+                query = "FROM NoteAccess noteAccess WHERE noteAccess.isDeleted = false")
+})
+
 @Entity
 @Table(name = "note_accesses")
 public class NoteAccess extends BasicEntity {

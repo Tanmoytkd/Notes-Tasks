@@ -30,7 +30,7 @@ public class UserService {
     }
 
     public void updateUser(User user) {
-        if (!userDao.find(user).isPresent()) {
+        if (!userDao.findByExample(user).isPresent()) {
             throw new InvalidUserException("User does not exist");
         }
 
@@ -43,6 +43,14 @@ public class UserService {
 
     public Optional<User> findUserBySecret(String secret) {
         return userDao.findBySecret(secret);
+    }
+
+    public void changePassword(User user, String password) {
+        User persistedUser = userDao.findByExample(user)
+                .orElseThrow(() -> new InvalidUserException("User does not exist"));
+
+        persistedUser.setPassword(password);
+        userDao.saveOrUpdate(persistedUser);
     }
 
     public void verifyEmail(User user) {

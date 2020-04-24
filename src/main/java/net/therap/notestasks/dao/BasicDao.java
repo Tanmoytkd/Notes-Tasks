@@ -30,7 +30,7 @@ public abstract class BasicDao<T extends BasicEntity> implements Dao<T> {
     }
 
     @Override
-    public Optional<T> find(T item) {
+    public Optional<T> findByExample(T item) {
         return find(item.getId());
     }
 
@@ -43,8 +43,8 @@ public abstract class BasicDao<T extends BasicEntity> implements Dao<T> {
 
     @Override
     public List<T> findAll() {
-        String queryString = "FROM " + persistentClass.getSimpleName();
-        return em.createQuery(queryString, persistentClass).getResultList();
+        String queryName = persistentClass.getSimpleName() + ".findAll";
+        return em.createNamedQuery(queryName, persistentClass).getResultList();
     }
 
     @Override
@@ -74,7 +74,7 @@ public abstract class BasicDao<T extends BasicEntity> implements Dao<T> {
     @Override
     @Transactional
     public void destroy(T item) {
-        find(item).ifPresent(persistedItem -> em.remove(persistedItem));
+        findByExample(item).ifPresent(persistedItem -> em.remove(persistedItem));
         em.flush();
     }
 }

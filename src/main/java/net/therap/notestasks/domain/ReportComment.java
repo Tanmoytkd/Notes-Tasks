@@ -1,15 +1,17 @@
 package net.therap.notestasks.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
  * @author tanmoy.das
  * @since 4/22/20
  */
+@NamedQueries({
+        @NamedQuery(name = "ReportComment.findAll",
+                query = "FROM ReportComment reportComment WHERE reportComment.isDeleted = false")
+})
+
 @Entity
 @Table(name = "report_comments")
 public class ReportComment extends Comment {

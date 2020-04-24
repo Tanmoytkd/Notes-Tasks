@@ -1,15 +1,17 @@
 package net.therap.notestasks.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
  * @author tanmoy.das
  * @since 4/22/20
  */
+@NamedQueries({
+        @NamedQuery(name = "NoteComment.findAll",
+                query = "FROM NoteComment noteComment WHERE noteComment.isDeleted = false")
+})
+
 @Entity
 @Table(name = "note_comments")
 public class NoteComment extends Comment {

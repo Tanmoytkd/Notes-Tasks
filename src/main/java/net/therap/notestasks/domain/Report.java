@@ -9,6 +9,11 @@ import java.util.List;
  * @author tanmoy.das
  * @since 4/12/20
  */
+@NamedQueries({
+        @NamedQuery(name = "Report.findAll",
+                query = "FROM Report report WHERE report.isDeleted = false")
+})
+
 @Entity
 @Table(name = "reports")
 public class Report extends BasicEntity {

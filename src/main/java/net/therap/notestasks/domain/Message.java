@@ -7,6 +7,11 @@ import javax.validation.constraints.NotNull;
  * @author tanmoy.das
  * @since 4/12/20
  */
+@NamedQueries({
+        @NamedQuery(name = "Message.findAll",
+                query = "FROM Message message WHERE message.isDeleted = false")
+})
+
 @Entity
 @Table(name = "messages")
 public class Message extends BasicEntity {
