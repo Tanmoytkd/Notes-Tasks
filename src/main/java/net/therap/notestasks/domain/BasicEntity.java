@@ -39,7 +39,6 @@ public class BasicEntity {
         this.updatedOn = new Date();
     }
 
-    @PreRemove
     private void onDelete() {
         this.deletedOn = new Date();
     }
@@ -66,6 +65,7 @@ public class BasicEntity {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+        onDelete();
     }
 
     public boolean isNew() {

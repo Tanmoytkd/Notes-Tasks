@@ -18,4 +18,6 @@ public interface Dao<T> {
     T saveOrUpdate(T item);
 
     void delete(T item);
+
+    void destroy(T item);
 }

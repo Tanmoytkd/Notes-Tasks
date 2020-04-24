@@ -59,6 +59,14 @@ public abstract class BasicDao<T extends BasicEntity> implements Dao<T> {
     @Override
     @Transactional
     public void delete(T item) {
+        item.setDeleted(true);
+        em.merge(item);
+        em.flush();
+    }
+
+    @Override
+    @Transactional
+    public void destroy(T item) {
         find(item).ifPresent(persistedItem -> em.remove(persistedItem));
         em.flush();
     }
