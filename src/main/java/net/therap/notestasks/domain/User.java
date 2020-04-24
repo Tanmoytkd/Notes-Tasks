@@ -1,5 +1,7 @@
 package net.therap.notestasks.domain;
 
+import net.therap.notestasks.util.RandomGeneratorUtil;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -10,6 +12,16 @@ import java.util.List;
  * @author tanmoy.das
  * @since 4/12/20
  */
+@NamedQueries({
+        @NamedQuery(name = "User.findByEmail",
+                query = "FROM User user WHERE user.email = :email"),
+        @NamedQuery(name = "User.findBySecret",
+                query = "FROM User user WHERE user.secret = :secret"),
+        @NamedQuery(name = "User.findByEmailAndPassword",
+                query = "FROM User user WHERE user.email=:email AND user.password=:password"),
+
+})
+
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 public class User extends BasicEntity {
@@ -23,6 +35,11 @@ public class User extends BasicEntity {
     private String password;
     private String phone;
 
+    @Column(name = "is_email_verified")
+    private boolean isEmailVerified;
+
+    @NotNull
+    private String secret;
 
     @OneToMany(mappedBy = "writer", cascade = {CascadeType.ALL})
     List<Note> ownNotes;
@@ -77,6 +94,8 @@ public class User extends BasicEntity {
         this.noteComments = new ArrayList<>();
         this.taskComments = new ArrayList<>();
         this.reportComments = new ArrayList<>();
+
+        this.secret = RandomGeneratorUtil.createRandomString(20);
     }
 
     public List<Note> getOwnNotes() {
@@ -221,5 +240,21 @@ public class User extends BasicEntity {
 
     public void setReportComments(List<ReportComment> reportComments) {
         this.reportComments = reportComments;
+    }
+
+    public boolean isEmailVerified() {
+        return isEmailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        isEmailVerified = emailVerified;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 }

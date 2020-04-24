@@ -17,9 +17,25 @@ public class UserDao extends BasicDao<User> {
         super(User.class);
     }
 
+
     public Optional<User> findByEmail(String email) {
-        TypedQuery<User> query = em.createQuery("FROM User user WHERE user.email=:email", User.class);
+        TypedQuery<User> query = em.createNamedQuery("User.findByEmail", User.class);
         query.setParameter("email", email);
+
+        return query.getResultList().stream().findFirst();
+    }
+
+    public Optional<User> findBySecret(String secret) {
+        TypedQuery<User> query = em.createNamedQuery("User.findBySecret", User.class);
+        query.setParameter("secret", secret);
+
+        return query.getResultList().stream().findFirst();
+    }
+
+    public Optional<User> findByEmailAndPassword(String email, String password) {
+        TypedQuery<User> query = em.createNamedQuery("User.findByEmailAndPassword", User.class);
+        query.setParameter("email", email);
+        query.setParameter("password", password);
 
         return query.getResultList().stream().findFirst();
     }
