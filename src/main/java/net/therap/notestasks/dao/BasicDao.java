@@ -35,6 +35,13 @@ public abstract class BasicDao<T extends BasicEntity> implements Dao<T> {
     }
 
     @Override
+    @Transactional
+    public T refresh(T item) {
+        em.refresh(item);
+        return item;
+    }
+
+    @Override
     public List<T> findAll() {
         String queryString = "FROM " + persistentClass.getSimpleName();
         return em.createQuery(queryString, persistentClass).getResultList();

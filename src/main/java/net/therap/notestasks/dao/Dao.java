@@ -13,6 +13,8 @@ public interface Dao<T> {
 
     Optional<T> find(T item);
 
+    T refresh(T item);
+
     List<T> findAll();
 
     T saveOrUpdate(T item);
