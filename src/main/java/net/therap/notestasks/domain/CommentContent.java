@@ -17,6 +17,10 @@ public class CommentContent {
         this.text = "";
     }
 
+    public CommentContent(@NotEmpty String text) {
+        this.text = text;
+    }
+
     public String getText() {
         return text;
     }

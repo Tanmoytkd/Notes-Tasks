@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -37,7 +38,11 @@ public class UserService {
         userDao.saveOrUpdate(user);
     }
 
-    public Optional<User> refreshUser(User user) {
+    public User refreshUser(User user) {
+        return userDao.refresh(user);
+    }
+
+    public Optional<User> findByExample(User user) {
         return userDao.findByExample(user);
     }
 
@@ -57,10 +62,18 @@ public class UserService {
         userDao.saveOrUpdate(persistedUser);
     }
 
+    public List<User> findAllUsers() {
+        return userDao.findAll();
+    }
+
     public void verifyEmail(User user) {
         user = userDao.refresh(user);
 
         user.setEmailVerified(true);
         userDao.saveOrUpdate(user);
+    }
+
+    public void destroyUser(User user) {
+        userDao.destroy(user);
     }
 }

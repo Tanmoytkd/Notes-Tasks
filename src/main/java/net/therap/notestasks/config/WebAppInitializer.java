@@ -1,6 +1,7 @@
 package net.therap.notestasks.config;
 
 import net.therap.notestasks.web.filter.AuthFilter;
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import javax.servlet.Filter;
@@ -26,9 +27,14 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 
     @Override
     protected Filter[] getServletFilters() {
+        AuthFilter authFilter = new AuthFilter();
+
+        OpenEntityManagerInViewFilter openEntityManagerInViewFilter = new OpenEntityManagerInViewFilter();
+        openEntityManagerInViewFilter.setEntityManagerFactoryBeanName("entityManagerFactory");
 
         return new Filter[]{
-                new AuthFilter()
+                authFilter,
+                openEntityManagerInViewFilter
         };
     }
 

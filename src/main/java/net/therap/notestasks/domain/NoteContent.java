@@ -17,6 +17,10 @@ public class NoteContent {
         this.text = "";
     }
 
+    public NoteContent(@NotEmpty String text) {
+        this.text = text;
+    }
+
     public String getText() {
         return text;
     }

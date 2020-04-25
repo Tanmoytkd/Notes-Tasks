@@ -24,7 +24,7 @@ import java.util.Objects;
 @ComponentScan({"net.therap.notestasks"})
 public class AppConfig {
 
-    @Bean
+    @Bean(name = "entityManagerFactory")
     public LocalEntityManagerFactoryBean entityManagerFactory() {
         LocalEntityManagerFactoryBean localEmfBean =
                 new LocalEntityManagerFactoryBean();
