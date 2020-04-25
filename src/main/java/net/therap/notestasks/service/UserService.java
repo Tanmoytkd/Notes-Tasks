@@ -37,6 +37,10 @@ public class UserService {
         userDao.saveOrUpdate(user);
     }
 
+    public Optional<User> refreshUser(User user) {
+        return userDao.findByExample(user);
+    }
+
     public Optional<User> findUserByEmailAndPassword(String email, String password) {
         return userDao.findByEmailAndPassword(email, password);
     }
