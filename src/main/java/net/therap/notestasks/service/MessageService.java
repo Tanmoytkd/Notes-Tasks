@@ -9,6 +9,7 @@ import net.therap.notestasks.exception.MessagingNotPermittedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  * @since 4/24/20
  */
 @Service
+@Transactional
 public class MessageService {
 
     @Autowired
