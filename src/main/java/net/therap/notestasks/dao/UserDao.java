@@ -4,6 +4,7 @@ import net.therap.notestasks.domain.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.TypedQuery;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -50,5 +51,12 @@ public class UserDao extends GenericDao<User> {
         query.setParameter(PASSWORD_TXT, password);
 
         return query.getResultList().stream().findFirst();
+    }
+
+    public List<User> findUsersContainingName(String name) {
+        TypedQuery<User> query = em.createNamedQuery("User.findContainingName", User.class);
+        query.setParameter("name", name);
+
+        return query.getResultList();
     }
 }

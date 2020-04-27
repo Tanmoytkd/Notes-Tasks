@@ -30,6 +30,10 @@ public class Message extends BasicEntity {
     @Embedded
     private MessageContent content;
 
+    @NotNull
+    @Column(name = "is_seen")
+    private boolean isSeen;
+
     public User getSender() {
         return sender;
     }
@@ -52,5 +56,13 @@ public class Message extends BasicEntity {
 
     public void setContent(MessageContent content) {
         this.content = content;
+    }
+
+    public boolean isSeen() {
+        return isSeen;
+    }
+
+    public void setSeen(boolean seen) {
+        isSeen = seen;
     }
 }

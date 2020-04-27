@@ -99,7 +99,7 @@ public class UserConnectionService {
         connectionRequestDao.delete(connectionRequest);
     }
 
-    private boolean isAlreadyConnected(User sender, User receiver) {
+    public boolean isAlreadyConnected(User sender, User receiver) {
         return userDao.refresh(sender).getConnections().stream()
                 .anyMatch(userConnection -> userConnection.getUsers().contains(receiver));
     }

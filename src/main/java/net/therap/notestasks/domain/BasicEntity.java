@@ -32,6 +32,7 @@ public class BasicEntity {
     @PrePersist
     private void onCreate() {
         this.createdOn = new Date();
+        onUpdate();
     }
 
     @PreUpdate

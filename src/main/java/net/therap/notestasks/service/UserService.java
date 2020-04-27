@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author tanmoy.das
@@ -44,6 +45,22 @@ public class UserService {
 
     public Optional<User> findByExample(User user) {
         return userDao.findByExample(user);
+    }
+
+    public List<User> findUsersByName(String name) {
+        return userDao.findUsersContainingName(name);
+    }
+
+    public List<User> findUsersWithString(String s) {
+        List<User> users = findUsersByName(s);
+
+        findUserByEmail(s).ifPresent(users::add);
+
+        return users.stream().distinct().collect(Collectors.toList());
+    }
+
+    public Optional<User> findUserByEmail(String email) {
+        return userDao.findByEmail(email);
     }
 
     public Optional<User> findUserByEmailAndPassword(String email, String password) {

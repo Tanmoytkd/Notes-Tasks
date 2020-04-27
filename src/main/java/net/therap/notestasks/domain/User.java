@@ -24,6 +24,9 @@ import java.util.List;
                         "AND user.isDeleted = false"),
         @NamedQuery(name = "User.findByExample",
                 query = "FROM User user WHERE user.email=:email AND user.password=:password " +
+                        "AND user.isDeleted = false"),
+        @NamedQuery(name = "User.findContainingName",
+                query = "From User user WHERE user.name like CONCAT('%',:name,'%')" +
                         "AND user.isDeleted = false")
 })
 
@@ -46,11 +49,17 @@ public class User extends BasicEntity {
     @NotNull
     private String secret;
 
+    @OneToMany(mappedBy = "sender")
+    private List<Message> sentMessages;
+
+    @OneToMany(mappedBy = "receiver")
+    private List<Message> receivedMessages;
+
     @OneToMany(mappedBy = "writer", cascade = {CascadeType.ALL})
-    List<Note> ownNotes;
+    private List<Note> ownNotes;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
-    List<NoteAccess> sharedNoteAccesses;
+    private List<NoteAccess> sharedNoteAccesses;
 
     @OneToMany(mappedBy = "sender", cascade = {CascadeType.ALL})
     private List<ConnectionRequest> sentConnectionRequests;
@@ -261,5 +270,21 @@ public class User extends BasicEntity {
 
     public void setSecret(String secret) {
         this.secret = secret;
+    }
+
+    public List<Message> getSentMessages() {
+        return sentMessages;
+    }
+
+    public void setSentMessages(List<Message> sentMessages) {
+        this.sentMessages = sentMessages;
+    }
+
+    public List<Message> getReceivedMessages() {
+        return receivedMessages;
+    }
+
+    public void setReceivedMessages(List<Message> receivedMessages) {
+        this.receivedMessages = receivedMessages;
     }
 }
