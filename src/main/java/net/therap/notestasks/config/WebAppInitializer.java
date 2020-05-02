@@ -1,6 +1,7 @@
 package net.therap.notestasks.config;
 
 import net.therap.notestasks.web.filter.AuthFilter;
+import net.therap.notestasks.web.filter.CustomSiteMeshFilter;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -22,7 +23,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return null;
+        return new Class[]{};
     }
 
     @Override
@@ -32,9 +33,12 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         OpenEntityManagerInViewFilter openEntityManagerInViewFilter = new OpenEntityManagerInViewFilter();
         openEntityManagerInViewFilter.setEntityManagerFactoryBeanName("entityManagerFactory");
 
+        CustomSiteMeshFilter siteMeshFilter = new CustomSiteMeshFilter();
+
         return new Filter[]{
                 authFilter,
-                openEntityManagerInViewFilter
+                openEntityManagerInViewFilter,
+                siteMeshFilter
         };
     }
 

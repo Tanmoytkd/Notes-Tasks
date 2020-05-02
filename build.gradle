@@ -44,6 +44,8 @@ dependencies {
     compile group: "javax.servlet.jsp.jstl", name: "javax.servlet.jsp.jstl-api", version: "1.2.2"
     compile "javax.servlet:jstl:1.2"
 
+    compile group: 'org.sitemesh', name: 'sitemesh', version: '3.0.1'
+
     def springVersion = "5.1.5.RELEASE"
     compile "org.springframework:spring-context:${springVersion}"
     compile "org.springframework:spring-webmvc:${springVersion}"

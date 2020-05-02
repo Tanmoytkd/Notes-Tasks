@@ -5,6 +5,7 @@ import net.therap.notestasks.util.RandomGeneratorUtil;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,14 +33,16 @@ import java.util.List;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
-public class User extends BasicEntity {
+public class User extends BasicEntity implements Serializable {
 
-    @NotNull
+    @NotNull(message = "Email must not be null")
+    @Size(min = 6, message = "Email must be at least 6 letters")
     private String email;
-    @NotNull
-    @Size(min = 3, max = 30)
+
+    @Size(min = 3, max = 30, message = "Name must not be null, length between 3 and 30")
     private String name;
-    @NotNull
+
+    @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
     private String phone;
 

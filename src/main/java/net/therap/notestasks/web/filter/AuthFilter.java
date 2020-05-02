@@ -1,11 +1,15 @@
 package net.therap.notestasks.web.filter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.*;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+
+import static net.therap.notestasks.config.Constants.USER_TXT;
 
 /**
  * @author tanmoy.das
@@ -13,10 +17,25 @@ import java.util.Arrays;
  */
 public class AuthFilter implements Filter {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthFilter.class);
+
     public static String[] GUEST_URLS = new String[]{
             "/login",
             "/register",
     };
+
+    public static String[] ALL_ACCESS_URLS = new String[]{
+            "/"
+    };
+
+    public static String[] ALL_ACCESS_PREFIXES = new String[]{
+            "/lib/",
+            "/css/",
+            "/js/",
+            "/img/",
+            "/webfonts/"
+    };
+
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -27,24 +46,36 @@ public class AuthFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
+
         String url = req.getServletPath();
 
-
-        if (url.startsWith("/lib/") || url.startsWith("/css/") || url.startsWith("/js/") || url.startsWith("/img/")) {
+        if (hasAccess(req)) {
+            logger.info("Access Granted at {}", url);
             chain.doFilter(request, response);
-        } else if (isUser(req)) {
-            if (!Arrays.asList(GUEST_URLS).contains(url)) {
-                chain.doFilter(request, response);
-            } else {
-                resp.sendRedirect("/");
-            }
         } else {
-            if (Arrays.asList(GUEST_URLS).contains(url)) {
-                chain.doFilter(request, response);
-            } else {
-                resp.sendRedirect(req.getContextPath() + "/login");
-            }
+            String userStatus = isUser(req) ? "User" : "Guest";
+            logger.warn("Access not Granted to {} at {}", userStatus, url);
+
+            resp.sendRedirect("/");
         }
+    }
+
+    private boolean hasAccess(HttpServletRequest req) {
+        String url = req.getServletPath();
+
+        if (Arrays.stream(ALL_ACCESS_PREFIXES).anyMatch(url::startsWith)) {
+            return true;
+        }
+
+        if (Arrays.asList(ALL_ACCESS_URLS).contains(url)) {
+            return true;
+        }
+
+        if (isUser(req) && !Arrays.asList(GUEST_URLS).contains(url)) {
+            return true;
+        }
+
+        return isGuest(req) && Arrays.asList(GUEST_URLS).contains(url);
     }
 
     @Override
@@ -53,18 +84,7 @@ public class AuthFilter implements Filter {
     }
 
     public boolean isUser(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-
-        if (cookies == null) {
-            return false;
-        }
-
-        Cookie tokenCookie = Arrays.stream(cookies)
-                .filter(cookie -> cookie.getName().equals("token"))
-                .findAny()
-                .orElse(null);
-
-        return tokenCookie != null;
+        return request.getSession().getAttribute(USER_TXT) != null;
     }
 
     public boolean isGuest(HttpServletRequest request) {

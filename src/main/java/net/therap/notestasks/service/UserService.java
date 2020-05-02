@@ -23,12 +23,12 @@ public class UserService {
     @Autowired
     private UserDao userDao;
 
-    public void createUser(User user) {
+    public User createUser(User user) {
         if (userDao.findByEmail(user.getEmail()).isPresent()) {
             throw new DuplicateEmailException();
         }
 
-        userDao.saveOrUpdate(user);
+        return userDao.saveOrUpdate(user);
     }
 
     public void updateUser(User user) {

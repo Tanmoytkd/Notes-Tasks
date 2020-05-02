@@ -1,0 +1,83 @@
+:root {
+    --jumbotron-padding-y: 3rem;
+}
+
+.jumbotron {
+    padding-top: var(--jumbotron-padding-y);
+    padding-bottom: var(--jumbotron-padding-y);
+    margin-bottom: 0;
+    background-color: #fff;
+}
+
+@media (min-width: 768px) {
+    .jumbotron {
+        padding-top: calc(var(--jumbotron-padding-y) * 2);
+        padding-bottom: calc(var(--jumbotron-padding-y) * 2);
+    }
+}
+
+.jumbotron p:last-child {
+    margin-bottom: 0;
+}
+
+.jumbotron-heading {
+    font-weight: 300;
+}
+
+.jumbotron .container {
+    max-width: 40rem;
+}
+
+footer {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+footer p {
+    margin-bottom: .25rem;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+/*-----------------------------------------------*/
+
+/*.container {*/
+/*    padding: 2rem 0rem;*/
+/*}*/
+
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width: 400px;
+    }
+
+    .modal-dialog .modal-content {
+        padding: 1rem;
+    }
+}
+
+.modal-header .close {
+    margin-top: -1.5rem;
+}
+
+.form-title {
+    margin: -2rem 0rem 2rem;
+}
+
+.btn-round {
+    border-radius: 3rem;
+}
+
+.delimiter {
+    padding: 1rem;
+}
+
+.social-buttons .btn {
+    margin: 0 0.5rem 1rem;
+}
+
+.signup-section {
+    padding: 0.3rem 0rem;
+}
+
