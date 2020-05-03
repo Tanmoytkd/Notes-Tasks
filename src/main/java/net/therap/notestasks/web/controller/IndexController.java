@@ -34,6 +34,7 @@ public class IndexController {
         model.addAttribute(REGISTER_USER_COMMAND, new User());
 
         if (isAuthenticated(req)) {
+            model.put("isDashboard", true);
             return "dashboard";
         } else {
             return "index";

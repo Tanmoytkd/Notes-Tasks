@@ -15,14 +15,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="<spring:message code="label.appName"/>">
     <meta name="author" content="<spring:message code="label.authorName"/>">
-    <%--    <link rel="icon" href="/img/favicons/favicon.ico">--%>
+
+    <c:url var="iconLink" value="/img/spidey.png"/>
+    <link rel="icon" href="${iconLink}">
 
     <title><spring:message code="label.welcome"/></title>
 </head>
 
 <body>
-
-<%@ include file="/WEB-INF/includes/topNavigation.jsp" %>
 
 <header>
     <div class="collapse bg-dark" id="navbarHeader">

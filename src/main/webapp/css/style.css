@@ -81,3 +81,23 @@ footer p {
     padding: 0.3rem 0rem;
 }
 
+html, body {
+    height: 100%;
+    overflow: auto;
+}
+
+.fixed-column {
+    position: absolute;
+    overflow-y: scroll;
+}
+
+.circle-icon {
+    display: inline-block;
+    box-shadow: 0px 0px 2px #c9bebe;
+    padding: 5px;
+    border-radius: 50%;
+}
+
+.icon-background {
+    color: #c0ffc0;
+}
