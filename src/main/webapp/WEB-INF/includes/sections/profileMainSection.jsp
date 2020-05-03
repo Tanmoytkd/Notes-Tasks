@@ -22,7 +22,7 @@
 
         <div class="card col-6 col-md-6 mx-2 my-1 p-3">
             <c:set var="emailHash" value="${HashingUtil.md5Hex(user.getEmail())}"/>
-            <c:url var="profilePictureUrl" value="https://www.gravatar.com/avatar/${emailHash}.jpg?s=200"/>
+            <c:url var="profilePictureUrl" value="https://www.gravatar.com/avatar/${emailHash}.jpg?s=800"/>
             <a href="${userLink}">
                 <img class="card-img-top" src="${profilePictureUrl}" alt="Avatar from Gravatar">
             </a>
