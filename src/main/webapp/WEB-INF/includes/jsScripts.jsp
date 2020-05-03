@@ -19,3 +19,15 @@
 
 <c:url var="holderJsLink" value="/js/holder.min.js"/>
 <script src="${holderJsLink}"></script>
+
+<c:url var="popperJsLink" value="/js/popper.min.js"/>
+<script src="${popperJsLink}"></script>
+
+<!-- Icons -->
+<script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+<script>
+    feather.replace()
+</script>
+
+<!-- Graphs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>

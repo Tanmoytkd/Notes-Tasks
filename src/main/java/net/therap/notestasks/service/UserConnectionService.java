@@ -32,7 +32,7 @@ public class UserConnectionService {
     private UserDao userDao;
 
     public void sendConnectionRequest(ConnectionRequest connectionRequest) {
-        if (connectionRequestDao.findByExample(connectionRequest).isPresent()) {
+        if (isRequestAlreadySent(connectionRequest)) {
             throw new DuplicateConnectionRequestException();
         }
 
@@ -43,6 +43,17 @@ public class UserConnectionService {
         }
 
         createConnectionRequest(connectionRequest);
+    }
+
+    public boolean isRequestAlreadySent(User sender, User receiver) {
+        ConnectionRequest connectionRequest = new ConnectionRequest();
+        connectionRequest.setSender(sender);
+        connectionRequest.setReceiver(receiver);
+        return isRequestAlreadySent(connectionRequest);
+    }
+
+    public boolean isRequestAlreadySent(ConnectionRequest connectionRequest) {
+        return connectionRequestDao.findByExample(connectionRequest).isPresent();
     }
 
     public void acceptConnectionRequest(ConnectionRequest connectionRequest) {
@@ -114,5 +125,9 @@ public class UserConnectionService {
         receiver.getReceivedConnectionRequests().add(connectionRequest);
         userDao.saveOrUpdate(sender);
         userDao.saveOrUpdate(receiver);
+    }
+
+    public boolean isRequestAlreadyReceived(User currentUser, User user) {
+        return isRequestAlreadySent(user, currentUser);
     }
 }

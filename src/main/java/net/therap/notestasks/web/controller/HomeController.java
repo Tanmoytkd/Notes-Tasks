@@ -1,5 +1,6 @@
 package net.therap.notestasks.web.controller;
 
+import net.therap.notestasks.command.SearchQuery;
 import net.therap.notestasks.config.Constants;
 import net.therap.notestasks.domain.User;
 import org.slf4j.Logger;
@@ -21,27 +22,33 @@ import static net.therap.notestasks.config.Constants.REGISTER_USER_COMMAND;
  * @since 4/23/20
  */
 @Controller
-public class IndexController {
+public class HomeController {
 
     @Autowired
     private Logger logger;
 
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
-    public String index(Locale locale, ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+    public String showHomePage(Locale locale, ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
         logger.info("Welcome home! The client locale is {}.", locale);
 
-        model.addAttribute(LOGIN_USER_COMMAND, new User());
-        model.addAttribute(REGISTER_USER_COMMAND, new User());
-
         if (isAuthenticated(req)) {
-            model.put("isDashboard", true);
-            return "dashboard";
+            return showDashboard(model, req, resp);
         } else {
+            model.addAttribute(LOGIN_USER_COMMAND, new User());
+            model.addAttribute(REGISTER_USER_COMMAND, new User());
+
             return "index";
         }
     }
 
+    public String showDashboard(ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+        model.addAttribute("searchQuery", new SearchQuery());
+        model.addAttribute("isDashboardPage", true);
+
+        return "dashboard";
+    }
+
     private boolean isAuthenticated(HttpServletRequest req) {
-        return req.getSession().getAttribute(Constants.USER_TXT) != null;
+        return req.getSession().getAttribute(Constants.CURRENT_USER_TXT) != null;
     }
 }

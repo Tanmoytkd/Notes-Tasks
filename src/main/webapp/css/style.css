@@ -92,12 +92,17 @@ html, body {
 }
 
 .circle-icon {
-    display: inline-block;
+    display: block;
     box-shadow: 0px 0px 2px #c9bebe;
     padding: 5px;
-    border-radius: 50%;
+    border-radius: 25%;
 }
 
 .icon-background {
     color: #c0ffc0;
+}
+
+.text-center svg {
+    margin: auto;
+    display: block;
 }

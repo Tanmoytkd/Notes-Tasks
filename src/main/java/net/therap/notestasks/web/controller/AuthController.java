@@ -48,12 +48,12 @@ public class AuthController {
     public String handleRegister(@Valid @ModelAttribute(REGISTER_USER_COMMAND) User user, Errors errors, ModelMap model,
                                  HttpServletRequest req, HttpServletResponse resp) throws NoSuchAlgorithmException {
         if (errors.hasErrors()) {
-            model.put(REGISTER_USER_COMMAND, user);
-            model.put(LOGIN_USER_COMMAND, new User());
+            model.addAttribute(REGISTER_USER_COMMAND, user);
+            model.addAttribute(LOGIN_USER_COMMAND, new User());
             return INDEX_PAGE;
         }
 
-        user.setPassword(HashingUtil.getHash(user.getPassword()));
+        user.setPassword(HashingUtil.sha256Hash(user.getPassword()));
 
         Optional<User> optionalUser = userService.findUserByEmail(user.getEmail());
         if (optionalUser.isPresent()) {
@@ -61,13 +61,13 @@ public class AuthController {
 
             errors.rejectValue(null, "duplicateEmailError");
             user.setPassword("");
-            model.put(LOGIN_USER_COMMAND, new User());
+            model.addAttribute(LOGIN_USER_COMMAND, new User());
 
             return INDEX_PAGE;
         }
 
         user = userService.createUser(user);
-        req.getSession().setAttribute(USER_TXT, user);
+        req.getSession().setAttribute(CURRENT_USER_TXT, user);
         logger.info("User created with email {}", user.getEmail());
 
         return REDIRECT_ROOT;
@@ -77,12 +77,12 @@ public class AuthController {
     public String handleLogin(@Valid @ModelAttribute(LOGIN_USER_COMMAND) User user, Errors errors, ModelMap model,
                               HttpServletRequest req, HttpServletResponse resp) throws NoSuchAlgorithmException {
         if (errors.hasErrors()) {
-            model.put(LOGIN_USER_COMMAND, user);
-            model.put(REGISTER_USER_COMMAND, new User());
+            model.addAttribute(LOGIN_USER_COMMAND, user);
+            model.addAttribute(REGISTER_USER_COMMAND, new User());
             return INDEX_PAGE;
         }
 
-        user.setPassword(HashingUtil.getHash(user.getPassword()));
+        user.setPassword(HashingUtil.sha256Hash(user.getPassword()));
 
         Optional<User> optionalUser = userService.findUserByEmailAndPassword(user.getEmail(), user.getPassword());
 
@@ -94,7 +94,7 @@ public class AuthController {
             return INDEX_PAGE;
         }
 
-        req.getSession().setAttribute(USER_TXT, optionalUser.get());
+        req.getSession().setAttribute(CURRENT_USER_TXT, optionalUser.get());
         return REDIRECT_ROOT;
     }
 }

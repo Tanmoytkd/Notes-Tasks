@@ -40,7 +40,7 @@ public class UserService {
     }
 
     public User refreshUser(User user) {
-        return userDao.refresh(user);
+        return userDao.findByExample(user).orElse(null);
     }
 
     public Optional<User> findByExample(User user) {
@@ -92,5 +92,13 @@ public class UserService {
 
     public void destroyUser(User user) {
         userDao.destroy(user);
+    }
+
+    public void deleteUser(User user) {
+        userDao.delete(user);
+    }
+
+    public Optional<User> findUserById(long id) {
+        return userDao.find(id);
     }
 }

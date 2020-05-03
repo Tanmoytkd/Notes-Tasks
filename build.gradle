@@ -71,5 +71,5 @@ tomcat {
     httpPort = 9090
     httpsPort = 9091
     enableSSL = false
-    contextPath = "mealsystem"
+    contextPath = "notestasks"
 }

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static net.therap.notestasks.config.Constants.USER_TXT;
+import static net.therap.notestasks.config.Constants.CURRENT_USER_TXT;
 
 /**
  * @author tanmoy.das
@@ -56,7 +56,7 @@ public class AuthFilter implements Filter {
             String userStatus = isUser(req) ? "User" : "Guest";
             logger.warn("Access not Granted to {} at {}", userStatus, url);
 
-            resp.sendRedirect("/");
+            resp.sendRedirect(req.getContextPath());
         }
     }
 
@@ -84,7 +84,7 @@ public class AuthFilter implements Filter {
     }
 
     public boolean isUser(HttpServletRequest request) {
-        return request.getSession().getAttribute(USER_TXT) != null;
+        return request.getSession().getAttribute(CURRENT_USER_TXT) != null;
     }
 
     public boolean isGuest(HttpServletRequest request) {

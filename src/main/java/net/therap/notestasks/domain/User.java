@@ -46,6 +46,8 @@ public class User extends BasicEntity implements Serializable {
     private String password;
     private String phone;
 
+    private String about;
+
     @Column(name = "is_email_verified")
     private boolean isEmailVerified;
 
@@ -289,5 +291,13 @@ public class User extends BasicEntity implements Serializable {
 
     public void setReceivedMessages(List<Message> receivedMessages) {
         this.receivedMessages = receivedMessages;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
     }
 }
