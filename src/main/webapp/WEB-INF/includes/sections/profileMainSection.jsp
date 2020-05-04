@@ -45,6 +45,12 @@
                             <a href="${removeConnectionLink}" class="btn btn-danger">
                                 <spring:message code="label.removeConnection"/>
                             </a>
+
+                            <c:url var="showUserMessagesLink" value="/messages/${user.id}"/>
+                            <a href="${showUserMessagesLink}" class="btn btn-secondary">
+                                <em class="fa fa-envelope"></em>
+                                Send Message
+                            </a>
                         </c:when>
                         <c:when test="${isRequestSent}">
                             <c:url var="cancelConnectionRequestLink" value="/connection/cancel/${user.id}"/>

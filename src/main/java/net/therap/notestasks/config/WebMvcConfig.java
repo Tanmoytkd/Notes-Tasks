@@ -1,5 +1,6 @@
 package net.therap.notestasks.config;
 
+import net.therap.notestasks.converter.StringToMessageConverter;
 import net.therap.notestasks.converter.StringToUserConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,13 @@ import java.util.Locale;
 @EnableWebMvc
 @ComponentScan({"net.therap.notestasks"})
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Autowired
+    private StringToUserConverter stringToUserConverter;
+
+    @Autowired
+    private StringToMessageConverter stringToMessageConverter;
+
 
     @Bean(name = "viewResolver")
     public InternalResourceViewResolver createViewResolver() {
@@ -73,11 +81,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/webfonts/**").addResourceLocations("/webfonts/");
     }
 
-    @Autowired
-    private StringToUserConverter stringToUserConverter;
-
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(stringToUserConverter);
+        registry.addConverter(stringToMessageConverter);
     }
 }

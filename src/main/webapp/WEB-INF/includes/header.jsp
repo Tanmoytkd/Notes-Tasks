@@ -17,3 +17,8 @@
 <c:url var="styleCssLink" value="/css/style.css"/>
 <link rel="stylesheet" type="text/css" href="${styleCssLink}">
 
+<c:url var="simplebarCssLink" value="https://unpkg.com/simplebar@latest/dist/simplebar.css"/>
+<link rel="stylesheet" href="${simplebarCssLink}">
+
+
+

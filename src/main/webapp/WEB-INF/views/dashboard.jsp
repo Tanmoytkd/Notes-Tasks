@@ -26,9 +26,9 @@
 
 <body>
 
-<%@ include file="/WEB-INF/includes/topNavigation.jsp" %>
+<div class="container-fluid mh-100 overflow-auto">
+    <%@ include file="/WEB-INF/includes/topNavigation.jsp" %>
 
-<div class="container-fluid">
     <div class="row">
         <%@ include file="/WEB-INF/includes/sidebarNavigation.jsp" %>
 
@@ -37,7 +37,7 @@
 
             </c:when>
             <c:when test="${isMessagesPage}">
-
+                <%@ include file="/WEB-INF/includes/sections/messagesMainSection.jsp" %>
             </c:when>
             <c:when test="${isNotesPage}">
 

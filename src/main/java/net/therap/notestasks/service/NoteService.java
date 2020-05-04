@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 /**
  * @author tanmoy.das
@@ -111,5 +112,9 @@ public class NoteService {
         userDao.saveOrUpdate(user);
 
         noteAccessDao.delete(noteAccess);
+    }
+
+    public Optional<Note> findNoteById(long noteId) {
+        return noteDao.find(noteId);
     }
 }

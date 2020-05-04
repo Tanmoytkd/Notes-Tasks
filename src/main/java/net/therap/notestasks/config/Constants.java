@@ -22,4 +22,5 @@ public class Constants {
     public static final String IS_MYSELF_TXT = "isMyself";
     public static final String REDIRECT_PROFILE = "redirect:/profile";
     public static final String DASHBOARD_PAGE = "dashboard";
+    public static final String REDIRECT_MESSAGES = "redirect:/messages";
 }

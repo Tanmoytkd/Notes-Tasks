@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -70,7 +67,7 @@ public class MessageService {
         messageDao.saveOrUpdate(message);
     }
 
-    public Map<User, List<Message>> findAllMessageGroupedByUsers(User user) {
+    public Map<User, List<Message>> findAllMessagesGroupedByUsers(User user) {
         User persistedUser = userDao.refresh(user);
 
         List<Message> messageList = new ArrayList<>();
@@ -78,6 +75,7 @@ public class MessageService {
         messageList.addAll(persistedUser.getReceivedMessages());
 
         return messageList.stream()
+                .filter(message -> !message.isDeleted())
                 .sorted(Comparator.comparing(BasicEntity::getCreatedOn))
                 .collect(Collectors.groupingBy(message -> {
                     if (message.getSender().equals(persistedUser)) {
@@ -89,7 +87,7 @@ public class MessageService {
     }
 
     public List<User> findAllMessagedUsers(User user) {
-        return new ArrayList<>(findAllMessageGroupedByUsers(user).keySet());
+        return new ArrayList<>(findAllMessagesGroupedByUsers(user).keySet());
     }
 
     public boolean canSendMessage(User sender, User receiver) {
@@ -117,5 +115,9 @@ public class MessageService {
 
         return sender.getSentMessages().stream()
                 .anyMatch(message -> message.getReceiver().equals(userDao.refresh(receiver)));
+    }
+
+    public Optional<Message> findMessageById(long userId) {
+        return messageDao.find(userId);
     }
 }
