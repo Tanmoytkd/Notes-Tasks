@@ -49,6 +49,6 @@ public class HomeController {
     }
 
     private boolean isAuthenticated(HttpServletRequest req) {
-        return req.getSession().getAttribute(Constants.CURRENT_USER_TXT) != null;
+        return req.getSession().getAttribute(Constants.CURRENT_USER) != null;
     }
 }

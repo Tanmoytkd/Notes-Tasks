@@ -6,7 +6,7 @@ package net.therap.notestasks.config;
  */
 public class Constants {
 
-    public static final String CURRENT_USER_TXT = "currentUserCommand";
+    public static final String CURRENT_USER = "currentUserCommand";
 
     public static final String REGISTER_USER_COMMAND = "registerUserCommand";
 

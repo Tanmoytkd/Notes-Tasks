@@ -59,8 +59,8 @@ public class UserConnectionService {
     public void acceptConnectionRequest(ConnectionRequest connectionRequest) {
         connectionRequest = connectionRequestDao.refresh(connectionRequest);
 
-        User sender = connectionRequest.getSender();
-        User receiver = connectionRequest.getReceiver();
+        User sender = userDao.refresh(connectionRequest.getSender());
+        User receiver = userDao.refresh(connectionRequest.getReceiver());
         if (isAlreadyConnected(sender, receiver)) {
             throw new UserConnectionAlreadyExistsException();
         }
@@ -69,7 +69,7 @@ public class UserConnectionService {
         createConnection(sender, receiver);
     }
 
-    public void rejectConnectionRequest(ConnectionRequest connectionRequest) {
+    public void cancelConnectionRequest(ConnectionRequest connectionRequest) {
         connectionRequest = connectionRequestDao.refresh(connectionRequest);
 
         deleteConnectionRequest(connectionRequest);
@@ -89,13 +89,11 @@ public class UserConnectionService {
     private void createConnection(User sender, User receiver) {
         UserConnection connection = new UserConnection();
         connection.setUsers(Arrays.asList(sender, receiver));
-        connectionDao.saveOrUpdate(connection);
 
         sender.getConnections().add(connection);
         receiver.getConnections().add(connection);
 
-        userDao.saveOrUpdate(sender);
-        userDao.saveOrUpdate(receiver);
+        connection = connectionDao.saveOrUpdate(connection);
     }
 
     private void deleteConnectionRequest(ConnectionRequest connectionRequest) {
@@ -112,7 +110,8 @@ public class UserConnectionService {
 
     public boolean isAlreadyConnected(User sender, User receiver) {
         return userDao.refresh(sender).getConnections().stream()
-                .anyMatch(userConnection -> userConnection.getUsers().contains(receiver));
+                .anyMatch(userConnection -> userConnection.getUsers().contains(receiver)
+                        && !userConnection.isDeleted());
     }
 
     private void createConnectionRequest(ConnectionRequest connectionRequest) {

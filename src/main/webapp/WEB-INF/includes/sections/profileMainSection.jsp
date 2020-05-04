@@ -39,6 +39,41 @@
                     <p class="card-text">
                             ${user.about}
                     </p>
+                    <c:choose>
+                        <c:when test="${isUserConnected}">
+                            <c:url var="removeConnectionLink" value="/connection/remove/${user.id}"/>
+                            <a href="${removeConnectionLink}" class="btn btn-danger">
+                                <spring:message code="label.removeConnection"/>
+                            </a>
+                        </c:when>
+                        <c:when test="${isRequestSent}">
+                            <c:url var="cancelConnectionRequestLink" value="/connection/cancel/${user.id}"/>
+                            <a href="${cancelConnectionRequestLink}" class="btn btn-info">
+                                <spring:message code="label.cancelConnectionRequest"/>
+                            </a>
+                        </c:when>
+                        <c:when test="${isRequestReceived}">
+                            <c:url var="acceptConnectionReqeustLink" value="/connection/accept/${user.id}"/>
+                            <a href="${acceptConnectionReqeustLink}" class="btn btn-success">
+                                <spring:message code="label.acceptConnection"/>
+                            </a>
+
+                            <c:url var="rejectConnectionRequestLink" value="/connection/reject/${user.id}"/>
+                            <a href="${rejectConnectionRequestLink}" class="btn btn-danger">
+                                <spring:message code="label.rejectConnection"/>
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <c:url var="sendConnectionRequestLink" value="/connection/send/${user.id}"/>
+                            <a href="${sendConnectionRequestLink}" class="btn btn-primary">
+                                <spring:message code="label.sendConnectionRequest"/>
+                            </a>
+                        </c:otherwise>
+                    </c:choose>
+                    <c:if test="">
+
+                    </c:if>
+
                 </c:if>
 
                 <c:if test="${isMyself}">
@@ -70,7 +105,7 @@
                         <div class="form-group">
                             <label for="password"><spring:message code="label.passwordTxt"/>: </label>
                             <input id="password" name="password" type="password" class="form-control" value=""
-                                        placeholder="Enter Password to update profile"/>
+                                   placeholder="Enter Password to update profile"/>
                         </div>
 
                         <div class="form-group">

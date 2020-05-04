@@ -17,9 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
-import java.util.Locale;
 
-import static net.therap.notestasks.config.Constants.CURRENT_USER_TXT;
+import static net.therap.notestasks.config.Constants.CURRENT_USER;
 import static net.therap.notestasks.config.Constants.DASHBOARD_PAGE;
 
 /**
@@ -39,12 +38,12 @@ public class ProfileController {
     private UserConnectionService userConnectionService;
 
     @RequestMapping(value = {"/profile"}, method = RequestMethod.GET)
-    public String showOwnProfile(@SessionAttribute(CURRENT_USER_TXT) User currentUser, ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+    public String showOwnProfile(@SessionAttribute(CURRENT_USER) User currentUser, ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
         return showUserProfile(currentUser, currentUser, model, req, resp);
     }
 
     @RequestMapping(value = {"/profile/{id}"}, method = RequestMethod.GET)
-    public String showUserProfile(@PathVariable("id") User user, @SessionAttribute(CURRENT_USER_TXT) User currentUser,
+    public String showUserProfile(@PathVariable("id") User user, @SessionAttribute(CURRENT_USER) User currentUser,
                                   ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
         model.addAttribute("searchQuery", new SearchQuery());
 
@@ -55,13 +54,13 @@ public class ProfileController {
     }
 
     @RequestMapping(value = {"/profile/update"}, method = RequestMethod.POST)
-    public String updateUserProfile(@Valid @ModelAttribute(CURRENT_USER_TXT) User user, Errors errors,
+    public String updateUserProfile(@Valid @ModelAttribute(CURRENT_USER) User user, Errors errors,
                                     @RequestParam("newPassword") String newPassword,
-                                    @SessionAttribute(CURRENT_USER_TXT) User currentUser, ModelMap model,
+                                    @SessionAttribute(CURRENT_USER) User currentUser, ModelMap model,
                                     HttpServletRequest req, HttpServletResponse resp) throws NoSuchAlgorithmException {
 
         currentUser = userService.refreshUser(currentUser);
-        model.addAttribute(CURRENT_USER_TXT, currentUser);
+        model.addAttribute(CURRENT_USER, currentUser);
 
         user.setPassword(HashingUtil.sha256Hash(user.getPassword()));
 
@@ -70,7 +69,7 @@ public class ProfileController {
 
             model.addAttribute("searchQuery", new SearchQuery());
             errors.rejectValue(null, "credentialIncorrect");
-            model.addAttribute(CURRENT_USER_TXT, user);
+            model.addAttribute(CURRENT_USER, user);
 
 
             return DASHBOARD_PAGE;
@@ -85,8 +84,8 @@ public class ProfileController {
         return Constants.REDIRECT_PROFILE;
     }
 
-    private void setupUserDataInModel(@PathVariable("id") User user, @SessionAttribute(CURRENT_USER_TXT) User currentUser, ModelMap model) {
-        model.addAttribute(CURRENT_USER_TXT, currentUser);
+    private void setupUserDataInModel(@PathVariable("id") User user, @SessionAttribute(CURRENT_USER) User currentUser, ModelMap model) {
+        model.addAttribute(CURRENT_USER, currentUser);
 
         model.put(Constants.USER_TXT, user);
 
@@ -96,15 +95,18 @@ public class ProfileController {
             model.addAttribute(Constants.IS_MYSELF_TXT, true);
         }
 
-        if (userConnectionService.isAlreadyConnected(currentUser, user)) {
+        boolean alreadyConnected = userConnectionService.isAlreadyConnected(currentUser, user);
+        if (alreadyConnected) {
             model.addAttribute(Constants.IS_USER_CONNECTED_TXT, true);
         }
 
-        if (userConnectionService.isRequestAlreadySent(currentUser, user)) {
+        boolean requestAlreadySent = userConnectionService.isRequestAlreadySent(currentUser, user);
+        if (requestAlreadySent) {
             model.addAttribute(Constants.IS_REQUEST_SENT_TXT, true);
         }
 
-        if (userConnectionService.isRequestAlreadyReceived(currentUser, user)) {
+        boolean requestAlreadyReceived = userConnectionService.isRequestAlreadyReceived(currentUser, user);
+        if (requestAlreadyReceived) {
             model.addAttribute(Constants.IS_REQUEST_RECEIVED_TXT, true);
         }
     }
@@ -112,5 +114,4 @@ public class ProfileController {
     private boolean hasSameCredentials(@Valid User user1, User user2) {
         return user2.getEmail().equals(user1.getEmail()) && user2.getPassword().equals(user1.getPassword());
     }
-
 }
