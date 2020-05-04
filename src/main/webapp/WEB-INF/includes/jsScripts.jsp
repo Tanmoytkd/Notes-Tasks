@@ -23,6 +23,10 @@
 <c:url var="popperJsLink" value="/js/popper.min.js"/>
 <script src="${popperJsLink}"></script>
 
+<c:url var="tinymceJsLink"
+       value="https://cdn.tiny.cloud/1/p1p9mmswl4ky9g4tc92i72m8ql0udlurva2jymfgfbfwztzv/tinymce/5/tinymce.min.js"/>
+<script src="${tinymceJsLink}" referrerpolicy="origin"></script>
+
 <!-- Icons -->
 <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 <script>

@@ -117,4 +117,42 @@ public class NoteService {
     public Optional<Note> findNoteById(long noteId) {
         return noteDao.find(noteId);
     }
+
+    public boolean canAccessNote(User persistedCurrentUser, Note note) {
+        if (persistedCurrentUser.getId() == note.getWriter().getId()) {
+            return true;
+        }
+
+        return note.getNoteAccesses().stream()
+                .filter(noteAccess -> !noteAccess.isDeleted())
+                .filter(noteAccess -> noteAccess.getUser().getId() == persistedCurrentUser.getId())
+                .anyMatch(noteAccess -> !noteAccess.getAccessLevels().isEmpty());
+    }
+
+    public boolean hasSpecificAccess(User persistedCurrentUser, Note note, NoteAccess.AccessLevel accessLevel) {
+        if (persistedCurrentUser.getId() == note.getWriter().getId()) {
+            return true;
+        }
+
+        return note.getNoteAccesses().stream()
+                .filter(noteAccess -> !noteAccess.isDeleted())
+                .filter(noteAccess -> noteAccess.getUser().getId() == persistedCurrentUser.getId())
+                .anyMatch(noteAccess -> !noteAccess.getAccessLevels().contains(accessLevel));
+    }
+
+    public boolean hasReadAccess(User persistedCurrentUser, Note note) {
+        return  hasSpecificAccess(persistedCurrentUser, note, NoteAccess.AccessLevel.READ);
+    }
+
+    public boolean hasWriteAccess(User persistedCurrentUser, Note note) {
+        return hasSpecificAccess(persistedCurrentUser, note, NoteAccess.AccessLevel.WRITE);
+    }
+
+    public boolean hasShareAccess(User persistedCurrentUser, Note note) {
+        return hasSpecificAccess(persistedCurrentUser, note, NoteAccess.AccessLevel.SHARE);
+    }
+
+    public boolean hasDeleteAccess(User persistedCurrentUser, Note note) {
+        return hasSpecificAccess(persistedCurrentUser, note, NoteAccess.AccessLevel.DELETE);
+    }
 }
