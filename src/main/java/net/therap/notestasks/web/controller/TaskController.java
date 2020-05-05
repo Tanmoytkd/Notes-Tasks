@@ -201,6 +201,39 @@ public class TaskController {
         return REDIRECT_TASKS;
     }
 
+    @RequestMapping(value = "/taskComment", method = RequestMethod.POST)
+    public String createTaskComment(@ModelAttribute("taskCommentCommand") TaskComment taskComment, Errors errors,
+                                    @SessionAttribute(CURRENT_USER) User currentUser, ModelMap model,
+                                    HttpServletRequest req, HttpServletResponse resp) {
+        if (errors.hasErrors()) {
+            String taskPage = showTask(taskComment.getTask(), currentUser, model, req, resp);
+            model.addAttribute("taskCommentCommand", taskComment);
+            return taskPage;
+        }
+
+        User persistedCurrentUser = userService.refreshUser(currentUser);
+
+        if (!taskService.hasAssignmentCreateAccess(persistedCurrentUser, taskComment.getTask())) {
+            return redirectTo(getUrl(taskComment.getTask()));
+        }
+
+        taskService.createTaskComment(taskComment);
+        return redirectTo(getUrl(taskComment.getTask()));
+    }
+
+    @RequestMapping(value = {"/taskComment/delete/{taskCommentId}"}, method = RequestMethod.GET)
+    public String deleteNoteComment(@PathVariable("taskCommentId") TaskComment taskComment,
+                                    @SessionAttribute(CURRENT_USER) User currentUser,
+                                    ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+        User persistedCurrentUser = userService.refreshUser(currentUser);
+
+        if (taskService.canDeleteTaskComment(persistedCurrentUser, taskComment)) {
+            taskService.deleteTaskComment(taskComment);
+        }
+
+        return redirectTo(getUrl(taskComment.getTask()));
+    }
+
     private void setupModelTaskAssignments(ModelMap model, User persistedCurrentUser) {
         List<TaskAssignment> taskAssignments = persistedCurrentUser.getTaskAssignments().stream()
                 .filter(taskAssignment -> !taskAssignment.isDeleted())

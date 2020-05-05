@@ -8,6 +8,7 @@ import net.therap.notestasks.domain.Task;
 import net.therap.notestasks.domain.TaskAssignment;
 import net.therap.notestasks.domain.TaskComment;
 import net.therap.notestasks.domain.User;
+import net.therap.notestasks.exception.InvalidUserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -133,6 +134,14 @@ public class TaskService {
 
     public Optional<TaskAssignment> findTaskAssignmentById(long taskAssignmentId) {
         return taskAssignmentDao.find(taskAssignmentId);
+    }
+
+    public boolean canDeleteTaskComment(User user, TaskComment taskComment) {
+        User persistedUser = userDao.findByEmail(user.getEmail())
+                .orElseThrow(InvalidUserException::new);
+
+        return isCreator(persistedUser, taskComment.getTask()) ||
+                taskComment.getWriter().getId() == persistedUser.getId();
     }
 
     public boolean canAccessTask(User persistedCurrentUser, Task task) {

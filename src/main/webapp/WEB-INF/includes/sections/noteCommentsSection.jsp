@@ -33,7 +33,7 @@
                                  alt="Avatar from Gravatar">
                         </div>
                         <div class="flex-fill">
-                            <c:url var="noteCommentWriterLink" value="/user/${notecomment.writer.id}"/>
+                            <c:url var="noteCommentWriterLink" value="/user/${noteComment.writer.id}"/>
                             <div class="card-title">
                                 <a href="${noteCommentWriterLink}">
 
