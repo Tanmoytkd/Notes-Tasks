@@ -141,7 +141,7 @@ public class NoteService {
     }
 
     public boolean hasReadAccess(User persistedCurrentUser, Note note) {
-        return  hasSpecificAccess(persistedCurrentUser, note, NoteAccess.AccessLevel.READ);
+        return hasSpecificAccess(persistedCurrentUser, note, NoteAccess.AccessLevel.READ);
     }
 
     public boolean hasWriteAccess(User persistedCurrentUser, Note note) {
@@ -154,5 +154,19 @@ public class NoteService {
 
     public boolean hasDeleteAccess(User persistedCurrentUser, Note note) {
         return hasSpecificAccess(persistedCurrentUser, note, NoteAccess.AccessLevel.DELETE);
+    }
+
+    public boolean hasCommentDeleteAccess(User user, NoteComment noteComment) {
+        User persistedUser = userDao.findByEmail(user.getEmail()).orElse(null);
+
+        if (persistedUser.getId() == noteComment.getWriter().getId()) {
+            return true;
+        }
+
+        return persistedUser.getId() == noteComment.getNote().getWriter().getId();
+    }
+
+    public Optional<NoteComment> findNoteCommentById(long noteCommendId) {
+        return noteCommentDao.find(noteCommendId);
     }
 }

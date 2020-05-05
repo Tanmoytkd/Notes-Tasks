@@ -1,6 +1,7 @@
 package net.therap.notestasks.config;
 
 import net.therap.notestasks.converter.StringToMessageConverter;
+import net.therap.notestasks.converter.StringToNoteCommentConverter;
 import net.therap.notestasks.converter.StringToNoteConverter;
 import net.therap.notestasks.converter.StringToUserConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Autowired
     private StringToNoteConverter stringToNoteConverter;
+
+    @Autowired
+    private StringToNoteCommentConverter stringToNoteCommentConverter;
 
     @Bean(name = "viewResolver")
     public InternalResourceViewResolver createViewResolver() {
@@ -89,5 +93,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addConverter(stringToUserConverter);
         registry.addConverter(stringToMessageConverter);
         registry.addConverter(stringToNoteConverter);
+        registry.addConverter(stringToNoteCommentConverter);
     }
 }

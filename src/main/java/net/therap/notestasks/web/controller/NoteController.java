@@ -8,10 +8,12 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,7 +76,7 @@ public class NoteController {
     }
 
     @RequestMapping(value = {"/note/update"}, method = RequestMethod.POST)
-    public String updateNote(@ModelAttribute("currentNoteCommand") Note note) {
+    public String updateNote(@ModelAttribute("noteCommand") Note note) {
 
         noteService.updateNote(note);
 
@@ -115,7 +117,49 @@ public class NoteController {
         boolean hasDeleteAccess = noteService.hasDeleteAccess(persistedCurrentUser, note);
         model.addAttribute("hasDeleteAccess", hasDeleteAccess);
 
-        model.addAttribute("currentNoteCommand", note);
+        model.addAttribute("noteCommand", note);
+
+        List<NoteComment> comments = note.getComments().stream()
+                .filter(noteComment -> !noteComment.isDeleted())
+                .collect(Collectors.toList());
+        model.addAttribute("noteComments", comments);
+
+        model.addAttribute("noteService", noteService);
+
+        NoteComment noteComment = new NoteComment();
+        noteComment.setNote(note);
+        noteComment.setWriter(currentUser);
+        model.addAttribute("noteCommentCommand", noteComment);
+
         return showNotes(currentUser, model, req, resp);
     }
+
+    @RequestMapping(value = {"/noteComment"}, method = RequestMethod.POST)
+    public String createNoteComment(@Valid @ModelAttribute("noteCommentCommand") NoteComment noteComment,
+                                    Errors errors,
+                                    @SessionAttribute(CURRENT_USER) User currentUser,
+                                    ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+        if (errors.hasErrors()) {
+            String notePage = showNote(noteComment.getNote(), currentUser, model, req, resp);
+            model.addAttribute("noteCommentCommand", noteComment);
+            return notePage;
+        }
+
+        noteService.createNoteComment(noteComment);
+        return redirectTo(getUrl(noteComment.getNote()));
+    }
+
+    @RequestMapping(value = {"/noteComment/delete/{noteCommentId}"}, method = RequestMethod.GET)
+    public String deleteNoteComment(@PathVariable("noteCommentId") NoteComment noteComment,
+                                    @SessionAttribute(CURRENT_USER) User currentUser,
+                                    ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+        User persistedCurrentUser = userService.refreshUser(currentUser);
+
+        if (noteService.hasCommentDeleteAccess(persistedCurrentUser, noteComment)) {
+            noteService.deleteNoteComment(noteComment);
+        }
+
+        return redirectTo(getUrl(noteComment.getNote()));
+    }
+
 }

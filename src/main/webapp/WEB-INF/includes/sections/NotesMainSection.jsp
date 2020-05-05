@@ -16,7 +16,7 @@
 
             <div class="col-md-8 py-2">
                 <div class="d-flex flex-column vh-100 mh-100 overflow-auto py-2">
-                    <c:if test="${currentNoteCommand!=null}">
+                    <c:if test="${noteCommand!=null}">
                         <%@ include file="/WEB-INF/includes/sections/editNoteSection.jsp" %>
                         <%@ include file="/WEB-INF/includes/sections/noteCommentsSection.jsp" %>
                     </c:if>

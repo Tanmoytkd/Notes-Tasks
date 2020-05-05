@@ -14,9 +14,9 @@
     </c:if>
 
     <form:form cssClass="form" action="${updateNoteLink}" method="post"
-               modelAttribute="currentNoteCommand">
+               modelAttribute="noteCommand">
         <form:hidden path="id"/>
-        <form:hidden path="writer" value="${currentNoteCommand.writer.id}"/>
+        <form:hidden path="writer" value="${noteCommand.writer.id}"/>
 
         <div class="flex-item form-group d-flex flex-row">
             <form:input path="title" readonly="${inputReadOnly}"
@@ -46,7 +46,7 @@
                 </c:if>
 
                 <c:if test="${hasDeleteAccess}">
-                    <c:url var="deleteNoteLink" value="/note/delete/${currentNoteCommand.id}"/>
+                    <c:url var="deleteNoteLink" value="/note/delete/${noteCommand.id}"/>
                     <a href="${deleteNoteLink}" class="btn btn-lg btn-outline-danger">
                         <em class="fa fa-trash"></em>
                     </a>
@@ -57,7 +57,7 @@
         </div>
 
         <div class="form-group">
-            <form:textarea rows="20" readonly="${inputReadOnly}" disabled="${inputReadOnly}"
+            <form:textarea rows="15" readonly="${inputReadOnly}" disabled="${inputReadOnly}"
                            path="content.text"
                            cssClass="tinymce-editor form-control form-control-lg"/>
         </div>
