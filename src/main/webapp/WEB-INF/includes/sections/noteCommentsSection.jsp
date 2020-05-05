@@ -34,9 +34,15 @@
                         </div>
                         <div class="flex-fill">
                             <c:url var="noteCommentWriterLink" value="/user/${notecomment.writer.id}"/>
-                            <a href="${noteCommentWriterLink}">
-                                <h5 class="card-title">${noteComment.writer.name}</h5>
-                            </a>
+                            <div class="card-title">
+                                <a href="${noteCommentWriterLink}">
+
+                                    <h5 class="mb-0 pb-0">${noteComment.writer.name}</h5>
+
+                                </a>
+                                <small class="text-muted">${noteComment.updatedOn}</small>
+                            </div>
+
                             <p class="card-text">${noteComment.content.text}</p>
                         </div>
                         <c:if test="${noteService.hasCommentDeleteAccess(currentUserCommand, noteComment)}">
