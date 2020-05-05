@@ -80,10 +80,10 @@
 
                             <c:choose>
                                 <c:when test="${message.sender.id == currentUserCommand.id}">
-                                    <c:set var="messageClass" value="flex-row-reverse"/>
+                                    <c:set var="messageClass" value="flex-row"/>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:set var="messageClass" value="flex-row"/>
+                                    <c:set var="messageClass" value="flex-row-reverse"/>
                                 </c:otherwise>
                             </c:choose>
 
@@ -104,10 +104,12 @@
                                     </div>
                                 </div>
                                 <div class="flex-item mx-2">
-                                    <c:url var="messageDeleteLink" value="/message/delete/${message.id}"/>
-                                    <a href="${messageDeleteLink}">
-                                        <em class="fa fa-trash text-muted fa-1x align-self-baseline"></em>
-                                    </a>
+                                    <c:if test="${message.sender.id == currentUserCommand.id}">
+                                        <c:url var="messageDeleteLink" value="/message/delete/${message.id}"/>
+                                        <a href="${messageDeleteLink}">
+                                            <em class="fa fa-trash text-muted fa-1x align-self-baseline"></em>
+                                        </a>
+                                    </c:if>
                                 </div>
                             </div>
                         </c:forEach>
