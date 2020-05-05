@@ -8,14 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <main role="main" class="col-md-10 col-xl-11 vh-100 pt-3 px-4">
-    <%--    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap--%>
-    <%--                    align-items-center pb-2 mb-3 border-bottom">--%>
-    <%--        <h1 class="h2">--%>
-    <%--            <spring:message code="label.searchResults"/>: ${searchQuery.query}--%>
-    <%--        </h1>--%>
-    <%--    </div>--%>
-
-    <div class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden">
+    <div class="d-flex flex-column flex-grow-1 vh-100 overflow-hidden">
         <div class="row flex-grow-1 overflow-hidden">
             <div class="col-md-4 mh-100 overflow-auto">
                 <div class="card flex-fill vh-100">

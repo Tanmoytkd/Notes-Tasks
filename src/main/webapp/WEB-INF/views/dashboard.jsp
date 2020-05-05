@@ -26,7 +26,8 @@
 
 <body>
 
-<div class="container-fluid mh-100 overflow-auto">
+<div class="d-flex flex-column flex-shrink-0 mh-100 overflow-auto">
+
     <%@ include file="/WEB-INF/includes/topNavigation.jsp" %>
 
     <div class="row">
