@@ -50,8 +50,8 @@
             <c:forEach items="${sharedNoteAccesses}" var="noteAccess">
                 <c:set var="note" value="${noteAccess.note}"/>
                 <li class="list-group-item">
-                    <c:url var="userMessageLink" value="/notes/${note.id}"/>
-                    <a href="${noteLink}">
+                    <c:url var="sharedNoteLink" value="/note/${note.id}"/>
+                    <a href="${sharedNoteLink}">
                         <div class="row">
                             <div class="col">
                                 <h6 class="text-dark font-weight-bold">${note.title}</h6>

@@ -83,6 +83,23 @@ public class NoteController {
         return redirectTo(getUrl(note));
     }
 
+    @RequestMapping(value = {"/noteAccess"}, method = RequestMethod.POST)
+    public String createNoteAccess(@Valid @ModelAttribute("noteAccessCommand") NoteAccess noteAccess,
+                                   Errors errors,
+                                   @SessionAttribute(CURRENT_USER) User currentUser,
+                                   ModelMap model,
+                                   HttpServletRequest req, HttpServletResponse resp) {
+        if (errors.hasErrors()) {
+            String notePage = showNote(noteAccess.getNote(), currentUser, model, req, resp);
+            model.addAttribute("noteAccessCommand", noteAccess);
+            return notePage;
+        }
+
+        noteService.createNoteAccess(noteAccess);
+
+        return redirectTo(getUrl(noteAccess.getNote()));
+    }
+
     @RequestMapping(value = {"/note/delete/{noteId}"}, method = RequestMethod.GET)
     public String deleteNote(@PathVariable("noteId") Note note,
                              @SessionAttribute(CURRENT_USER) User currentUser) {
@@ -131,7 +148,25 @@ public class NoteController {
         noteComment.setWriter(currentUser);
         model.addAttribute("noteCommentCommand", noteComment);
 
+        NoteAccess noteAccess = new NoteAccess();
+        noteAccess.setNote(note);
+        model.addAttribute("noteAccessCommand", noteAccess);
+
+        List<User> connectedUsers = persistedCurrentUser.getConnections().stream()
+                .filter(connection -> !connection.isDeleted())
+                .map(connection -> connection.getUsers().stream()
+                        .filter(user -> !isSameUser(persistedCurrentUser, user))
+                        .findFirst()
+                        .orElse(null)
+                ).filter(user -> user != null && !user.isDeleted())
+                .collect(Collectors.toList());
+        model.addAttribute("connectedUsers", connectedUsers);
+
         return showNotes(currentUser, model, req, resp);
+    }
+
+    private boolean isSameUser(User persistedCurrentUser, User user) {
+        return user.getId() == persistedCurrentUser.getId();
     }
 
     @RequestMapping(value = {"/noteComment"}, method = RequestMethod.POST)

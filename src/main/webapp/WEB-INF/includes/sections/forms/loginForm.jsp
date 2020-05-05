@@ -12,7 +12,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header border-bottom-0">
-                <button type="submit" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -24,8 +24,8 @@
                     <form:errors path="loginUserCommand.*" cssClass="alert-danger text-center my-3" element="div"/>
                 </div>
                 <div class="d-flex flex-column text-center">
-                    <c:url var="loginUrl" value="/login"/>
-                    <form:form method="post" action="${loginUrl}" modelAttribute="loginUserCommand">
+                    <c:url var="noteAccessLink" value="/login"/>
+                    <form:form method="post" action="${noteAccessLink}" modelAttribute="loginUserCommand">
                         <div class="form-group">
                             <form:input type="email" path="email" class="form-control" id="email1"
                                         placeholder="Your email address..."/>

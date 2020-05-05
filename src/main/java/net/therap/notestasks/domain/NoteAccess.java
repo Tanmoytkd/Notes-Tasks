@@ -17,13 +17,6 @@ import java.util.List;
 @Table(name = "note_accesses")
 public class NoteAccess extends BasicEntity {
 
-    public enum AccessLevel {
-        READ,
-        WRITE,
-        SHARE,
-        DELETE
-    }
-
     @ManyToOne
     @JoinColumn(name = "note_id")
     private Note note;
@@ -33,7 +26,7 @@ public class NoteAccess extends BasicEntity {
     private User user;
 
     @ElementCollection(targetClass = AccessLevel.class)
-    @JoinTable(name = "note_access_levels", joinColumns = @JoinColumn(name = "note_id"))
+    @JoinTable(name = "note_access_levels", joinColumns = @JoinColumn(name = "note_access_id"))
     @Column(name = "access_level", nullable = false)
     @Enumerated(EnumType.STRING)
     private List<AccessLevel> accessLevels;

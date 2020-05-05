@@ -4,10 +4,7 @@ import net.therap.notestasks.dao.NoteAccessDao;
 import net.therap.notestasks.dao.NoteCommentDao;
 import net.therap.notestasks.dao.NoteDao;
 import net.therap.notestasks.dao.UserDao;
-import net.therap.notestasks.domain.Note;
-import net.therap.notestasks.domain.NoteAccess;
-import net.therap.notestasks.domain.NoteComment;
-import net.therap.notestasks.domain.User;
+import net.therap.notestasks.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -129,7 +126,7 @@ public class NoteService {
                 .anyMatch(noteAccess -> !noteAccess.getAccessLevels().isEmpty());
     }
 
-    public boolean hasSpecificAccess(User persistedCurrentUser, Note note, NoteAccess.AccessLevel accessLevel) {
+    public boolean hasSpecificAccess(User persistedCurrentUser, Note note, AccessLevel accessLevel) {
         if (persistedCurrentUser.getId() == note.getWriter().getId()) {
             return true;
         }
@@ -137,23 +134,23 @@ public class NoteService {
         return note.getNoteAccesses().stream()
                 .filter(noteAccess -> !noteAccess.isDeleted())
                 .filter(noteAccess -> noteAccess.getUser().getId() == persistedCurrentUser.getId())
-                .anyMatch(noteAccess -> !noteAccess.getAccessLevels().contains(accessLevel));
+                .anyMatch(noteAccess -> noteAccess.getAccessLevels().contains(accessLevel));
     }
 
     public boolean hasReadAccess(User persistedCurrentUser, Note note) {
-        return hasSpecificAccess(persistedCurrentUser, note, NoteAccess.AccessLevel.READ);
+        return hasSpecificAccess(persistedCurrentUser, note, AccessLevel.READ);
     }
 
     public boolean hasWriteAccess(User persistedCurrentUser, Note note) {
-        return hasSpecificAccess(persistedCurrentUser, note, NoteAccess.AccessLevel.WRITE);
+        return hasSpecificAccess(persistedCurrentUser, note, AccessLevel.WRITE);
     }
 
     public boolean hasShareAccess(User persistedCurrentUser, Note note) {
-        return hasSpecificAccess(persistedCurrentUser, note, NoteAccess.AccessLevel.SHARE);
+        return hasSpecificAccess(persistedCurrentUser, note, AccessLevel.SHARE);
     }
 
     public boolean hasDeleteAccess(User persistedCurrentUser, Note note) {
-        return hasSpecificAccess(persistedCurrentUser, note, NoteAccess.AccessLevel.DELETE);
+        return hasSpecificAccess(persistedCurrentUser, note, AccessLevel.DELETE);
     }
 
     public boolean hasCommentDeleteAccess(User user, NoteComment noteComment) {

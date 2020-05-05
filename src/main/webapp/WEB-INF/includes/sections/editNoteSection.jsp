@@ -7,6 +7,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<%@ page import="net.therap.notestasks.domain.Privacy" %>
+
 <c:url var="updateNoteLink" value="/note/update"/>
 <div class="d-flex flex-column">
     <c:if test="${!hasWriteAccess}">
@@ -32,7 +34,7 @@
             </form:select>
 
             <div class="col-4">
-                <c:if test="${hasWriteAccess}">
+                <c:if test="${hasWriteAccess==true}">
                     <button type="submit" class="btn btn-lg btn-success">
                         <em class="fa fa-edit"></em>
                         <span>Update</span>
@@ -40,7 +42,8 @@
                 </c:if>
 
                 <c:if test="${hasShareAccess}">
-                    <button type="button" class="btn btn-lg btn-outline-light btn-dark">
+                    <button type="button" class="btn btn-lg btn-outline-light btn-dark"
+                            data-toggle="modal" data-target="#noteShareModal">
                         <em class="fa fa-share"></em>
                     </button>
                 </c:if>
@@ -62,6 +65,8 @@
                            cssClass="tinymce-editor form-control form-control-lg"/>
         </div>
     </form:form>
+
+    <%@ include file="/WEB-INF/includes/sections/forms/noteShareForm.jsp" %>
 
     <script>
         tinymce.init({
