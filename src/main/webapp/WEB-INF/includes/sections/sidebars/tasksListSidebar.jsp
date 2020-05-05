@@ -78,11 +78,11 @@
         <div class="card-header p-1 justify-content-center">
             <a class="text-secondary font-weight-bold" data-toggle="collapse" href="#assignedTasksListIncomplete"
                role="button" aria-expanded="false" aria-controls="collapseExample">
-                Assigned Tasks (Incomplete) (${taskAssignmentsIncomplete.size()})
+                Assigned Tasks (Incomplete) (${ownTaskAssignmentsIncomplete.size()})
             </a>
         </div>
         <ul id="assignedTasksListIncomplete" class="collapse show list-group list-group-flush">
-            <c:forEach items="${taskAssignmentsIncomplete}" var="taskAssignment">
+            <c:forEach items="${ownTaskAssignmentsIncomplete}" var="taskAssignment">
                 <c:set var="task" value="${taskAssignment.task}"/>
                 <li class="list-group-item">
                     <c:url var="assignedTaskLink" value="/task/${task.id}"/>
@@ -113,11 +113,11 @@
         <div class="card-header p-1 justify-content-center">
             <a class="text-secondary font-weight-bold" data-toggle="collapse" href="#assignedTasksListComplete"
                role="button" aria-expanded="false" aria-controls="collapseExample">
-                Assigned Tasks (Complete) (${taskAssignmentsComplete.size()})
+                Assigned Tasks (Complete) (${ownTaskAssignmentsComplete.size()})
             </a>
         </div>
         <ul id="assignedTasksListComplete" class="collapse list-group list-group-flush">
-            <c:forEach items="${taskAssignmentsComplete}" var="taskAssignment">
+            <c:forEach items="${ownTaskAssignmentsComplete}" var="taskAssignment">
                 <c:set var="task" value="${taskAssignment.task}"/>
                 <li class="list-group-item">
                     <c:url var="assignedTaskLink" value="/task/${task.id}"/>

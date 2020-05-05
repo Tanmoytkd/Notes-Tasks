@@ -239,17 +239,16 @@ public class TaskController {
                 .filter(taskAssignment -> !taskAssignment.isDeleted())
                 .sorted(Comparator.comparing(BasicEntity::getUpdatedOn))
                 .collect(Collectors.toList());
-        model.addAttribute("taskAssignments", taskAssignments);
 
-        List<TaskAssignment> taskAssignmentsComplete = taskAssignments.stream()
+        List<TaskAssignment> ownTaskAssignmentsComplete = taskAssignments.stream()
                 .filter(TaskAssignment::getIsCompleted)
                 .collect(Collectors.toList());
-        model.addAttribute("taskAssignmentsComplete", taskAssignmentsComplete);
+        model.addAttribute("ownTaskAssignmentsComplete", ownTaskAssignmentsComplete);
 
-        List<TaskAssignment> taskAssignmentsIncomplete = taskAssignments.stream()
+        List<TaskAssignment> ownTaskAssignmentsIncomplete = taskAssignments.stream()
                 .filter(taskAssignment -> !taskAssignment.getIsCompleted())
                 .collect(Collectors.toList());
-        model.addAttribute("taskAssignmentsIncomplete", taskAssignmentsIncomplete);
+        model.addAttribute("ownTaskAssignmentsIncomplete", ownTaskAssignmentsIncomplete);
     }
 
     private void setupModelTasks(ModelMap model, User persistedCurrentUser) {

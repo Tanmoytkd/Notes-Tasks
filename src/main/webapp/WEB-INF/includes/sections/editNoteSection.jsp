@@ -61,7 +61,11 @@
         </div>
 
 
-        <small class="text-muted">Author: ${noteCommand.writer.name}</small>
+        <c:url var="noteCommandWriterLink" value="/profile/${noteCommand.writer.id}"/>
+        <small class="text-muted">
+            <span>Author: </span>
+            <a href="${noteCommentWriterLink}">${noteCommand.writer.name}</a>
+        </small>
 
 
         <div class="form-group">

@@ -55,8 +55,11 @@
             </div>
         </div>
 
-
-        <small class="text-muted">Creator: ${taskCommand.creator.name}</small>
+        <c:url var="taskCommandCreatorLink" value="/profile/${taskCommand.creator.id}"/>
+        <small class="text-muted">
+            <span>Creator:</span>
+            <a href="${taskCommandCreatorLink}">${taskCommand.creator.name}</a>
+        </small>
 
 
         <div class="form-group">

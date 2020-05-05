@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -124,17 +125,7 @@ public class NoteController {
             return REDIRECT_NOTES;
         }
 
-        boolean hasReadAccess = noteService.hasReadAccess(persistedCurrentUser, note);
-        model.addAttribute("hasReadAccess", hasReadAccess);
-
-        boolean hasWriteAccess = noteService.hasWriteAccess(persistedCurrentUser, note);
-        model.addAttribute("hasWriteAccess", hasWriteAccess);
-
-        boolean hasShareAccess = noteService.hasShareAccess(persistedCurrentUser, note);
-        model.addAttribute("hasShareAccess", hasShareAccess);
-
-        boolean hasDeleteAccess = noteService.hasDeleteAccess(persistedCurrentUser, note);
-        model.addAttribute("hasDeleteAccess", hasDeleteAccess);
+        setupModelNotePermissions(note, model, persistedCurrentUser);
 
         model.addAttribute("noteCommand", note);
 
@@ -142,6 +133,12 @@ public class NoteController {
                 .filter(noteComment -> !noteComment.isDeleted())
                 .collect(Collectors.toList());
         model.addAttribute("noteComments", comments);
+
+        List<NoteAccess> noteAccesses = note.getNoteAccesses().stream()
+                .filter(noteAccess -> !noteAccess.isDeleted())
+                .sorted(Comparator.comparing(NoteAccess::getUpdatedOn))
+                .collect(Collectors.toList());
+        model.addAttribute("noteAccesses", noteAccesses);
 
         model.addAttribute("noteService", noteService);
 
@@ -158,6 +155,20 @@ public class NoteController {
         model.addAttribute("connectedUsers", connectedUsers);
 
         return showNotes(currentUser, model, req, resp);
+    }
+
+    private void setupModelNotePermissions(@PathVariable("noteId") Note note, ModelMap model, User persistedCurrentUser) {
+        boolean hasReadAccess = noteService.hasReadAccess(persistedCurrentUser, note);
+        model.addAttribute("hasReadAccess", hasReadAccess);
+
+        boolean hasWriteAccess = noteService.hasWriteAccess(persistedCurrentUser, note);
+        model.addAttribute("hasWriteAccess", hasWriteAccess);
+
+        boolean hasShareAccess = noteService.hasShareAccess(persistedCurrentUser, note);
+        model.addAttribute("hasShareAccess", hasShareAccess);
+
+        boolean hasDeleteAccess = noteService.hasDeleteAccess(persistedCurrentUser, note);
+        model.addAttribute("hasDeleteAccess", hasDeleteAccess);
     }
 
     @RequestMapping(value = {"/noteComment"}, method = RequestMethod.POST)

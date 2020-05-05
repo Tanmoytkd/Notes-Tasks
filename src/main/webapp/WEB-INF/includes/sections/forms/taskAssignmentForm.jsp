@@ -41,7 +41,20 @@
                     </form:form>
                 </div>
             </div>
-            <div class="modal-footer d-flex justify-content-center"></div>
+            <div class="modal-footer d-flex justify-content-center">
+                <div>Assigned to:</div>
+                <c:forEach items="${taskAssignments}" var="taskAssignment">
+                    <span class="btn btn-round btn-xs">
+                        <c:url var="taskAssignmentUserLink" value="/user/${taskAssignment.user.id}"/>
+                        <a href="${taskAssignmentUserLink}">${taskAssignment.user.name}</a>
+
+                        <c:url var="taskAssignmentDeleteLink" value="/taskAssignment/delete/${taskAssignment.id}"/>
+                        <a href="${taskAssignmentDeleteLink}">
+                            <em class="fa fa-times"></em>
+                        </a>
+                    </span>
+                </c:forEach>
+            </div>
         </div>
     </div>
 </div>

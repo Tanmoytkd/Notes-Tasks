@@ -53,7 +53,23 @@
                     </form:form>
                 </div>
             </div>
-            <div class="modal-footer d-flex justify-content-center"></div>
+            <div class="modal-footer d-flex justify-content-center">
+                <div>Shared with:</div>
+                <c:forEach items="${noteAccesses}" var="noteAccess">
+                    <span class="btn btn-round btn-xs">
+                        <c:url var="noteAccessUserLink" value="/user/${noteAccess.user.id}"/>
+                        <a href="${noteAccessUserLink}">${noteAccess.user.name}</a>
+
+                        <c:forEach items="${noteAccess.accessLevels}" var="level">
+                            <span class="text-muted">(<spring:message code="${level}"/>)</span>
+                        </c:forEach>
+                        <c:url var="noteAccessDeleteLink" value="/noteAccess/delete/${noteAccess.id}"/>
+                        <a href="${noteAccessDeleteLink}">
+                            <em class="fa fa-times"></em>
+                        </a>
+                    </span>
+                </c:forEach>
+            </div>
         </div>
     </div>
 </div>
