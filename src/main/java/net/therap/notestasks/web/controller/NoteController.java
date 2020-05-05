@@ -18,8 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static net.therap.notestasks.config.Constants.CURRENT_USER;
-import static net.therap.notestasks.config.Constants.REDIRECT_NOTES;
+import static net.therap.notestasks.config.Constants.*;
 import static net.therap.notestasks.helper.UrlHelper.getUrl;
 import static net.therap.notestasks.helper.UrlHelper.redirectTo;
 
@@ -58,7 +57,7 @@ public class NoteController {
                 .collect(Collectors.toList());
         model.addAttribute("sharedNoteAccesses", sharedNoteAccesses);
 
-        return "dashboard";
+        return DASHBOARD_PAGE;
     }
 
     @RequestMapping(value = {"/note/new"}, method = RequestMethod.GET)

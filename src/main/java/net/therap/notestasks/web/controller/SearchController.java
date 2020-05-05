@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
+import static net.therap.notestasks.config.Constants.DASHBOARD_PAGE;
+
 /**
  * @author tanmoy.das
  * @since 5/3/20
@@ -34,6 +36,6 @@ public class SearchController {
         List<User> users = userService.findUsersWithString(searchQuery.getQuery());
         model.addAttribute("users", users);
 
-        return "dashboard";
+        return DASHBOARD_PAGE;
     }
 }

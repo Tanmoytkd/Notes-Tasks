@@ -30,12 +30,12 @@
 
     <%@ include file="/WEB-INF/includes/topNavigation.jsp" %>
 
-    <div class="row">
+    <div class="flex-fill d-flex">
         <%@ include file="/WEB-INF/includes/sidebarNavigation.jsp" %>
 
         <c:choose>
             <c:when test="${isDashboardPage}">
-
+                <%@ include file="/WEB-INF/includes/sections/dashboardMainSection.jsp" %>
             </c:when>
             <c:when test="${isMessagesPage}">
                 <%@ include file="/WEB-INF/includes/sections/messagesMainSection.jsp" %>

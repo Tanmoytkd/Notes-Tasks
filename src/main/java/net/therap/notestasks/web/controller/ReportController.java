@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Locale;
 
+import static net.therap.notestasks.config.Constants.DASHBOARD_PAGE;
+
 /**
  * @author tanmoy.das
  * @since 5/3/20
@@ -26,6 +28,6 @@ public class ReportController {
     public String listReports(Locale locale, ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
         model.addAttribute("searchQuery", new SearchQuery());
         model.addAttribute("isReportsPage", true);
-        return "dashboard";
+        return DASHBOARD_PAGE;
     }
 }

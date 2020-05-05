@@ -18,8 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static net.therap.notestasks.config.Constants.CURRENT_USER;
-import static net.therap.notestasks.config.Constants.REDIRECT_MESSAGES;
+import static net.therap.notestasks.config.Constants.*;
 import static net.therap.notestasks.helper.UrlHelper.getMessageUrl;
 import static net.therap.notestasks.helper.UrlHelper.redirectTo;
 
@@ -94,6 +93,6 @@ public class MessageController {
         Map<User, List<Message>> allMessageGroupedByUsers = messageService.findAllMessagesGroupedByUsers(managedCurrentUser);
         model.addAttribute("allMessageGroupedByUsers", allMessageGroupedByUsers);
 
-        return "dashboard";
+        return DASHBOARD_PAGE;
     }
 }

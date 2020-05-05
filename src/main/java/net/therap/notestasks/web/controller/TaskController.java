@@ -68,7 +68,7 @@ public class TaskController {
 
         setupModelTaskAssignments(model, persistedCurrentUser);
 
-        return "dashboard";
+        return DASHBOARD_PAGE;
     }
 
     @RequestMapping(value = {"/task/{taskId}"}, method = RequestMethod.GET)

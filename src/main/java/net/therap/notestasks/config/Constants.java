@@ -25,4 +25,5 @@ public class Constants {
     public static final String REDIRECT_MESSAGES = "redirect:/messages";
     public static final String REDIRECT_NOTES = "redirect:/notes";
     public static final String REDIRECT_TASKS = "redirect:/tasks";
+    public static final String REDIRECT_DASHBOARD = "redirect:/dashboard";
 }
