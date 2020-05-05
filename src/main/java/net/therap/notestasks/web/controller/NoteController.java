@@ -197,4 +197,17 @@ public class NoteController {
         return redirectTo(getUrl(noteComment.getNote()));
     }
 
+    @RequestMapping(value = {"/noteAccess/delete/{noteAccessId}"}, method = RequestMethod.GET)
+    public String deleteNoteAccess(@PathVariable("noteAccessId") NoteAccess noteAccess,
+                                   @SessionAttribute(CURRENT_USER) User currentUser,
+                                   ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+        User persistedCurrentUser = userService.refreshUser(currentUser);
+
+        if (noteService.canDeleteNoteAccess(persistedCurrentUser, noteAccess)) {
+            noteService.deleteNoteAccess(noteAccess);
+        }
+
+        return REDIRECT_NOTES;
+    }
+
 }

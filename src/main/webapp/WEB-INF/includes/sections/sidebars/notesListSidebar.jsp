@@ -51,13 +51,19 @@
                 <c:set var="note" value="${noteAccess.note}"/>
                 <li class="list-group-item">
                     <c:url var="sharedNoteLink" value="/note/${note.id}"/>
-                    <a href="${sharedNoteLink}">
-                        <div class="row">
-                            <div class="col">
+
+                    <div class="row d-flex">
+                        <div class="flex-fill">
+                            <a href="${sharedNoteLink}">
                                 <h6 class="text-dark font-weight-bold">${note.title}</h6>
-                            </div>
+                                <small class="text-muted">${note.writer.name}</small>
+                            </a>
                         </div>
-                    </a>
+                        <c:url var="deleteNoteAccessLink" value="/noteAccess/delete/${noteAccess.id}"/>
+                        <div>
+                            <a href="${deleteNoteAccessLink}" class="mx-2 text-info text-lg"> &times;</a>
+                        </div>
+                    </div>
                 </li>
             </c:forEach>
         </ul>

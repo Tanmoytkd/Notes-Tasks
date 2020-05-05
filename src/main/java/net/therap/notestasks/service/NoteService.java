@@ -166,4 +166,16 @@ public class NoteService {
     public Optional<NoteComment> findNoteCommentById(long noteCommendId) {
         return noteCommentDao.find(noteCommendId);
     }
+
+    public boolean canDeleteNoteAccess(User persistedCurrentUser, NoteAccess noteAccess) {
+        if (hasShareAccess(persistedCurrentUser, noteAccess.getNote())) {
+            return true;
+        }
+
+        return noteAccess.getUser().getId() == persistedCurrentUser.getId();
+    }
+
+    public Optional<NoteAccess> findNoteAccessById(long noteAccessId) {
+        return noteAccessDao.find(noteAccessId);
+    }
 }

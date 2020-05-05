@@ -24,6 +24,7 @@
             <form:input path="title" readonly="${inputReadOnly}"
                         cssClass="col-6 form-control form-control-lg"/>
 
+
             <form:select path="privacy" disabled="${inputReadOnly}"
                          cssClass="col-2 ml-2 form-control form-control-lg">
                 <c:forEach var="notePrivacy" items="${Privacy.values()}">
@@ -58,6 +59,10 @@
 
             </div>
         </div>
+
+
+        <small class="text-muted">Author: ${noteCommand.writer.name}</small>
+
 
         <div class="form-group">
             <form:textarea rows="15" readonly="${inputReadOnly}" disabled="${inputReadOnly}"
