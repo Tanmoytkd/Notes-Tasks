@@ -48,7 +48,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private StringToTaskAssignmentConverter stringToTaskAssignmentConverter;
 
     @Autowired
-    private  StringToTaskCommentConverter stringToTaskCommentConverter;
+    private StringToTaskCommentConverter stringToTaskCommentConverter;
 
     @Bean(name = "viewResolver")
     public InternalResourceViewResolver createViewResolver() {

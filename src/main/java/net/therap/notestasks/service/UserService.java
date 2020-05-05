@@ -101,4 +101,20 @@ public class UserService {
     public Optional<User> findUserById(long id) {
         return userDao.find(id);
     }
+
+    public List<User> getConnectedUsers(User persistedCurrentUser) {
+        return refreshUser(persistedCurrentUser)
+                .getConnections().stream()
+                .filter(connection -> !connection.isDeleted())
+                .map(connection -> connection.getUsers().stream()
+                        .filter(user -> !isSameUser(persistedCurrentUser, user))
+                        .findFirst()
+                        .orElse(null)
+                ).filter(user -> user != null && !user.isDeleted())
+                .collect(Collectors.toList());
+    }
+
+    private boolean isSameUser(User persistedCurrentUser, User user) {
+        return user.getId() == persistedCurrentUser.getId();
+    }
 }

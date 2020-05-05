@@ -53,7 +53,7 @@ public class TaskService {
 
         task.getTaskAssignments().forEach(this::deleteTaskAssignment);
 
-        task.getTaskComments().forEach(this::deleteTaskComment);
+        task.getComments().forEach(this::deleteTaskComment);
 
         taskDao.delete(task);
     }
@@ -62,7 +62,7 @@ public class TaskService {
         taskCommentDao.saveOrUpdate(taskComment);
 
         Task task = taskComment.getTask();
-        task.getTaskComments().add(taskComment);
+        task.getComments().add(taskComment);
         taskDao.saveOrUpdate(task);
 
         User writer = taskComment.getWriter();
@@ -76,7 +76,7 @@ public class TaskService {
 
     public void deleteTaskComment(TaskComment taskComment) {
         Task task = taskComment.getTask();
-        task.getTaskComments().remove(taskComment);
+        task.getComments().remove(taskComment);
         taskDao.saveOrUpdate(task);
 
         User writer = taskComment.getWriter();
@@ -115,12 +115,12 @@ public class TaskService {
     }
 
     public void updateTaskAssignmentCompleteStatus(TaskAssignment taskAssignment, boolean isComplete) {
-        taskAssignment.setCompleted(isComplete);
+        taskAssignment.setIsCompleted(isComplete);
         updateTaskAssignment(taskAssignment);
     }
 
     public boolean hasDeleteAccess(User persistedCurrentUser, Task task) {
-        return task.getCreator().getId() == persistedCurrentUser.getId();
+        return isCreator(persistedCurrentUser, task);
     }
 
     public Optional<Task> findTaskById(long taskId) {
@@ -133,5 +133,41 @@ public class TaskService {
 
     public Optional<TaskAssignment> findTaskAssignmentById(long taskAssignmentId) {
         return taskAssignmentDao.find(taskAssignmentId);
+    }
+
+    public boolean canAccessTask(User persistedCurrentUser, Task task) {
+        if (isCreator(persistedCurrentUser, task)) {
+            return true;
+        }
+
+        return task.getTaskAssignments().stream()
+                .filter(taskAssignment -> !taskAssignment.isDeleted())
+                .anyMatch(taskAssignment -> taskAssignment.getUser().getId() == persistedCurrentUser.getId());
+    }
+
+    public boolean isCreator(User persistedCurrentUser, Task task) {
+        return persistedCurrentUser.getId() == task.getCreator().getId();
+    }
+
+    public boolean hasReadAccess(User persistedCurrentUser, Task task) {
+        return canAccessTask(persistedCurrentUser, task);
+    }
+
+    public boolean hasWriteAccess(User persistedCurrentUser, Task task) {
+        return isCreator(persistedCurrentUser, task);
+    }
+
+    public boolean hasAssignmentCreateAccess(User persistedCurrentUser, Task task) {
+        return isCreator(persistedCurrentUser, task);
+    }
+
+    public boolean hasAssignmentDeleteAccess(User persistedCurrentUser, TaskAssignment taskAssignment) {
+        return isCreator(persistedCurrentUser, taskAssignment.getTask()) ||
+                taskAssignment.getUser().getId() == persistedCurrentUser.getId();
+    }
+
+    public boolean hasAssignmentUpdateAccess(User persistedCurrentUser, TaskAssignment taskAssignment) {
+        return isCreator(persistedCurrentUser, taskAssignment.getTask()) ||
+                taskAssignment.getUser().getId() == persistedCurrentUser.getId();
     }
 }

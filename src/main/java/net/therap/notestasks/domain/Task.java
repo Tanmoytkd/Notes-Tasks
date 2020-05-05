@@ -23,6 +23,9 @@ public class Task extends BasicEntity {
     private String title;
     private String description;
 
+    @Column(name = "is_complete")
+    private boolean isComplete;
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "creator_id")
@@ -32,13 +35,13 @@ public class Task extends BasicEntity {
     private List<TaskAssignment> taskAssignments;
 
     @OneToMany(mappedBy = "task", cascade = {CascadeType.ALL})
-    private List<TaskComment> taskComments;
+    private List<TaskComment> comments;
 
     public Task() {
         this.title = "";
         this.description = "";
         this.taskAssignments = new ArrayList<>();
-        this.taskComments = new ArrayList<>();
+        this.comments = new ArrayList<>();
     }
 
     public String getTitle() {
@@ -73,11 +76,19 @@ public class Task extends BasicEntity {
         this.taskAssignments = assignments;
     }
 
-    public List<TaskComment> getTaskComments() {
-        return taskComments;
+    public List<TaskComment> getComments() {
+        return comments;
     }
 
-    public void setTaskComments(List<TaskComment> taskComments) {
-        this.taskComments = taskComments;
+    public void setComments(List<TaskComment> taskComments) {
+        this.comments = taskComments;
+    }
+
+    public boolean getIsComplete() {
+        return isComplete;
+    }
+
+    public void setIsComplete(boolean complete) {
+        isComplete = complete;
     }
 }

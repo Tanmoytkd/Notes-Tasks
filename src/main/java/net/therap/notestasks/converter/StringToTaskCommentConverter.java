@@ -1,6 +1,5 @@
 package net.therap.notestasks.converter;
 
-import net.therap.notestasks.domain.Task;
 import net.therap.notestasks.domain.TaskComment;
 import net.therap.notestasks.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -154,21 +154,10 @@ public class NoteController {
         noteAccess.setNote(note);
         model.addAttribute("noteAccessCommand", noteAccess);
 
-        List<User> connectedUsers = persistedCurrentUser.getConnections().stream()
-                .filter(connection -> !connection.isDeleted())
-                .map(connection -> connection.getUsers().stream()
-                        .filter(user -> !isSameUser(persistedCurrentUser, user))
-                        .findFirst()
-                        .orElse(null)
-                ).filter(user -> user != null && !user.isDeleted())
-                .collect(Collectors.toList());
+        List<User> connectedUsers = userService.getConnectedUsers(persistedCurrentUser);
         model.addAttribute("connectedUsers", connectedUsers);
 
         return showNotes(currentUser, model, req, resp);
-    }
-
-    private boolean isSameUser(User persistedCurrentUser, User user) {
-        return user.getId() == persistedCurrentUser.getId();
     }
 
     @RequestMapping(value = {"/noteComment"}, method = RequestMethod.POST)

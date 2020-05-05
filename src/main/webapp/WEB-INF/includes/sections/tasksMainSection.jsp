@@ -16,7 +16,7 @@
 
             <div class="col-md-8 py-2">
                 <div class="d-flex flex-column vh-100 mh-100 overflow-auto py-2">
-                    <c:if test="${noteCommand!=null}">
+                    <c:if test="${taskCommand!=null}">
                         <%@ include file="/WEB-INF/includes/sections/editTaskSection.jsp" %>
                         <%@ include file="/WEB-INF/includes/sections/taskCommentsSection.jsp" %>
                     </c:if>
