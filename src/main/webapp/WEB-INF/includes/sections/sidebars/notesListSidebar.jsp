@@ -61,7 +61,9 @@
                         </div>
                         <c:url var="deleteNoteAccessLink" value="/noteAccess/delete/${noteAccess.id}"/>
                         <div>
-                            <a href="${deleteNoteAccessLink}" class="mx-2 text-info text-lg"> &times;</a>
+                            <a href="${deleteNoteAccessLink}" class="mx-2 text-info text-lg">
+                                <em class="fa fa-times"></em>
+                            </a>
                         </div>
                     </div>
                 </li>

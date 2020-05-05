@@ -91,7 +91,6 @@
             ],
             toolbar: false,
             menubar: false,
-            quickbars_insert_toolbar: '',
             quickbars_selection_toolbar: 'image media ' + '| ' +
                 'bold italic underline | alignleft aligncenter alignright alignjustify | ' +
                 'formatselect | blockquote quicklink',
