@@ -54,7 +54,7 @@
                 </a>
             </li>
 
-            <li class="nav-item justify-content-center text-center">
+            <li class="d-none nav-item justify-content-center text-center">
                 <c:url var="reportsLink" value="/reports"/>
                 <a class="nav-link <c:if test="${isReportsPage}">active</c:if>" href="${reportsLink}">
                     <em class="fa fa-flag fa-3x circle-icon"></em>
