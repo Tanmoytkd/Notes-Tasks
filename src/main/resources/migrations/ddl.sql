@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 04, 2020 at 06:51 AM
--- Server version: 5.7.29-0ubuntu0.18.04.1
+-- Generation Time: May 05, 2020 at 05:42 PM
+-- Server version: 5.7.30-0ubuntu0.18.04.1
 -- PHP Version: 7.2.24-0ubuntu0.18.04.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -60,7 +60,7 @@ CREATE TABLE `messages` (
   `deleted_on` datetime(6) DEFAULT NULL,
   `is_deleted` bit(1) DEFAULT NULL,
   `updated_on` datetime(6) DEFAULT NULL,
-  `text` varchar(255) DEFAULT NULL,
+  `text` text,
   `is_seen` bit(1) NOT NULL,
   `receiver_id` bigint(20) NOT NULL,
   `sender_id` bigint(20) NOT NULL
@@ -78,7 +78,7 @@ CREATE TABLE `notes` (
   `deleted_on` datetime(6) DEFAULT NULL,
   `is_deleted` bit(1) DEFAULT NULL,
   `updated_on` datetime(6) DEFAULT NULL,
-  `text` varchar(255) DEFAULT NULL,
+  `text` text,
   `privacy` varchar(255) NOT NULL,
   `title` varchar(100) DEFAULT NULL,
   `writer_id` bigint(20) NOT NULL
@@ -107,7 +107,7 @@ CREATE TABLE `note_accesses` (
 --
 
 CREATE TABLE `note_access_levels` (
-  `note_id` bigint(20) NOT NULL,
+  `note_access_id` bigint(20) NOT NULL,
   `access_level` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -175,9 +175,10 @@ CREATE TABLE `tasks` (
   `deleted_on` datetime(6) DEFAULT NULL,
   `is_deleted` bit(1) DEFAULT NULL,
   `updated_on` datetime(6) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `creator_id` bigint(20) NOT NULL
+  `description` text,
+  `title` text,
+  `creator_id` bigint(20) NOT NULL,
+  `is_complete` bit(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -296,7 +297,7 @@ ALTER TABLE `note_accesses`
 -- Indexes for table `note_access_levels`
 --
 ALTER TABLE `note_access_levels`
-  ADD KEY `FKo1vo9n2wu3n80epiyg55djuca` (`note_id`);
+  ADD KEY `FKo1vo9n2wu3n80epiyg55djuca` (`note_access_id`);
 
 --
 -- Indexes for table `note_comments`
@@ -476,7 +477,7 @@ ALTER TABLE `note_accesses`
 -- Constraints for table `note_access_levels`
 --
 ALTER TABLE `note_access_levels`
-  ADD CONSTRAINT `FKo1vo9n2wu3n80epiyg55djuca` FOREIGN KEY (`note_id`) REFERENCES `note_accesses` (`id`);
+  ADD CONSTRAINT `FKo1vo9n2wu3n80epiyg55djuca` FOREIGN KEY (`note_access_id`) REFERENCES `note_accesses` (`id`);
 
 --
 -- Constraints for table `note_comments`
