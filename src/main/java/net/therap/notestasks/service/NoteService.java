@@ -120,6 +120,10 @@ public class NoteService {
             return true;
         }
 
+        if (note.getPrivacy().equals(Privacy.PUBLIC)) {
+            return true;
+        }
+
         return note.getNoteAccesses().stream()
                 .filter(noteAccess -> !noteAccess.isDeleted())
                 .filter(noteAccess -> noteAccess.getUser().getId() == persistedCurrentUser.getId())
@@ -138,7 +142,8 @@ public class NoteService {
     }
 
     public boolean hasReadAccess(User persistedCurrentUser, Note note) {
-        return hasSpecificAccess(persistedCurrentUser, note, AccessLevel.READ);
+        return note.getPrivacy().equals(Privacy.PUBLIC) ||
+                hasSpecificAccess(persistedCurrentUser, note, AccessLevel.READ);
     }
 
     public boolean hasWriteAccess(User persistedCurrentUser, Note note) {
