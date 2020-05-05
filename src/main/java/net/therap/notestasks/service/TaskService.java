@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 /**
  * @author tanmoy.das
@@ -116,5 +117,21 @@ public class TaskService {
     public void updateTaskAssignmentCompleteStatus(TaskAssignment taskAssignment, boolean isComplete) {
         taskAssignment.setCompleted(isComplete);
         updateTaskAssignment(taskAssignment);
+    }
+
+    public boolean hasDeleteAccess(User persistedCurrentUser, Task task) {
+        return task.getCreator().getId() == persistedCurrentUser.getId();
+    }
+
+    public Optional<Task> findTaskById(long taskId) {
+        return taskDao.find(taskId);
+    }
+
+    public Optional<TaskComment> findTaskCommentById(long taskCommentId) {
+        return taskCommentDao.find(taskCommentId);
+    }
+
+    public Optional<TaskAssignment> findTaskAssignmentById(long taskAssignmentId) {
+        return taskAssignmentDao.find(taskAssignmentId);
     }
 }

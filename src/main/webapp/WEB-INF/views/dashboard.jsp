@@ -44,7 +44,7 @@
                 <%@ include file="/WEB-INF/includes/sections/NotesMainSection.jsp" %>
             </c:when>
             <c:when test="${isTasksPage}">
-
+                <%@ include file="/WEB-INF/includes/sections/tasksMainSection.jsp" %>
             </c:when>
             <c:when test="${isReportsPage}">
 

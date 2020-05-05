@@ -105,9 +105,11 @@ public class NoteController {
                              @SessionAttribute(CURRENT_USER) User currentUser) {
         User persistedCurrentUser = userService.refreshUser(currentUser);
 
-        noteService.deleteNote(note);
+        if (!noteService.hasDeleteAccess(persistedCurrentUser, note)) {
+            return REDIRECT_NOTES;
+        }
 
-        persistedCurrentUser.getOwnNotes().add(note);
+        noteService.deleteNote(note);
         return REDIRECT_NOTES;
     }
 

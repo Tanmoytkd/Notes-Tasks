@@ -10,28 +10,30 @@
 <div class="d-flex flex-column flex-shrink-0 mb-3 mh-100 overflow-auto">
     <div class="card flex-fill vh-100">
         <div class="card-header p-1 justify-content-center">
-            <span>Own Notes</span>
+            <a class="text-secondary font-weight-bold" data-toggle="collapse" href="#ownTasksList"
+               role="button" aria-expanded="false" aria-controls="collapseExample">
+                Own Tasks
+            </a>
 
-            <c:url var="createNoteLink" value="/note/new"/>
-            <a href="${createNoteLink}">
+            <c:url var="createTaskLink" value="/task/new"/>
+            <a href="${createTaskLink}">
                 <em class="fa fa-plus"></em>
             </a>
         </div>
-        <ul class="list-group list-group-flush">
-            <c:forEach items="${ownNotes}" var="note">
+        <ul id="ownTasksList" class="collapse show list-group list-group-flush" aria-expanded="true">
+            <c:forEach items="${ownTasks}" var="task">
                 <li class="list-group-item">
                     <div class="row justify-content-center">
-
                         <div class="col-11">
-                            <c:url var="noteLink" value="/note/${note.id}"/>
-                            <a href="${noteLink}">
-                                <h6 class="text-dark font-weight-bold">${note.title}</h6>
+                            <c:url var="taskLink" value="/task/${task.id}"/>
+                            <a href="${taskLink}">
+                                <h6 class="text-dark font-weight-bold">${task.title}</h6>
                             </a>
                         </div>
 
                         <div class="col-1">
-                            <c:url var="deleteNoteLink" value="/note/delete/${note.id}"/>
-                            <a href="${deleteNoteLink}">
+                            <c:url var="deleteTaskLink" value="/task/delete/${task.id}"/>
+                            <a href="${deleteTaskLink}">
                                 <em class="fa fa-trash"></em>
                             </a>
                         </div>
@@ -44,24 +46,23 @@
 
 
         <div class="card-header p-1 justify-content-center">
-            Shared Notes from Others
+            Assigned Tasks from Others
         </div>
         <ul class="list-group list-group-flush">
-            <c:forEach items="${sharedNoteAccesses}" var="noteAccess">
-                <c:set var="note" value="${noteAccess.note}"/>
+            <c:forEach items="${taskAssignments}" var="taskAssignment">
+                <c:set var="task" value="${taskAssignment.task}"/>
                 <li class="list-group-item">
-                    <c:url var="sharedNoteLink" value="/note/${note.id}"/>
-
+                    <c:url var="assignedTaskLink" value="/task/${task.id}"/>
                     <div class="row d-flex">
                         <div class="flex-fill m-3">
-                            <a href="${sharedNoteLink}">
-                                <h6 class="text-dark font-weight-bold">${note.title}</h6>
-                                <small class="text-muted">${note.writer.name}</small>
+                            <a href="${assignedTaskLink}">
+                                <h6 class="text-dark font-weight-bold">${task.title}</h6>
+                                <small class="text-muted">${task.creator.name}</small>
                             </a>
                         </div>
-                        <c:url var="deleteNoteAccessLink" value="/noteAccess/delete/${noteAccess.id}"/>
+                        <c:url var="deleteTaskAssignmentLink" value="/taskAssignment/delete/${taskAssignment.id}"/>
                         <div>
-                            <a href="${deleteNoteAccessLink}" class="mx-2 text-info text-lg">
+                            <a href="${deleteTaskAssignmentLink}" class="mx-2 text-info text-lg">
                                 <em class="fa fa-times"></em>
                             </a>
                         </div>

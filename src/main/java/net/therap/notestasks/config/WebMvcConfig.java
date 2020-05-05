@@ -41,6 +41,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired
     private StringToNoteAccessConverter stringToNoteAccessConverter;
 
+    @Autowired
+    private StringToTaskConverter stringToTaskConverter;
+
+    @Autowired
+    private StringToTaskAssignmentConverter stringToTaskAssignmentConverter;
+
+    @Autowired
+    private  StringToTaskCommentConverter stringToTaskCommentConverter;
+
     @Bean(name = "viewResolver")
     public InternalResourceViewResolver createViewResolver() {
         InternalResourceViewResolver vr = new InternalResourceViewResolver();
@@ -95,5 +104,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addConverter(stringToNoteConverter);
         registry.addConverter(stringToNoteCommentConverter);
         registry.addConverter(stringToNoteAccessConverter);
+        registry.addConverter(stringToTaskConverter);
+        registry.addConverter(stringToTaskCommentConverter);
+        registry.addConverter(stringToTaskAssignmentConverter);
     }
 }
