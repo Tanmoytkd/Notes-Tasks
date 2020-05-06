@@ -88,15 +88,24 @@ public class TaskService {
     }
 
     public void createTaskAssignment(TaskAssignment taskAssignment) {
-        taskAssignmentDao.saveOrUpdate(taskAssignment);
-
         User user = taskAssignment.getUser();
-        user.getTaskAssignments().add(taskAssignment);
-        userDao.saveOrUpdate(user);
-
         Task task = taskAssignment.getTask();
-        task.getTaskAssignments().add(taskAssignment);
-        taskDao.saveOrUpdate(task);
+
+        TaskAssignment persistedTaskAssignment = task.getTaskAssignments().stream()
+                .filter(taskAssignment1 -> !taskAssignment1.isDeleted())
+                .filter(taskAssignment1 -> taskAssignment1.getUser().getId()==user.getId())
+                .findFirst()
+                .orElse(null);
+
+        if(persistedTaskAssignment==null) {
+            taskAssignmentDao.saveOrUpdate(taskAssignment);
+
+            user.getTaskAssignments().add(taskAssignment);
+            userDao.saveOrUpdate(user);
+
+            task.getTaskAssignments().add(taskAssignment);
+            taskDao.saveOrUpdate(task);
+        }
     }
 
     public void updateTaskAssignment(TaskAssignment taskAssignment) {

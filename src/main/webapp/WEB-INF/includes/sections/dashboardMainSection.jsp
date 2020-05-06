@@ -18,12 +18,12 @@
                         You received a connection request from ${connectionRequest.sender.name}
                     </a>
                 </div>
-                <c:url var="acceptConnectionReqeustLink" value="/connection/accept/${user.id}"/>
+                <c:url var="acceptConnectionReqeustLink" value="/connection/accept/${connectionRequest.sender.id}"/>
                 <a href="${acceptConnectionReqeustLink}" class="btn btn-success mx-2">
                     <spring:message code="label.acceptConnection"/>
                 </a>
 
-                <c:url var="rejectConnectionRequestLink" value="/connection/reject/${user.id}"/>
+                <c:url var="rejectConnectionRequestLink" value="/connection/reject/${connectionRequest.sender.id}"/>
                 <a href="${rejectConnectionRequestLink}" class="btn btn-danger mx-2">
                     <spring:message code="label.rejectConnection"/>
                 </a>

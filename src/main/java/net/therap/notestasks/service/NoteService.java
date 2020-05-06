@@ -84,15 +84,24 @@ public class NoteService {
     }
 
     public void createNoteAccess(NoteAccess noteAccess) {
-        noteAccessDao.saveOrUpdate(noteAccess);
-
         Note note = noteAccess.getNote();
-        note.getNoteAccesses().add(noteAccess);
-        noteAccessDao.saveOrUpdate(noteAccess);
-
         User user = noteAccess.getUser();
-        user.getSharedNoteAccesses().add(noteAccess);
-        userDao.saveOrUpdate(user);
+
+        NoteAccess persistedNoteAccess = note.getNoteAccesses().stream()
+                .filter(noteAccess1 -> !noteAccess1.isDeleted())
+                .filter(noteAccess1 -> noteAccess1.getUser().getId()==user.getId())
+                .findFirst()
+                .orElse(null);
+
+        if(persistedNoteAccess!=null) {
+            persistedNoteAccess.setAccessLevels(noteAccess.getAccessLevels());
+            noteAccessDao.saveOrUpdate(persistedNoteAccess);
+        } else {
+            noteAccessDao.saveOrUpdate(noteAccess);
+
+            note.getNoteAccesses().add(noteAccess);
+            user.getSharedNoteAccesses().add(noteAccess);
+        }
     }
 
     public void updateNoteAccess(NoteAccess noteAccess) {
