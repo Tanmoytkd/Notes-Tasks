@@ -49,6 +49,7 @@ public class NoteController {
 
         List<Note> ownNotes = persistedCurrentUser.getOwnNotes().stream()
                 .filter(note -> !note.isDeleted())
+                .sorted(Comparator.comparing(BasicEntity::getUpdatedOn))
                 .collect(Collectors.toList());
         model.addAttribute("ownNotes", ownNotes);
 

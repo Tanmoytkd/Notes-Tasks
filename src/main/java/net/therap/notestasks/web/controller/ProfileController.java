@@ -2,7 +2,10 @@ package net.therap.notestasks.web.controller;
 
 import net.therap.notestasks.command.SearchQuery;
 import net.therap.notestasks.config.Constants;
+import net.therap.notestasks.domain.BasicEntity;
+import net.therap.notestasks.domain.Note;
 import net.therap.notestasks.domain.User;
+import net.therap.notestasks.service.NoteService;
 import net.therap.notestasks.service.UserConnectionService;
 import net.therap.notestasks.service.UserService;
 import net.therap.notestasks.util.HashingUtil;
@@ -17,6 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static net.therap.notestasks.config.Constants.CURRENT_USER;
 import static net.therap.notestasks.config.Constants.DASHBOARD_PAGE;
@@ -33,6 +39,9 @@ public class ProfileController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private NoteService noteService;
 
     @Autowired
     private UserConnectionService userConnectionService;
@@ -84,28 +93,40 @@ public class ProfileController {
         return Constants.REDIRECT_PROFILE;
     }
 
-    private void setupUserDataInModel(@PathVariable("id") User user, @SessionAttribute(CURRENT_USER) User currentUser, ModelMap model) {
-        model.addAttribute(CURRENT_USER, currentUser);
+    private void setupUserDataInModel(User user, User currentUser, ModelMap model) {
+        User persistedCurrentUser = userService.refreshUser(currentUser);
+        model.addAttribute(CURRENT_USER, persistedCurrentUser);
 
-        model.put(Constants.USER_TXT, user);
+        User persistedUser = userService.refreshUser(user);
+        model.put(Constants.USER_TXT, persistedUser);
 
         model.addAttribute("isProfilePage", true);
 
-        if (user.getId() == currentUser.getId()) {
+        if (persistedUser.getId() == currentUser.getId()) {
             model.addAttribute(Constants.IS_MYSELF_TXT, true);
         }
 
-        boolean alreadyConnected = userConnectionService.isAlreadyConnected(currentUser, user);
+        List<User> connectedUsers = userService.getConnectedUsers(persistedUser);
+        model.addAttribute("connectedUsers", connectedUsers);
+
+        List<Note> accessibleNotes = persistedUser.getOwnNotes().stream()
+                .filter(note -> !note.isDeleted())
+                .filter(note -> noteService.hasReadAccess(persistedCurrentUser, note))
+                .sorted(Comparator.comparing(BasicEntity::getUpdatedOn))
+                .collect(Collectors.toList());
+        model.addAttribute("accessibleNotes", accessibleNotes);
+
+        boolean alreadyConnected = userConnectionService.isAlreadyConnected(currentUser, persistedUser);
         if (alreadyConnected) {
             model.addAttribute(Constants.IS_USER_CONNECTED_TXT, true);
         }
 
-        boolean requestAlreadySent = userConnectionService.isRequestAlreadySent(currentUser, user);
+        boolean requestAlreadySent = userConnectionService.isRequestAlreadySent(currentUser, persistedUser);
         if (requestAlreadySent) {
             model.addAttribute(Constants.IS_REQUEST_SENT_TXT, true);
         }
 
-        boolean requestAlreadyReceived = userConnectionService.isRequestAlreadyReceived(currentUser, user);
+        boolean requestAlreadyReceived = userConnectionService.isRequestAlreadyReceived(currentUser, persistedUser);
         if (requestAlreadyReceived) {
             model.addAttribute(Constants.IS_REQUEST_RECEIVED_TXT, true);
         }
