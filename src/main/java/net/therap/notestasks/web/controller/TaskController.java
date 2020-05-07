@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -41,7 +40,7 @@ public class TaskController {
     private Logger logger;
 
     @RequestMapping(value = {"/task/new"}, method = {RequestMethod.GET})
-    public String createNewTask(@SessionAttribute(CURRENT_USER) User currentUser, ModelMap model,
+    public String createNewTask(@SessionAttribute(CURRENT_USER_COMMAND) User currentUser, ModelMap model,
                                 HttpServletRequest req, HttpServletResponse resp) {
 
         User persistedCurrentUser = userService.refreshUser(currentUser);
@@ -59,7 +58,7 @@ public class TaskController {
     }
 
     @RequestMapping(value = {"/tasks"}, method = RequestMethod.GET)
-    public String showTasks(@SessionAttribute(CURRENT_USER) User currentUser, ModelMap model,
+    public String showTasks(@SessionAttribute(CURRENT_USER_COMMAND) User currentUser, ModelMap model,
                             HttpServletRequest req, HttpServletResponse resp) {
         model.addAttribute("searchQuery", new SearchQuery());
         model.addAttribute("isTasksPage", true);
@@ -75,7 +74,7 @@ public class TaskController {
 
     @RequestMapping(value = {"/task/{taskId}"}, method = RequestMethod.GET)
     public String showTask(@PathVariable("taskId") Task task,
-                           @SessionAttribute(CURRENT_USER) User currentUser,
+                           @SessionAttribute(CURRENT_USER_COMMAND) User currentUser,
                            ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
 
         User persistedCurrentUser = userService.refreshUser(currentUser);
@@ -118,7 +117,7 @@ public class TaskController {
 
     @RequestMapping(value = {"/task/update"}, method = RequestMethod.POST)
     public String updateTask(@ModelAttribute("taskCommand") Task task,
-                             @SessionAttribute(CURRENT_USER) User currentUser) {
+                             @SessionAttribute(CURRENT_USER_COMMAND) User currentUser) {
         User persistedCurrentUser = userService.refreshUser(currentUser);
 
         if (!taskService.hasWriteAccess(persistedCurrentUser, task)) {
@@ -132,7 +131,7 @@ public class TaskController {
 
     @RequestMapping(value = {"/task/delete/{taskId}"}, method = RequestMethod.GET)
     public String deleteTask(@PathVariable("taskId") Task task,
-                             @SessionAttribute(CURRENT_USER) User currentUser) {
+                             @SessionAttribute(CURRENT_USER_COMMAND) User currentUser) {
         User persistedCurrentUser = userService.refreshUser(currentUser);
 
         if (!taskService.hasDeleteAccess(persistedCurrentUser, task)) {
@@ -147,7 +146,7 @@ public class TaskController {
     @RequestMapping(value = "/taskAssignment", method = RequestMethod.POST)
     public String createTaskAssignment(@Valid @ModelAttribute("taskAssignmentCommand") TaskAssignment taskAssignment,
                                        Errors errors,
-                                       @SessionAttribute(CURRENT_USER) User currentUser,
+                                       @SessionAttribute(CURRENT_USER_COMMAND) User currentUser,
                                        ModelMap model,
                                        HttpServletRequest req, HttpServletResponse resp) {
 
@@ -169,7 +168,7 @@ public class TaskController {
 
     @RequestMapping(value = "/taskAssignment/delete/{taskAssignmentId}", method = RequestMethod.GET)
     public String deleteTaskAssignment(@PathVariable("taskAssignmentId") TaskAssignment taskAssignment,
-                                       @SessionAttribute(CURRENT_USER) User currentUser) {
+                                       @SessionAttribute(CURRENT_USER_COMMAND) User currentUser) {
         User persistedCurrentUser = userService.refreshUser(currentUser);
 
         if (!taskService.hasAssignmentDeleteAccess(persistedCurrentUser, taskAssignment)) {
@@ -182,7 +181,7 @@ public class TaskController {
 
     @RequestMapping(value = "/taskAssignment/markAsComplete/{taskAssignmentId}", method = RequestMethod.GET)
     public String markTaskAssignmentAsComplete(@PathVariable("taskAssignmentId") TaskAssignment taskAssignment,
-                                               @SessionAttribute(CURRENT_USER) User currentUser) {
+                                               @SessionAttribute(CURRENT_USER_COMMAND) User currentUser) {
         User persistedCurrentUser = userService.refreshUser(currentUser);
 
         if (taskService.hasAssignmentUpdateAccess(persistedCurrentUser, taskAssignment)) {
@@ -194,7 +193,7 @@ public class TaskController {
 
     @RequestMapping(value = "/taskAssignment/markAsIncomplete/{taskAssignmentId}", method = RequestMethod.GET)
     public String markTaskAssignmentAsIncomplete(@PathVariable("taskAssignmentId") TaskAssignment taskAssignment,
-                                                 @SessionAttribute(CURRENT_USER) User currentUser) {
+                                                 @SessionAttribute(CURRENT_USER_COMMAND) User currentUser) {
         User persistedCurrentUser = userService.refreshUser(currentUser);
 
         if (taskService.hasAssignmentUpdateAccess(persistedCurrentUser, taskAssignment)) {
@@ -206,7 +205,7 @@ public class TaskController {
 
     @RequestMapping(value = "/taskComment", method = RequestMethod.POST)
     public String createTaskComment(@ModelAttribute("taskCommentCommand") TaskComment taskComment, Errors errors,
-                                    @SessionAttribute(CURRENT_USER) User currentUser, ModelMap model,
+                                    @SessionAttribute(CURRENT_USER_COMMAND) User currentUser, ModelMap model,
                                     HttpServletRequest req, HttpServletResponse resp) {
         if (errors.hasErrors()) {
             String taskPage = showTask(taskComment.getTask(), currentUser, model, req, resp);
@@ -234,7 +233,7 @@ public class TaskController {
 
     @RequestMapping(value = {"/taskComment/delete/{taskCommentId}"}, method = RequestMethod.GET)
     public String deleteNoteComment(@PathVariable("taskCommentId") TaskComment taskComment,
-                                    @SessionAttribute(CURRENT_USER) User currentUser,
+                                    @SessionAttribute(CURRENT_USER_COMMAND) User currentUser,
                                     ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
         User persistedCurrentUser = userService.refreshUser(currentUser);
 

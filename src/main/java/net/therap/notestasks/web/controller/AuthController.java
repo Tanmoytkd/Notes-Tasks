@@ -1,9 +1,10 @@
 package net.therap.notestasks.web.controller;
 
 import net.therap.notestasks.domain.User;
-import net.therap.notestasks.service.UserConnectionService;
 import net.therap.notestasks.service.UserService;
 import net.therap.notestasks.util.HashingUtil;
+import net.therap.notestasks.validator.UserPersistedWithCredentialValidator;
+import net.therap.notestasks.validator.UserWithDistinctEmailValidator;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,14 +14,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 import static net.therap.notestasks.config.Constants.*;
+import static net.therap.notestasks.helper.UrlHelper.redirectTo;
 
 /**
  * @author tanmoy.das
@@ -29,7 +29,8 @@ import static net.therap.notestasks.config.Constants.*;
 @Controller
 public class AuthController {
 
-    public static final String REDIRECT_ROOT = "redirect:/";
+    public static final String HOMEPAGE_PATH = "";
+    public static final String INDEX_PAGE = "index";
 
     @Autowired
     private Logger logger;
@@ -38,67 +39,62 @@ public class AuthController {
     private UserService userService;
 
     @Autowired
-    private UserConnectionService userConnectionService;
+    private UserWithDistinctEmailValidator userWithDistinctEmailValidator;
 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public String handleLogout(HttpServletRequest req, HttpServletResponse resp) {
-        HttpSession session = req.getSession();
+    @Autowired
+    private UserPersistedWithCredentialValidator userPersistedWithCredentialValidator;
+
+    @RequestMapping(value = "logout", method = RequestMethod.GET)
+    public String handleLogout(HttpSession session) {
         session.invalidate();
 
-        return REDIRECT_ROOT;
+        return redirectTo(HOMEPAGE_PATH);
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String handleRegister(@Valid @ModelAttribute(REGISTER_USER_COMMAND) User user, Errors errors, ModelMap model,
-                                 HttpServletRequest req, HttpServletResponse resp) throws NoSuchAlgorithmException {
+    @RequestMapping(value = "register", method = RequestMethod.POST)
+    public String handleRegister(@Valid @ModelAttribute(REGISTER_USER_COMMAND) User user,
+                                 Errors errors,
+                                 ModelMap model,
+                                 HttpSession session) throws NoSuchAlgorithmException {
+
+        userWithDistinctEmailValidator.validate(user, errors);
         if (errors.hasErrors()) {
-            model.addAttribute(REGISTER_USER_COMMAND, user);
-            model.addAttribute(LOGIN_USER_COMMAND, new User());
+            user.setPassword("");
+            setupModelUserCommands(model, user, new User());
             return INDEX_PAGE;
         }
 
         user.setPassword(HashingUtil.sha256Hash(user.getPassword()));
+        User persistedUser = userService.createUser(user);
+        logger.info("User created with email {}", persistedUser.getEmail());
 
-        Optional<User> optionalUser = userService.findUserByEmail(user.getEmail());
-        if (optionalUser.isPresent()) {
-            logger.warn("Duplicate Email for user: {}", user.getEmail());
-
-            errors.rejectValue(null, "duplicateEmailError");
-            user.setPassword("");
-            model.addAttribute(LOGIN_USER_COMMAND, new User());
-
-            return INDEX_PAGE;
-        }
-
-        user = userService.createUser(user);
-        req.getSession().setAttribute(CURRENT_USER, user);
-        logger.info("User created with email {}", user.getEmail());
-
-        return REDIRECT_ROOT;
+        session.setAttribute(CURRENT_USER_COMMAND, persistedUser);
+        return redirectTo(HOMEPAGE_PATH);
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String handleLogin(@Valid @ModelAttribute(LOGIN_USER_COMMAND) User user, Errors errors, ModelMap model,
-                              HttpServletRequest req, HttpServletResponse resp) throws NoSuchAlgorithmException {
-        if (errors.hasErrors()) {
-            model.addAttribute(LOGIN_USER_COMMAND, user);
-            model.addAttribute(REGISTER_USER_COMMAND, new User());
-            return INDEX_PAGE;
-        }
+    @RequestMapping(value = "login", method = RequestMethod.POST)
+    public String handleLogin(@Valid @ModelAttribute(LOGIN_USER_COMMAND) User user,
+                              Errors errors,
+                              ModelMap model,
+                              HttpSession session) throws NoSuchAlgorithmException {
 
         user.setPassword(HashingUtil.sha256Hash(user.getPassword()));
+        userPersistedWithCredentialValidator.validate(user, errors);
 
-        Optional<User> optionalUser = userService.findUserByEmailAndPassword(user.getEmail(), user.getPassword());
-
-        if (!optionalUser.isPresent()) {
-            errors.rejectValue(null, "credentialIncorrect");
-
+        if (errors.hasErrors()) {
             user.setPassword("");
-            model.addAttribute(REGISTER_USER_COMMAND, new User());
-            return INDEX_PAGE;
+            setupModelUserCommands(model, new User(), user);
+            return redirectTo(INDEX_PAGE);
         }
 
-        req.getSession().setAttribute(CURRENT_USER, optionalUser.get());
-        return REDIRECT_ROOT;
+        Optional<User> userOptional = userService.findUserByEmailAndPassword(user.getEmail(), user.getPassword());
+        userOptional.ifPresent(value -> session.setAttribute(CURRENT_USER_COMMAND, value));
+
+        return redirectTo(HOMEPAGE_PATH);
+    }
+
+    private void setupModelUserCommands(ModelMap model, User registerUserCommand, User loginUserCommand) {
+        model.addAttribute(REGISTER_USER_COMMAND, registerUserCommand);
+        model.addAttribute(LOGIN_USER_COMMAND, loginUserCommand);
     }
 }

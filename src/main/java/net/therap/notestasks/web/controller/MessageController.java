@@ -50,7 +50,7 @@ public class MessageController {
 
     @RequestMapping(value = {"/message/delete/{messageId}"}, method = RequestMethod.GET)
     public String deleteMessage(@PathVariable("messageId") Message message,
-                                @SessionAttribute(CURRENT_USER) User currentUser) {
+                                @SessionAttribute(CURRENT_USER_COMMAND) User currentUser) {
 
         User persistedCurrentUser = userService.refreshUser(currentUser);
         if (message.getSender().getId() == persistedCurrentUser.getId()) {
@@ -62,7 +62,7 @@ public class MessageController {
 
     @RequestMapping(value = {"/messages/{userId}"}, method = RequestMethod.GET)
     public String showMessagesFromUser(@PathVariable("userId") User user,
-                                       @SessionAttribute(CURRENT_USER) User currentUser,
+                                       @SessionAttribute(CURRENT_USER_COMMAND) User currentUser,
                                        ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
         currentUser = userService.refreshUser(currentUser);
         if (!messageService.canSendMessage(currentUser, user)) {
@@ -80,7 +80,7 @@ public class MessageController {
     }
 
     @RequestMapping(value = {"/messages"}, method = RequestMethod.GET)
-    public String showMessages(@SessionAttribute(CURRENT_USER) User currentUser, ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+    public String showMessages(@SessionAttribute(CURRENT_USER_COMMAND) User currentUser, ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
         model.addAttribute("searchQuery", new SearchQuery());
         model.addAttribute("isMessagesPage", true);
 

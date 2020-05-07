@@ -184,7 +184,7 @@
                                     <div class="d-flex list-group-item">
                                         <c:url var="noteLink" value="/note/${note.id}"/>
                                         <a href="${noteLink}">
-                                                <h2>${note.title}</h2>
+                                            <h2>${note.title}</h2>
                                         </a>
                                     </div>
                                 </c:forEach>

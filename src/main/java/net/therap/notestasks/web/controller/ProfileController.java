@@ -24,7 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static net.therap.notestasks.config.Constants.CURRENT_USER;
+import static net.therap.notestasks.config.Constants.CURRENT_USER_COMMAND;
 import static net.therap.notestasks.config.Constants.DASHBOARD_PAGE;
 
 /**
@@ -47,12 +47,12 @@ public class ProfileController {
     private UserConnectionService userConnectionService;
 
     @RequestMapping(value = {"/profile"}, method = RequestMethod.GET)
-    public String showOwnProfile(@SessionAttribute(CURRENT_USER) User currentUser, ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+    public String showOwnProfile(@SessionAttribute(CURRENT_USER_COMMAND) User currentUser, ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
         return showUserProfile(currentUser, currentUser, model, req, resp);
     }
 
     @RequestMapping(value = {"/profile/{id}"}, method = RequestMethod.GET)
-    public String showUserProfile(@PathVariable("id") User user, @SessionAttribute(CURRENT_USER) User currentUser,
+    public String showUserProfile(@PathVariable("id") User user, @SessionAttribute(CURRENT_USER_COMMAND) User currentUser,
                                   ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
         model.addAttribute("searchQuery", new SearchQuery());
 
@@ -63,13 +63,13 @@ public class ProfileController {
     }
 
     @RequestMapping(value = {"/profile/update"}, method = RequestMethod.POST)
-    public String updateUserProfile(@Valid @ModelAttribute(CURRENT_USER) User user, Errors errors,
+    public String updateUserProfile(@Valid @ModelAttribute(CURRENT_USER_COMMAND) User user, Errors errors,
                                     @RequestParam("newPassword") String newPassword,
-                                    @SessionAttribute(CURRENT_USER) User currentUser, ModelMap model,
+                                    @SessionAttribute(CURRENT_USER_COMMAND) User currentUser, ModelMap model,
                                     HttpServletRequest req, HttpServletResponse resp) throws NoSuchAlgorithmException {
 
         currentUser = userService.refreshUser(currentUser);
-        model.addAttribute(CURRENT_USER, currentUser);
+        model.addAttribute(CURRENT_USER_COMMAND, currentUser);
 
         user.setPassword(HashingUtil.sha256Hash(user.getPassword()));
 
@@ -78,7 +78,7 @@ public class ProfileController {
 
             model.addAttribute("searchQuery", new SearchQuery());
             errors.rejectValue(null, "credentialIncorrect");
-            model.addAttribute(CURRENT_USER, user);
+            model.addAttribute(CURRENT_USER_COMMAND, user);
 
 
             return DASHBOARD_PAGE;
@@ -95,7 +95,7 @@ public class ProfileController {
 
     private void setupUserDataInModel(User user, User currentUser, ModelMap model) {
         User persistedCurrentUser = userService.refreshUser(currentUser);
-        model.addAttribute(CURRENT_USER, persistedCurrentUser);
+        model.addAttribute(CURRENT_USER_COMMAND, persistedCurrentUser);
 
         User persistedUser = userService.refreshUser(user);
         model.put(Constants.USER_TXT, persistedUser);

@@ -93,11 +93,11 @@ public class TaskService {
 
         TaskAssignment persistedTaskAssignment = task.getTaskAssignments().stream()
                 .filter(taskAssignment1 -> !taskAssignment1.isDeleted())
-                .filter(taskAssignment1 -> taskAssignment1.getUser().getId()==user.getId())
+                .filter(taskAssignment1 -> taskAssignment1.getUser().getId() == user.getId())
                 .findFirst()
                 .orElse(null);
 
-        if(persistedTaskAssignment==null) {
+        if (persistedTaskAssignment == null) {
             taskAssignmentDao.saveOrUpdate(taskAssignment);
 
             user.getTaskAssignments().add(taskAssignment);

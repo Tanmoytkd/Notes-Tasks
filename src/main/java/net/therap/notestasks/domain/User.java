@@ -3,6 +3,7 @@ package net.therap.notestasks.domain;
 import net.therap.notestasks.util.RandomGeneratorUtil;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -35,6 +36,7 @@ import java.util.List;
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 public class User extends BasicEntity implements Serializable {
 
+    @Email
     @NotNull(message = "Email must not be null")
     @Size(min = 6, message = "Email must be at least 6 letters")
     private String email;

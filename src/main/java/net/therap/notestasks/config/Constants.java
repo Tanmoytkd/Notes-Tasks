@@ -6,13 +6,12 @@ package net.therap.notestasks.config;
  */
 public class Constants {
 
-    public static final String CURRENT_USER = "currentUserCommand";
+    public static final String CURRENT_USER_COMMAND = "currentUserCommand";
 
     public static final String REGISTER_USER_COMMAND = "registerUserCommand";
 
     public static final String LOGIN_USER_COMMAND = "loginUserCommand";
 
-    public static final String INDEX_PAGE = "index";
 
     public static final String CONTEXT_PATH = "/notestasks";
     public static final String USER_TXT = "user";

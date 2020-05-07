@@ -28,6 +28,8 @@ import static net.therap.notestasks.config.Constants.*;
 @Controller
 public class HomeController {
 
+    public static final String INDEX_PAGE = "index";
+
     @Autowired
     private UserService userService;
 
@@ -47,10 +49,10 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
-    public String showDashboard(@SessionAttribute(CURRENT_USER) User currentUser, ModelMap model) {
+    public String showDashboard(@SessionAttribute(CURRENT_USER_COMMAND) User currentUser, ModelMap model) {
         model.addAttribute("searchQuery", new SearchQuery());
         model.addAttribute("isDashboardPage", true);
-        model.addAttribute(CURRENT_USER, currentUser);
+        model.addAttribute(CURRENT_USER_COMMAND, currentUser);
 
         User persistedUser = userService.refreshUser(currentUser);
 
@@ -64,6 +66,6 @@ public class HomeController {
     }
 
     private boolean isAuthenticated(HttpServletRequest req) {
-        return req.getSession().getAttribute(CURRENT_USER) != null;
+        return req.getSession().getAttribute(CURRENT_USER_COMMAND) != null;
     }
 }

@@ -117,4 +117,12 @@ public class UserService {
     private boolean isSameUser(User persistedCurrentUser, User user) {
         return user.getId() == persistedCurrentUser.getId();
     }
+
+    public boolean canFindUserByEmail(String email) {
+        return findUserByEmail(email).isPresent();
+    }
+
+    public boolean canFindUserByEmailAndPassword(String email, String password) {
+        return findUserByEmailAndPassword(email, password).isPresent();
+    }
 }

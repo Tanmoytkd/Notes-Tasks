@@ -89,11 +89,11 @@ public class NoteService {
 
         NoteAccess persistedNoteAccess = note.getNoteAccesses().stream()
                 .filter(noteAccess1 -> !noteAccess1.isDeleted())
-                .filter(noteAccess1 -> noteAccess1.getUser().getId()==user.getId())
+                .filter(noteAccess1 -> noteAccess1.getUser().getId() == user.getId())
                 .findFirst()
                 .orElse(null);
 
-        if(persistedNoteAccess!=null) {
+        if (persistedNoteAccess != null) {
             persistedNoteAccess.setAccessLevels(noteAccess.getAccessLevels());
             noteAccessDao.saveOrUpdate(persistedNoteAccess);
         } else {
