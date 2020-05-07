@@ -12,7 +12,7 @@ import java.util.List;
  */
 @NamedQueries({
         @NamedQuery(name = "Task.findAll",
-                query = "FROM Task task WHERE task.isDeleted = false")
+                query = "FROM Task task WHERE task.deleted = false")
 })
 
 @Entity
@@ -24,7 +24,7 @@ public class Task extends BasicEntity {
     private String description;
 
     @Column(name = "is_complete")
-    private boolean isComplete;
+    private boolean completed;
 
     @NotNull
     @ManyToOne
@@ -84,11 +84,11 @@ public class Task extends BasicEntity {
         this.comments = taskComments;
     }
 
-    public boolean getIsComplete() {
-        return isComplete;
+    public boolean isCompleted() {
+        return completed;
     }
 
-    public void setIsComplete(boolean complete) {
-        isComplete = complete;
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

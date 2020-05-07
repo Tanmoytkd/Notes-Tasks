@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,7 +80,7 @@ public class TaskController {
 
         User persistedCurrentUser = userService.refreshUser(currentUser);
 
-        if (!taskService.canAccessTask(persistedCurrentUser, task)) {
+        if (!canViewTask(persistedCurrentUser, task)) {
             return REDIRECT_NOTES;
         }
 
@@ -90,6 +92,7 @@ public class TaskController {
         List<TaskComment> comments = task.getComments().stream()
                 .filter(taskComment -> !taskComment.isDeleted())
                 .collect(Collectors.toList());
+        Collections.reverse(comments);
         model.addAttribute("taskComments", comments);
 
         List<TaskAssignment> taskAssignments = task.getTaskAssignments().stream()
@@ -213,12 +216,20 @@ public class TaskController {
 
         User persistedCurrentUser = userService.refreshUser(currentUser);
 
-        if (!taskService.hasAssignmentCreateAccess(persistedCurrentUser, taskComment.getTask())) {
+        if (!canCreateTaskComment(persistedCurrentUser, taskComment.getTask())) {
             return redirectTo(getUrl(taskComment.getTask()));
         }
 
         taskService.createTaskComment(taskComment);
         return redirectTo(getUrl(taskComment.getTask()));
+    }
+
+    private boolean canCreateTaskComment(User persistedCurrentUser, Task task) {
+        return canViewTask(persistedCurrentUser, task);
+    }
+
+    private boolean canViewTask(User persistedCurrentUser, Task task) {
+        return taskService.canAccessTask(persistedCurrentUser, task);
     }
 
     @RequestMapping(value = {"/taskComment/delete/{taskCommentId}"}, method = RequestMethod.GET)
@@ -241,12 +252,12 @@ public class TaskController {
                 .collect(Collectors.toList());
 
         List<TaskAssignment> ownTaskAssignmentsComplete = taskAssignments.stream()
-                .filter(TaskAssignment::getIsCompleted)
+                .filter(TaskAssignment::isCompleted)
                 .collect(Collectors.toList());
         model.addAttribute("ownTaskAssignmentsComplete", ownTaskAssignmentsComplete);
 
         List<TaskAssignment> ownTaskAssignmentsIncomplete = taskAssignments.stream()
-                .filter(taskAssignment -> !taskAssignment.getIsCompleted())
+                .filter(taskAssignment -> !taskAssignment.isCompleted())
                 .collect(Collectors.toList());
         model.addAttribute("ownTaskAssignmentsIncomplete", ownTaskAssignmentsIncomplete);
     }
@@ -259,12 +270,12 @@ public class TaskController {
         model.addAttribute("ownTasks", ownTasks);
 
         List<Task> ownTasksComplete = ownTasks.stream()
-                .filter(Task::getIsComplete)
+                .filter(Task::isCompleted)
                 .collect(Collectors.toList());
         model.addAttribute("ownTasksComplete", ownTasksComplete);
 
         List<Task> ownTasksIncomplete = ownTasks.stream()
-                .filter(task -> !task.getIsComplete())
+                .filter(task -> !task.isCompleted())
                 .collect(Collectors.toList());
         model.addAttribute("ownTasksIncomplete", ownTasksIncomplete);
     }

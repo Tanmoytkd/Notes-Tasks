@@ -15,20 +15,20 @@ import java.util.List;
  */
 @NamedQueries({
         @NamedQuery(name = "User.findAll",
-                query = "FROM User user WHERE user.isDeleted = false"),
+                query = "FROM User user WHERE user.deleted = false"),
         @NamedQuery(name = "User.findByEmail",
-                query = "FROM User user WHERE user.email = :email AND user.isDeleted = false"),
+                query = "FROM User user WHERE user.email = :email AND user.deleted = false"),
         @NamedQuery(name = "User.findBySecret",
-                query = "FROM User user WHERE user.secret = :secret AND user.isDeleted = false"),
+                query = "FROM User user WHERE user.secret = :secret AND user.deleted = false"),
         @NamedQuery(name = "User.findByEmailAndPassword",
                 query = "FROM User user WHERE user.email=:email AND user.password=:password " +
-                        "AND user.isDeleted = false"),
+                        "AND user.deleted = false"),
         @NamedQuery(name = "User.findByExample",
                 query = "FROM User user WHERE user.email=:email AND user.password=:password " +
-                        "AND user.isDeleted = false"),
+                        "AND user.deleted = false"),
         @NamedQuery(name = "User.findContainingName",
                 query = "From User user WHERE user.name like CONCAT('%',:name,'%')" +
-                        "AND user.isDeleted = false")
+                        "AND user.deleted = false")
 })
 
 @Entity
@@ -49,7 +49,7 @@ public class User extends BasicEntity implements Serializable {
     private String about;
 
     @Column(name = "is_email_verified")
-    private boolean isEmailVerified;
+    private boolean emailVerified;
 
     @NotNull
     private String secret;
@@ -262,11 +262,11 @@ public class User extends BasicEntity implements Serializable {
     }
 
     public boolean isEmailVerified() {
-        return isEmailVerified;
+        return emailVerified;
     }
 
     public void setEmailVerified(boolean emailVerified) {
-        isEmailVerified = emailVerified;
+        this.emailVerified = emailVerified;
     }
 
     public String getSecret() {

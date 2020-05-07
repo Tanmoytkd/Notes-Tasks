@@ -13,7 +13,7 @@ import java.util.List;
  */
 @NamedQueries({
         @NamedQuery(name = "Note.findAll",
-                query = "FROM Note note WHERE note.isDeleted = false")
+                query = "FROM Note note WHERE note.deleted = false")
 })
 
 @Entity

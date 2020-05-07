@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
  */
 @NamedQueries({
         @NamedQuery(name = "Message.findAll",
-                query = "FROM Message message WHERE message.isDeleted = false")
+                query = "FROM Message message WHERE message.deleted = false")
 })
 
 @Entity
@@ -32,7 +32,7 @@ public class Message extends BasicEntity {
 
     @NotNull
     @Column(name = "is_seen")
-    private boolean isSeen;
+    private boolean seen;
 
     public User getSender() {
         return sender;
@@ -59,10 +59,10 @@ public class Message extends BasicEntity {
     }
 
     public boolean isSeen() {
-        return isSeen;
+        return seen;
     }
 
     public void setSeen(boolean seen) {
-        isSeen = seen;
+        this.seen = seen;
     }
 }

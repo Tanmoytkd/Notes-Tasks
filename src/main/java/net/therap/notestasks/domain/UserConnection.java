@@ -10,9 +10,9 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "UserConnection.findByExample",
                 query = "FROM UserConnection connection WHERE connection.users = :users " +
-                        "AND connection.isDeleted = false"),
+                        "AND connection.deleted = false"),
         @NamedQuery(name = "UserConnection.findAll",
-                query = "FROM UserConnection connection WHERE connection.isDeleted = false")
+                query = "FROM UserConnection connection WHERE connection.deleted = false")
 })
 
 @Entity

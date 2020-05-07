@@ -77,6 +77,8 @@
 
     <%@ include file="/WEB-INF/includes/sections/forms/noteShareForm.jsp" %>
 
+    <c:set var="tinymceReadOnly" value="${inputReadOnly ? 1 : 0}"/>
+
     <script>
         tinymce.init({
             selector: '.tinymce-editor',
@@ -99,7 +101,8 @@
                 'bold italic underline | alignleft aligncenter alignright alignjustify | ' +
                 'formatselect | blockquote quicklink',
             contextmenu: 'undo redo | link image media codesample | inserttable | ' +
-                'cell row column deletetable | help'
+                'cell row column deletetable | help',
+            readonly: ${tinymceReadOnly}
         });
     </script>
 </div>

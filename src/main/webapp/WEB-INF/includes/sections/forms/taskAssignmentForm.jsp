@@ -48,6 +48,16 @@
                         <c:url var="taskAssignmentUserLink" value="/user/${taskAssignment.user.id}"/>
                         <a href="${taskAssignmentUserLink}">${taskAssignment.user.name}</a>
 
+                        <c:choose>
+                            <c:when test="${taskAssignment.completed}">
+                                <span class="text-muted">(Complete)</span>
+                            </c:when>
+                            <c:otherwise>
+                                <span class="text-muted">(Incomplete)</span>
+                            </c:otherwise>
+                        </c:choose>
+
+
                         <c:url var="taskAssignmentDeleteLink" value="/taskAssignment/delete/${taskAssignment.id}"/>
                         <a href="${taskAssignmentDeleteLink}">
                             <em class="fa fa-times"></em>

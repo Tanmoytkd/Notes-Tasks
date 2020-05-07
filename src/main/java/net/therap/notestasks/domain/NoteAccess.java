@@ -10,7 +10,7 @@ import java.util.List;
  */
 @NamedQueries({
         @NamedQuery(name = "NoteAccess.findAll",
-                query = "FROM NoteAccess noteAccess WHERE noteAccess.isDeleted = false")
+                query = "FROM NoteAccess noteAccess WHERE noteAccess.deleted = false")
 })
 
 @Entity

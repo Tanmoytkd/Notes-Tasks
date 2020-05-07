@@ -11,7 +11,7 @@ import java.util.List;
  */
 @NamedQueries({
         @NamedQuery(name = "Report.findAll",
-                query = "FROM Report report WHERE report.isDeleted = false")
+                query = "FROM Report report WHERE report.deleted = false")
 })
 
 @Entity

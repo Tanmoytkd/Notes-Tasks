@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
  */
 @NamedQueries({
         @NamedQuery(name = "NoteComment.findAll",
-                query = "FROM NoteComment noteComment WHERE noteComment.isDeleted = false")
+                query = "FROM NoteComment noteComment WHERE noteComment.deleted = false")
 })
 
 @Entity

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,9 +36,6 @@ public class NoteController {
     @Autowired
     private NoteService noteService;
 
-    @Autowired
-    private Logger logger;
-
     @RequestMapping(value = {"/notes"}, method = RequestMethod.GET)
     public String showNotes(@SessionAttribute(CURRENT_USER) User currentUser,
                             ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
@@ -51,10 +49,12 @@ public class NoteController {
                 .filter(note -> !note.isDeleted())
                 .sorted(Comparator.comparing(BasicEntity::getUpdatedOn))
                 .collect(Collectors.toList());
+        Collections.reverse(ownNotes);
         model.addAttribute("ownNotes", ownNotes);
 
         List<NoteAccess> sharedNoteAccesses = persistedCurrentUser.getSharedNoteAccesses().stream()
                 .filter(noteAccess -> !noteAccess.isDeleted())
+                .sorted(Comparator.comparing(noteAccess -> noteAccess.getNote().getUpdatedOn()))
                 .collect(Collectors.toList());
         model.addAttribute("sharedNoteAccesses", sharedNoteAccesses);
 

@@ -32,8 +32,8 @@
                     </button>
 
                     <div class="btn btn-light form-group d-inline-flex align-content-center mb-0 py-0">
-                        <form:checkbox path="isComplete" cssClass="form-control form-check-inline"/>
-                        <form:label path="isComplete" cssClass="form-check-label">Mark as Complete</form:label>
+                        <form:checkbox path="completed" cssClass="form-control form-check-inline"/>
+                        <form:label path="completed" cssClass="form-check-label">Mark as Complete</form:label>
                     </div>
                 </c:if>
 
@@ -71,6 +71,8 @@
 
     <%@ include file="/WEB-INF/includes/sections/forms/taskAssignmentForm.jsp" %>
 
+    <c:set var="tinymceReadOnly" value="${inputReadOnly ? 1 : 0}"/>
+
     <script>
         tinymce.init({
             selector: '.tinymce-editor',
@@ -93,7 +95,8 @@
                 'bold italic underline | alignleft aligncenter alignright alignjustify | ' +
                 'formatselect | blockquote quicklink',
             contextmenu: 'undo redo | link image media codesample | inserttable | ' +
-                'cell row column deletetable | help'
+                'cell row column deletetable | help',
+            readonly: ${tinymceReadOnly}
         });
     </script>
 </div>

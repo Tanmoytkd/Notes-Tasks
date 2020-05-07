@@ -125,7 +125,7 @@ public class TaskService {
     }
 
     public void updateTaskAssignmentCompleteStatus(TaskAssignment taskAssignment, boolean isComplete) {
-        taskAssignment.setIsCompleted(isComplete);
+        taskAssignment.setCompleted(isComplete);
         updateTaskAssignment(taskAssignment);
     }
 

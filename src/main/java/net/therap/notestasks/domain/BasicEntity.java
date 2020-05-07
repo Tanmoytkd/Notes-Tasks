@@ -27,7 +27,7 @@ public class BasicEntity {
     protected Date deletedOn;
 
     @Column(name = "is_deleted")
-    protected boolean isDeleted;
+    protected boolean deleted;
 
     @PrePersist
     private void onCreate() {
@@ -61,11 +61,11 @@ public class BasicEntity {
     }
 
     public boolean isDeleted() {
-        return isDeleted;
+        return deleted;
     }
 
     public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+        this.deleted = deleted;
         onDelete();
     }
 

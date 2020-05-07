@@ -9,10 +9,10 @@ import javax.validation.constraints.NotNull;
  */
 @NamedQueries({
         @NamedQuery(name = "ConnectionRequest.findAll",
-                query = "FROM ConnectionRequest request WHERE request.isDeleted = false"),
+                query = "FROM ConnectionRequest request WHERE request.deleted = false"),
         @NamedQuery(name = "ConnectionRequest.findByExample",
                 query = "FROM ConnectionRequest request WHERE request.sender=:sender AND request.receiver=:receiver " +
-                        "AND request.isDeleted = false")
+                        "AND request.deleted = false")
 })
 
 @Entity
