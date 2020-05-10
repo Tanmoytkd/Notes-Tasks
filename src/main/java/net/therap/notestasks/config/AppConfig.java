@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.persistence.EntityManagerFactory;
 import java.util.Objects;
 
+import static net.therap.notestasks.util.Constants.PERSISTENCE_UNIT_NAME;
+
 /**
  * @author tanmoy.das
  * @since 4/12/20
@@ -26,9 +28,8 @@ public class AppConfig {
 
     @Bean(name = "entityManagerFactory")
     public LocalEntityManagerFactoryBean entityManagerFactory() {
-        LocalEntityManagerFactoryBean localEmfBean =
-                new LocalEntityManagerFactoryBean();
-        localEmfBean.setPersistenceUnitName("notestasks");
+        LocalEntityManagerFactoryBean localEmfBean = new LocalEntityManagerFactoryBean();
+        localEmfBean.setPersistenceUnitName(PERSISTENCE_UNIT_NAME);
         return localEmfBean;
     }
 

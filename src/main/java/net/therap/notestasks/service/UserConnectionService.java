@@ -7,6 +7,7 @@ import net.therap.notestasks.domain.ConnectionRequest;
 import net.therap.notestasks.domain.User;
 import net.therap.notestasks.domain.UserConnection;
 import net.therap.notestasks.exception.DuplicateConnectionRequestException;
+import net.therap.notestasks.exception.InvalidUserException;
 import net.therap.notestasks.exception.UserConnectionAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,8 +37,13 @@ public class UserConnectionService {
             throw new DuplicateConnectionRequestException();
         }
 
-        User sender = userDao.refresh(connectionRequest.getSender());
-        User receiver = userDao.refresh(connectionRequest.getReceiver());
+        User sender = userDao.find(connectionRequest.getSender()).orElse(null);
+        User receiver = userDao.find(connectionRequest.getReceiver()).orElse(null);
+
+        if (sender == null || receiver == null) {
+            throw new InvalidUserException();
+        }
+
         if (isAlreadyConnected(sender, receiver)) {
             throw new UserConnectionAlreadyExistsException();
         }
@@ -45,22 +51,10 @@ public class UserConnectionService {
         createConnectionRequest(connectionRequest);
     }
 
-    public boolean isRequestAlreadySent(User sender, User receiver) {
-        ConnectionRequest connectionRequest = new ConnectionRequest();
-        connectionRequest.setSender(sender);
-        connectionRequest.setReceiver(receiver);
-        return isRequestAlreadySent(connectionRequest);
-    }
-
-    public boolean isRequestAlreadySent(ConnectionRequest connectionRequest) {
-        return connectionRequestDao.findByExample(connectionRequest).isPresent();
-    }
-
     public void acceptConnectionRequest(ConnectionRequest connectionRequest) {
-        connectionRequest = connectionRequestDao.refresh(connectionRequest);
 
-        User sender = userDao.refresh(connectionRequest.getSender());
-        User receiver = userDao.refresh(connectionRequest.getReceiver());
+        User sender = connectionRequest.getSender();
+        User receiver = connectionRequest.getReceiver();
         if (isAlreadyConnected(sender, receiver)) {
             throw new UserConnectionAlreadyExistsException();
         }
@@ -70,14 +64,10 @@ public class UserConnectionService {
     }
 
     public void cancelConnectionRequest(ConnectionRequest connectionRequest) {
-        connectionRequest = connectionRequestDao.refresh(connectionRequest);
-
         deleteConnectionRequest(connectionRequest);
     }
 
     public void removeUserConnection(UserConnection connection) {
-        connection = connectionDao.refresh(connection);
-
         for (User user : connection.getUsers()) {
             user.getConnections().remove(connection);
             userDao.saveOrUpdate(user);
@@ -108,15 +98,30 @@ public class UserConnectionService {
         connectionRequestDao.delete(connectionRequest);
     }
 
+    public boolean isRequestAlreadySent(User sender, User receiver) {
+        ConnectionRequest connectionRequest = new ConnectionRequest();
+        connectionRequest.setSender(sender);
+        connectionRequest.setReceiver(receiver);
+        return isRequestAlreadySent(connectionRequest);
+    }
+
     public boolean isAlreadyConnected(User sender, User receiver) {
-        return userDao.refresh(sender).getConnections().stream()
+        return sender.getConnections().stream()
                 .anyMatch(userConnection -> userConnection.getUsers().contains(receiver)
                         && !userConnection.isDeleted());
     }
 
+    public boolean isRequestAlreadySent(ConnectionRequest connectionRequest) {
+        return connectionRequestDao.find(connectionRequest).isPresent();
+    }
+
+    public boolean isRequestAlreadyReceived(User currentUser, User user) {
+        return isRequestAlreadySent(user, currentUser);
+    }
+
     private void createConnectionRequest(ConnectionRequest connectionRequest) {
-        User sender = userDao.refresh(connectionRequest.getSender());
-        User receiver = userDao.refresh(connectionRequest.getReceiver());
+        User sender = userDao.find(connectionRequest.getSender()).orElse(null);
+        User receiver = userDao.find(connectionRequest.getReceiver()).orElse(null);
 
         connectionRequestDao.saveOrUpdate(connectionRequest);
 
@@ -124,9 +129,5 @@ public class UserConnectionService {
         receiver.getReceivedConnectionRequests().add(connectionRequest);
         userDao.saveOrUpdate(sender);
         userDao.saveOrUpdate(receiver);
-    }
-
-    public boolean isRequestAlreadyReceived(User currentUser, User user) {
-        return isRequestAlreadySent(user, currentUser);
     }
 }

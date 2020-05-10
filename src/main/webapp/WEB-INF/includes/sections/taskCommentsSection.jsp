@@ -12,7 +12,7 @@
     <c:url var="taskCommentLink" value="/taskComment"/>
     <form:form modelAttribute="taskCommentCommand" cssClass="form-inline flex-fill d-flex px-1"
                action="${taskCommentLink}" method="post">
-        <form:hidden path="writer" value="${currentUserCommand.id}"/>
+        <form:hidden path="writer" value="${currentUser.id}"/>
         <form:hidden path="task" value="${taskCommand.id}"/>
         <form:input path="content.text" cssClass="form-control form-control-lg flex-fill"/>
         <button class="btn btn-lg btn-info" type="submit">
@@ -43,7 +43,7 @@
 
                             <p class="card-text">${taskComment.content.text}</p>
                         </div>
-                        <c:if test="${taskService.canDeleteTaskComment(currentUserCommand, taskComment)}">
+                        <c:if test="${taskService.canDeleteTaskComment(currentUser, taskComment)}">
                             <div>
                                 <c:url var="deleteNoteCommentLink" value="/taskComment/delete/${taskComment.id}"/>
                                 <a href="${deleteNoteCommentLink}">

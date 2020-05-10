@@ -31,7 +31,7 @@ public class UserWithDistinctEmailValidator implements Validator {
     public void validate(Object target, Errors errors) {
         User user = (User) target;
 
-        if (userService.canFindUserByEmail(user.getEmail())) {
+        if (userService.findUserByEmail(user.getEmail()).isPresent()) {
             logger.warn("Duplicate Email for user: {}", user.getEmail());
 
             errors.rejectValue("email", "duplicateEmailError");

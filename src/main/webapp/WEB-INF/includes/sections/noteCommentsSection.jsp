@@ -12,7 +12,7 @@
     <c:url var="noteCommentLink" value="/noteComment"/>
     <form:form modelAttribute="noteCommentCommand" cssClass="form-inline flex-fill d-flex px-1"
                action="${noteCommentLink}" method="post">
-        <form:hidden path="writer" value="${currentUserCommand.id}"/>
+        <form:hidden path="writer" value="${currentUser.id}"/>
         <form:hidden path="note" value="${noteCommand.id}"/>
         <form:input path="content.text" cssClass="form-control form-control-lg flex-fill"/>
         <button class="btn btn-lg btn-info" type="submit">
@@ -45,7 +45,7 @@
 
                             <p class="card-text">${noteComment.content.text}</p>
                         </div>
-                        <c:if test="${noteService.hasCommentDeleteAccess(currentUserCommand, noteComment)}">
+                        <c:if test="${noteService.hasCommentDeleteAccess(currentUser, noteComment)}">
                             <div>
                                 <c:url var="deleteNoteCommentLink" value="/noteComment/delete/${noteComment.id}"/>
                                 <a href="${deleteNoteCommentLink}">

@@ -6,7 +6,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -31,7 +30,7 @@
     <div class="flex-fill d-flex">
         <%@ include file="/WEB-INF/includes/sidebarNavigation.jsp" %>
 
-        <%@ include file="/WEB-INF/includes/sections/dashboardMainSection.jsp" %>
+        <%@ include file="/WEB-INF/includes/sections/messagesMainSection.jsp" %>
     </div>
 </div>
 </body>

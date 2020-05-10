@@ -17,12 +17,12 @@ import java.util.stream.Collectors;
  * @since 4/24/20
  */
 @Service
-@Transactional
 public class UserService {
 
     @Autowired
     private UserDao userDao;
 
+    @Transactional
     public User createUser(User user) {
         if (userDao.findByEmail(user.getEmail()).isPresent()) {
             throw new DuplicateEmailException();
@@ -31,20 +31,17 @@ public class UserService {
         return userDao.saveOrUpdate(user);
     }
 
+    @Transactional
     public void updateUser(User user) {
-        if (!userDao.findByExample(user).isPresent()) {
+        if (!userDao.find(user).isPresent()) {
             throw new InvalidUserException("User does not exist");
         }
 
         userDao.saveOrUpdate(user);
     }
 
-    public User refreshUser(User user) {
-        return userDao.findByExample(user).orElse(null);
-    }
-
-    public Optional<User> findByExample(User user) {
-        return userDao.findByExample(user);
+    public User findUserWithSameEmail(User user) {
+        return userDao.findByEmail(user.getEmail()).orElseThrow(InvalidUserException::new);
     }
 
     public List<User> findUsersByName(String name) {
@@ -71,29 +68,16 @@ public class UserService {
         return userDao.findBySecret(secret);
     }
 
-    public void changePassword(User user, String password) {
-        User persistedUser = userDao.findByExample(user)
-                .orElseThrow(() -> new InvalidUserException("User does not exist"));
-
-        persistedUser.setPassword(password);
-        userDao.saveOrUpdate(persistedUser);
-    }
-
     public List<User> findAllUsers() {
         return userDao.findAll();
     }
 
-    public void verifyEmail(User user) {
-        user = userDao.refresh(user);
-
-        user.setEmailVerified(true);
-        userDao.saveOrUpdate(user);
-    }
-
+    @Transactional
     public void destroyUser(User user) {
         userDao.destroy(user);
     }
 
+    @Transactional
     public void deleteUser(User user) {
         userDao.delete(user);
     }
@@ -102,8 +86,8 @@ public class UserService {
         return userDao.find(id);
     }
 
-    public List<User> getConnectedUsers(User persistedCurrentUser) {
-        return refreshUser(persistedCurrentUser)
+    public List<User> findConnectedUsers(User persistedCurrentUser) {
+        return findUserWithSameEmail(persistedCurrentUser)
                 .getConnections().stream()
                 .filter(connection -> !connection.isDeleted())
                 .map(connection -> connection.getUsers().stream()
@@ -116,13 +100,5 @@ public class UserService {
 
     private boolean isSameUser(User persistedCurrentUser, User user) {
         return user.getId() == persistedCurrentUser.getId();
-    }
-
-    public boolean canFindUserByEmail(String email) {
-        return findUserByEmail(email).isPresent();
-    }
-
-    public boolean canFindUserByEmailAndPassword(String email, String password) {
-        return findUserByEmailAndPassword(email, password).isPresent();
     }
 }

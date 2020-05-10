@@ -6,7 +6,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -14,6 +13,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="<spring:message code="label.appDescription"/>">
     <meta name="author" content="<spring:message code="label.authorName"/>">
+
+    <c:url var="iconLink" value="/img/spidey.png"/>
+    <link rel="icon" href="${iconLink}">
 
     <title><spring:message code="label.dashboard"/></title>
 
@@ -31,7 +33,7 @@
     <div class="flex-fill d-flex">
         <%@ include file="/WEB-INF/includes/sidebarNavigation.jsp" %>
 
-        <%@ include file="/WEB-INF/includes/sections/dashboardMainSection.jsp" %>
+        <%@ include file="/WEB-INF/includes/sections/tasksMainSection.jsp" %>
     </div>
 </div>
 </body>

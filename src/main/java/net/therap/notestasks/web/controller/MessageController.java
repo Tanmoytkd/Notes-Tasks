@@ -18,9 +18,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static net.therap.notestasks.config.Constants.*;
 import static net.therap.notestasks.helper.UrlHelper.getMessageUrl;
 import static net.therap.notestasks.helper.UrlHelper.redirectTo;
+import static net.therap.notestasks.util.Constants.CURRENT_USER;
+import static net.therap.notestasks.util.Constants.REDIRECT_MESSAGES;
 
 /**
  * @author tanmoy.das
@@ -28,6 +29,8 @@ import static net.therap.notestasks.helper.UrlHelper.redirectTo;
  */
 @Controller
 public class MessageController {
+
+    private static final String MESSAGES_PAGE = "messages";
 
     @Autowired
     private MessageService messageService;
@@ -50,9 +53,9 @@ public class MessageController {
 
     @RequestMapping(value = {"/message/delete/{messageId}"}, method = RequestMethod.GET)
     public String deleteMessage(@PathVariable("messageId") Message message,
-                                @SessionAttribute(CURRENT_USER_COMMAND) User currentUser) {
+                                @SessionAttribute(CURRENT_USER) User currentUser) {
 
-        User persistedCurrentUser = userService.refreshUser(currentUser);
+        User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
         if (message.getSender().getId() == persistedCurrentUser.getId()) {
             messageService.deleteMessage(message);
         }
@@ -62,9 +65,9 @@ public class MessageController {
 
     @RequestMapping(value = {"/messages/{userId}"}, method = RequestMethod.GET)
     public String showMessagesFromUser(@PathVariable("userId") User user,
-                                       @SessionAttribute(CURRENT_USER_COMMAND) User currentUser,
+                                       @SessionAttribute(CURRENT_USER) User currentUser,
                                        ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
-        currentUser = userService.refreshUser(currentUser);
+        currentUser = userService.findUserWithSameEmail(currentUser);
         if (!messageService.canSendMessage(currentUser, user)) {
             return REDIRECT_MESSAGES;
         }
@@ -80,11 +83,11 @@ public class MessageController {
     }
 
     @RequestMapping(value = {"/messages"}, method = RequestMethod.GET)
-    public String showMessages(@SessionAttribute(CURRENT_USER_COMMAND) User currentUser, ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+    public String showMessages(@SessionAttribute(CURRENT_USER) User currentUser, ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
         model.addAttribute("searchQuery", new SearchQuery());
         model.addAttribute("isMessagesPage", true);
 
-        User managedCurrentUser = userService.refreshUser(currentUser);
+        User managedCurrentUser = userService.findUserWithSameEmail(currentUser);
         model.addAttribute("messageCommand", new Message());
 
         List<User> allMessagedUsers = messageService.findAllMessagedUsers(managedCurrentUser);
@@ -93,6 +96,6 @@ public class MessageController {
         Map<User, List<Message>> allMessageGroupedByUsers = messageService.findAllMessagesGroupedByUsers(managedCurrentUser);
         model.addAttribute("allMessageGroupedByUsers", allMessageGroupedByUsers);
 
-        return DASHBOARD_PAGE;
+        return MESSAGES_PAGE;
     }
 }

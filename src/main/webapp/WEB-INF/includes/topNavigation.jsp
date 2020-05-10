@@ -10,6 +10,7 @@
 <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0" aria-label="navbar">
     <c:url var="rootLink" value="/"/>
     <a class="navbar-brand mx-3 px-2" href="${rootLink}">
+        <c:url var="iconLink" value="/img/spidey.png"/>
         <img src="${iconLink}" alt="icon">
         <spring:message code="label.appName"/>
     </a>

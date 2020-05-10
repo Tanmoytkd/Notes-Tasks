@@ -14,7 +14,7 @@ import java.util.Optional;
 public class ConnectionRequestDao extends GenericDao<ConnectionRequest> {
 
     @Override
-    public Optional<ConnectionRequest> findByExample(ConnectionRequest request) {
+    public Optional<ConnectionRequest> find(ConnectionRequest request) {
         TypedQuery<ConnectionRequest> query =
                 em.createNamedQuery("ConnectionRequest.findByExample", ConnectionRequest.class);
         query.setParameter("sender", request.getSender());

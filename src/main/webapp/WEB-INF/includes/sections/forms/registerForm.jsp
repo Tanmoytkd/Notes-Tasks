@@ -36,8 +36,8 @@
                                         placeholder="Your email address..."/>
                         </div>
                         <div class="form-group">
-                            <form:input type="password" path="password" class="form-control" id="password1"
-                                        placeholder="Your password..."/>
+                            <form:password path="password" class="form-control"
+                                           placeholder="Your password..."/>
                         </div>
                         <button type="submit" class="btn btn-info btn-block btn-round">
                             <spring:message code="label.registerTxt"/>

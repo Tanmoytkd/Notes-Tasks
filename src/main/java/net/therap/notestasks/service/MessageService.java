@@ -5,6 +5,7 @@ import net.therap.notestasks.dao.UserDao;
 import net.therap.notestasks.domain.BasicEntity;
 import net.therap.notestasks.domain.Message;
 import net.therap.notestasks.domain.User;
+import net.therap.notestasks.exception.InvalidUserException;
 import net.therap.notestasks.exception.MessagingNotPermittedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,8 +31,8 @@ public class MessageService {
     private UserDao userDao;
 
     public void sendMessage(Message message) {
-        User sender = userDao.refresh(message.getSender());
-        User receiver = userDao.refresh(message.getReceiver());
+        User sender = message.getSender();
+        User receiver = message.getReceiver();
 
         if (!canSendMessage(sender, receiver)) {
             throw new MessagingNotPermittedException(sender, receiver);
@@ -68,7 +69,7 @@ public class MessageService {
     }
 
     public Map<User, List<Message>> findAllMessagesGroupedByUsers(User user) {
-        User persistedUser = userDao.refresh(user);
+        User persistedUser = userDao.find(user).orElseThrow(InvalidUserException::new);
 
         List<Message> messageList = new ArrayList<>();
         messageList.addAll(persistedUser.getSentMessages());
@@ -91,9 +92,6 @@ public class MessageService {
     }
 
     public boolean canSendMessage(User sender, User receiver) {
-        sender = userDao.refresh(sender);
-        receiver = userDao.refresh(receiver);
-
         if (userConnectionService.isAlreadyConnected(sender, receiver)) {
             return true;
         } else {
@@ -102,19 +100,13 @@ public class MessageService {
     }
 
     private boolean hasReceivedMessage(User sender, User receiver) {
-        sender = userDao.refresh(sender);
-
         return sender.getReceivedMessages().stream()
-                .anyMatch(message -> {
-                    return message.getSender().equals(userDao.refresh(receiver));
-                });
+                .anyMatch(message -> message.getSender().equals(receiver));
     }
 
     private boolean hasSentMessage(User sender, User receiver) {
-        sender = userDao.refresh(sender);
-
         return sender.getSentMessages().stream()
-                .anyMatch(message -> message.getReceiver().equals(userDao.refresh(receiver)));
+                .anyMatch(message -> message.getReceiver().equals(receiver));
     }
 
     public Optional<Message> findMessageById(long userId) {

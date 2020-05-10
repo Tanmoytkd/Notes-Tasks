@@ -31,7 +31,7 @@ public class UserPersistedWithCredentialValidator implements Validator {
     public void validate(Object target, Errors errors) {
         User user = (User) target;
 
-        if (!userService.canFindUserByEmailAndPassword(user.getEmail(), user.getPassword())) {
+        if (!userService.findUserByEmailAndPassword(user.getEmail(), user.getPassword()).isPresent()) {
             errors.rejectValue(null, "credentialIncorrect");
         }
     }

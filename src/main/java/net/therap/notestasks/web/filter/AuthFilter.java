@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static net.therap.notestasks.config.Constants.CURRENT_USER_COMMAND;
+import static net.therap.notestasks.util.Constants.CURRENT_USER;
 
 /**
  * @author tanmoy.das
@@ -84,7 +84,7 @@ public class AuthFilter implements Filter {
     }
 
     public boolean isUser(HttpServletRequest request) {
-        return request.getSession().getAttribute(CURRENT_USER_COMMAND) != null;
+        return request.getSession().getAttribute(CURRENT_USER) != null;
     }
 
     public boolean isGuest(HttpServletRequest request) {

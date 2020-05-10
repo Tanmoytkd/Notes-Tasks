@@ -61,7 +61,7 @@
                         <c:url var="sendMessageLink" value="/message"/>
                         <form:form action="${sendMessageLink}" method="post" cssClass="flex-row form-inline w-100 my-1"
                                    modelAttribute="messageCommand">
-                            <form:hidden path="sender" value="${currentUserCommand.id}"/>
+                            <form:hidden path="sender" value="${currentUser.id}"/>
                             <form:hidden path="receiver" value="${currentMessagedUser.id}"/>
 
                             <form:textarea path="content.text"
@@ -79,7 +79,7 @@
                         <c:forEach items="${messages}" var="message">
 
                             <c:choose>
-                                <c:when test="${message.sender.id == currentUserCommand.id}">
+                                <c:when test="${message.sender.id == currentUser.id}">
                                     <c:set var="messageClass" value="flex-row"/>
                                 </c:when>
                                 <c:otherwise>
@@ -104,7 +104,7 @@
                                     </div>
                                 </div>
                                 <div class="flex-item mx-2">
-                                    <c:if test="${message.sender.id == currentUserCommand.id}">
+                                    <c:if test="${message.sender.id == currentUser.id}">
                                         <c:url var="messageDeleteLink" value="/message/delete/${message.id}"/>
                                         <a href="${messageDeleteLink}">
                                             <em class="fa fa-trash text-muted fa-1x align-self-baseline"></em>
