@@ -7,7 +7,6 @@ import net.therap.notestasks.domain.User;
 import net.therap.notestasks.service.NoteService;
 import net.therap.notestasks.service.UserConnectionService;
 import net.therap.notestasks.service.UserService;
-import net.therap.notestasks.util.HashingUtil;
 import net.therap.notestasks.validator.UserPersistedWithCredentialValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -62,8 +61,11 @@ public class ProfileController {
                                   @SessionAttribute(CURRENT_USER) User currentUser,
                                   ModelMap model) {
 
-        setupUserDataInModel(model, user, currentUser);
+        if (user.getId() == currentUser.getId()) {
+            model.addAttribute(CURRENT_USER_COMMAND_NAME, currentUser);
+        }
 
+        setupUserDataInModel(model, user, currentUser);
         return PROFILE_PAGE;
     }
 
@@ -75,8 +77,7 @@ public class ProfileController {
                                     ModelMap model,
                                     HttpSession session) throws NoSuchAlgorithmException {
 
-        userCommand.setPassword(HashingUtil.sha256Hash(userCommand.getPassword()));
-        userPersistedWithCredentialValidator.validate(currentUser, bindingResult);
+        userPersistedWithCredentialValidator.validate(userCommand, bindingResult);
 
         if (bindingResult.hasErrors()) {
             setupUserDataInModel(model, currentUser, currentUser);
@@ -86,13 +87,13 @@ public class ProfileController {
         }
 
         if (!newPassword.isEmpty()) {
-            userCommand.setPassword(HashingUtil.sha256Hash(newPassword));
+            userCommand.setPassword(newPassword);
         }
-        userService.updateUser(userCommand);
+        userService.createOrUpdateUser(userCommand);
 
         session.setAttribute(CURRENT_USER, userCommand);
 
-        return redirectTo(PROFILE_PATH);
+        return redirectTo(PROFILE_PAGE_PATH);
     }
 
     private void setupUserDataInModel(ModelMap model, User user, User currentUser) {
@@ -123,7 +124,7 @@ public class ProfileController {
                 userConnectionService.isRequestAlreadyReceived(persistedCurrentUser, persistedUser));
     }
 
-    @ModelAttribute(SEARCH_QUERY)
+    @ModelAttribute(SEARCH_QUERY_LABEL)
     private SearchQuery searchQuery() {
         return new SearchQuery();
     }

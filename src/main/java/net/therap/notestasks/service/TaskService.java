@@ -20,7 +20,6 @@ import java.util.Optional;
  * @since 4/24/20
  */
 @Service
-@Transactional
 public class TaskService {
 
     @Autowired
@@ -35,6 +34,7 @@ public class TaskService {
     @Autowired
     private TaskAssignmentDao taskAssignmentDao;
 
+    @Transactional
     public void createTask(Task task) {
         taskDao.saveOrUpdate(task);
 
@@ -43,10 +43,12 @@ public class TaskService {
         userDao.saveOrUpdate(creator);
     }
 
+    @Transactional
     public void updateTask(Task task) {
         taskDao.saveOrUpdate(task);
     }
 
+    @Transactional
     public void deleteTask(Task task) {
         User creator = task.getCreator();
         creator.getOwnTasks().remove(task);
@@ -56,9 +58,11 @@ public class TaskService {
 
         task.getComments().forEach(this::deleteTaskComment);
 
-        taskDao.delete(task);
+        task.setDeleted(true);
+        taskDao.saveOrUpdate(task);
     }
 
+    @Transactional
     public void createTaskComment(TaskComment taskComment) {
         taskCommentDao.saveOrUpdate(taskComment);
 
@@ -71,6 +75,7 @@ public class TaskService {
         userDao.saveOrUpdate(writer);
     }
 
+    @Transactional
     public void updateTaskComment(TaskComment taskComment) {
         taskCommentDao.saveOrUpdate(taskComment);
     }
@@ -84,9 +89,11 @@ public class TaskService {
         writer.getTaskComments().remove(taskComment);
         userDao.saveOrUpdate(writer);
 
-        taskCommentDao.delete(taskComment);
+        taskComment.setDeleted(true);
+        taskCommentDao.saveOrUpdate(taskComment);
     }
 
+    @Transactional
     public void createTaskAssignment(TaskAssignment taskAssignment) {
         User user = taskAssignment.getUser();
         Task task = taskAssignment.getTask();
@@ -108,10 +115,12 @@ public class TaskService {
         }
     }
 
+    @Transactional
     public void updateTaskAssignment(TaskAssignment taskAssignment) {
         taskAssignmentDao.saveOrUpdate(taskAssignment);
     }
 
+    @Transactional
     public void deleteTaskAssignment(TaskAssignment taskAssignment) {
         Task task = taskAssignment.getTask();
         task.getTaskAssignments().remove(taskAssignment);
@@ -121,9 +130,11 @@ public class TaskService {
         user.getTaskAssignments().remove(taskAssignment);
         userDao.saveOrUpdate(user);
 
-        taskAssignmentDao.delete(taskAssignment);
+        taskAssignment.setDeleted(true);
+        taskAssignmentDao.saveOrUpdate(taskAssignment);
     }
 
+    @Transactional
     public void updateTaskAssignmentCompleteStatus(TaskAssignment taskAssignment, boolean isComplete) {
         taskAssignment.setCompleted(isComplete);
         updateTaskAssignment(taskAssignment);

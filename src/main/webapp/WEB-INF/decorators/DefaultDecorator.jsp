@@ -10,7 +10,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <c:url var="iconLink" value="/img/spidey.png"/>
+    <c:url var="iconLink" value="${Constants.NOTES_TASKS_FAVICON_LINK}"/>
     <link rel="icon" href="${iconLink}">
 
     <title><spring:message code="label.title"/>: <sitemesh:write property='title'/></title>

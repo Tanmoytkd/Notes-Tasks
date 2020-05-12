@@ -2,6 +2,7 @@ package net.therap.notestasks.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @author tanmoy.das
@@ -11,10 +12,11 @@ import javax.validation.constraints.NotNull;
         @NamedQuery(name = "TaskAssignment.findAll",
                 query = "FROM TaskAssignment taskAssignment WHERE taskAssignment.deleted = false")
 })
-
 @Entity
-@Table(name = "task_assignments")
-public class TaskAssignment extends BasicEntity {
+@Table(name = "task_assignment")
+public class TaskAssignment extends BasicEntity implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     @NotNull
     @ManyToOne

@@ -7,6 +7,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<%@ page import="net.therap.notestasks.util.Constants" %>
+
 <c:url var="jqueryLink" value="/js/jquery-3.4.1.min.js"/>
 <script src="${jqueryLink}"></script>
 

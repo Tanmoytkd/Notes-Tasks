@@ -1,6 +1,7 @@
 package net.therap.notestasks.converter;
 
 import net.therap.notestasks.domain.User;
+import net.therap.notestasks.exception.InvalidUserException;
 import net.therap.notestasks.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
@@ -20,6 +21,6 @@ public class StringToUserConverter implements Converter<String, User> {
     public User convert(String id) {
 
         long userId = Long.parseLong(id);
-        return userService.findUserById(userId).orElse(null);
+        return userService.findUserById(userId).orElseThrow(InvalidUserException::new);
     }
 }

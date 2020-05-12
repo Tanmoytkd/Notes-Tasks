@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +16,11 @@ import java.util.List;
         @NamedQuery(name = "Note.findAll",
                 query = "FROM Note note WHERE note.deleted = false")
 })
-
 @Entity
-@Table(name = "notes")
-public class Note extends BasicEntity {
+@Table(name = "note")
+public class Note extends BasicEntity implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     @NotNull
     @ManyToOne

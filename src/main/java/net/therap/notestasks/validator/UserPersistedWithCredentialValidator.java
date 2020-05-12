@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.security.NoSuchAlgorithmException;
+
 /**
  * @author tanmoy.das
  * @since 5/8/20
@@ -31,8 +33,12 @@ public class UserPersistedWithCredentialValidator implements Validator {
     public void validate(Object target, Errors errors) {
         User user = (User) target;
 
-        if (!userService.findUserByEmailAndPassword(user.getEmail(), user.getPassword()).isPresent()) {
-            errors.rejectValue(null, "credentialIncorrect");
+        try {
+            if (!userService.findUserByEmailAndPassword(user.getEmail(), user.getPassword()).isPresent()) {
+                errors.rejectValue(null, "credentialIncorrect");
+            }
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("Hashing Algorithm not Supported: ", e);
         }
     }
 }

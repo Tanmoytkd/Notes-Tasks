@@ -22,7 +22,7 @@ public class UserConnectionDao extends GenericDao<UserConnection> {
         return query.getResultList().stream().findFirst();
     }
 
-    protected UserConnectionDao() {
+    public UserConnectionDao() {
         super(UserConnection.class);
     }
 }

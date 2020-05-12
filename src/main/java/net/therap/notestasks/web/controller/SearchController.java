@@ -33,7 +33,7 @@ public class SearchController {
     public String listReports(@ModelAttribute("searchQuery") SearchQuery searchQuery, Errors errors, ModelMap model) {
         model.addAttribute("isSearchPage", true);
 
-        List<User> users = userService.findUsersWithString(searchQuery.getQuery());
+        List<User> users = userService.findUsersByNameOrEmail(searchQuery.getQuery());
         model.addAttribute("users", users);
 
         return SEARCH_PAGE;

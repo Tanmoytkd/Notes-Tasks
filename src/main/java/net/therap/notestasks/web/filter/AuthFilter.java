@@ -53,7 +53,7 @@ public class AuthFilter implements Filter {
             logger.info("Access Granted at {}", url);
             chain.doFilter(request, response);
         } else {
-            String userStatus = isUser(req) ? "User" : "Guest";
+            String userStatus = isUserLoggedIn(req) ? "User" : "Guest";
             logger.warn("Access not Granted to {} at {}", userStatus, url);
 
             resp.sendRedirect(req.getContextPath());
@@ -71,7 +71,7 @@ public class AuthFilter implements Filter {
             return true;
         }
 
-        if (isUser(req) && !Arrays.asList(GUEST_URLS).contains(url)) {
+        if (isUserLoggedIn(req) && !Arrays.asList(GUEST_URLS).contains(url)) {
             return true;
         }
 
@@ -83,11 +83,11 @@ public class AuthFilter implements Filter {
 
     }
 
-    public boolean isUser(HttpServletRequest request) {
+    public boolean isUserLoggedIn(HttpServletRequest request) {
         return request.getSession().getAttribute(CURRENT_USER) != null;
     }
 
     public boolean isGuest(HttpServletRequest request) {
-        return !isUser(request);
+        return !isUserLoggedIn(request);
     }
 }

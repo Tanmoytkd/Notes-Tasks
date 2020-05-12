@@ -7,11 +7,12 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<%@ page import="net.therap.notestasks.util.Constants" %>
 <%@ page import="net.therap.notestasks.util.HashingUtil" %>
 
 <main role="main" class="flex-fill d-flex pt-3 px-4">
     <div class="d-flex flex-fill">
-        <c:url var="userLink" value="/profile/${user.id}"/>
+        <c:url var="userLink" value="${Constants.PROFILE_BASE_PATH}/${user.id}"/>
         <div class="card col-6 col-md-6 mx-2 my-1 p-3">
             <c:set var="emailHash" value="${HashingUtil.md5Hex(user.getEmail())}"/>
             <c:url var="profilePictureUrl" value="https://www.gravatar.com/avatar/${emailHash}.jpg?s=800"/>
@@ -28,44 +29,44 @@
                 <c:if test="${!isMyself}">
                     <a href="${userLink}">
                         <h5 class="card-title text-dark font-weight-bold">
-                                ${user.name}
+                            <c:out value="${user.name}"/>
                         </h5>
                     </a>
                     <p class="card-text">
-                            ${user.about}
+                        <c:out value="${user.about}"/>
                     </p>
                     <c:choose>
                         <c:when test="${isUserConnected}">
-                            <c:url var="removeConnectionLink" value="/connection/remove/${user.id}"/>
+                            <c:url var="removeConnectionLink" value="${Constants.REMOVE_CONNECTION_PATH}/${user.id}"/>
                             <a href="${removeConnectionLink}" class="btn btn-danger">
                                 <spring:message code="label.removeConnection"/>
                             </a>
 
-                            <c:url var="showUserMessagesLink" value="/messages/${user.id}"/>
+                            <c:url var="showUserMessagesLink" value="${Constants.MESSAGES_BASE_PATH}/${user.id}"/>
                             <a href="${showUserMessagesLink}" class="btn btn-secondary">
                                 <em class="fa fa-envelope"></em>
                                 Send Message
                             </a>
                         </c:when>
                         <c:when test="${isRequestSent}">
-                            <c:url var="cancelConnectionRequestLink" value="/connection/cancel/${user.id}"/>
+                            <c:url var="cancelConnectionRequestLink" value="${Constants.CANCEL_CONNECTION_PATH}/${user.id}"/>
                             <a href="${cancelConnectionRequestLink}" class="btn btn-info">
                                 <spring:message code="label.cancelConnectionRequest"/>
                             </a>
                         </c:when>
                         <c:when test="${isRequestReceived}">
-                            <c:url var="acceptConnectionReqeustLink" value="/connection/accept/${user.id}"/>
+                            <c:url var="acceptConnectionReqeustLink" value="${Constants.ACCEPT_CONNECTION_PATH}/${user.id}"/>
                             <a href="${acceptConnectionReqeustLink}" class="btn btn-success">
                                 <spring:message code="label.acceptConnection"/>
                             </a>
 
-                            <c:url var="rejectConnectionRequestLink" value="/connection/reject/${user.id}"/>
+                            <c:url var="rejectConnectionRequestLink" value="${Constants.REJECT_CONNECTION_PATH}/${user.id}"/>
                             <a href="${rejectConnectionRequestLink}" class="btn btn-danger">
                                 <spring:message code="label.rejectConnection"/>
                             </a>
                         </c:when>
                         <c:otherwise>
-                            <c:url var="sendConnectionRequestLink" value="/connection/send/${user.id}"/>
+                            <c:url var="sendConnectionRequestLink" value="${Constants.SEND_CONNECTION_REQUEST_PATH}/${user.id}"/>
                             <a href="${sendConnectionRequestLink}" class="btn btn-primary">
                                 <spring:message code="label.sendConnectionRequest"/>
                             </a>
@@ -78,7 +79,7 @@
                 </c:if>
 
                 <c:if test="${isMyself}">
-                    <c:url var="updateProfileLink" value="/profile/update"/>
+                    <c:url var="updateProfileLink" value="${Constants.UPDATE_PROFILE_PATH}"/>
 
                     <form:errors path="currentUserCommand.*" cssClass="alert-danger" element="div"/>
 
@@ -105,8 +106,8 @@
 
                         <div class="form-group">
                             <label for="password"><spring:message code="label.passwordTxt"/>: </label>
-                            <input id="password" name="password" type="password" class="form-control" value=""
-                                   placeholder="Enter Password to update profile"/>
+                            <form:password path="password" cssClass="form-control"
+                                           placeholder="Enter Password to update profile"/>
                         </div>
 
                         <div class="form-group">
@@ -139,7 +140,7 @@
                         <div class="card-body">
                             <div class="d-flex flex-column">
                                 <c:forEach items="${connectedUsers}" var="user">
-                                    <c:url var="userLink" value="/profile/${user.id}"/>
+                                    <c:url var="userLink" value="${Constants.PROFILE_BASE_PATH}/${user.id}"/>
 
                                     <div class="flex-fill d-flex my-2">
                                         <c:set var="emailHash" value="${HashingUtil.md5Hex(user.getEmail())}"/>
@@ -152,15 +153,15 @@
                                         <div class="d-flex flex-column flex-fill mx-2">
                                             <a href="${userLink}">
                                                 <h5 class="card-title text-dark font-weight-bold">
-                                                        ${user.name}
+                                                    <c:out value="${user.name}"/>
                                                 </h5>
                                             </a>
                                             <p class="card-text">
-                                                    ${user.about}
+                                                <c:out value="${user.about}"/>
                                             </p>
                                         </div>
                                         <a href="${userLink}" class="btn btn-primary">
-                                            View Profile
+                                            <spring:message code="label.viewProfile"/>
                                         </a>
                                     </div>
                                 </c:forEach>
@@ -182,7 +183,7 @@
                             <div class="d-flex flex-column list-group">
                                 <c:forEach items="${accessibleNotes}" var="note">
                                     <div class="d-flex list-group-item">
-                                        <c:url var="noteLink" value="/note/${note.id}"/>
+                                        <c:url var="noteLink" value="${Constants.NOTE_BASE_PATH}/${note.id}"/>
                                         <a href="${noteLink}">
                                             <h2>${note.title}</h2>
                                         </a>

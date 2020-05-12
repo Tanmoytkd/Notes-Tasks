@@ -7,19 +7,20 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<%@ page import="net.therap.notestasks.util.Constants" %>
 <%@ page import="net.therap.notestasks.util.HashingUtil" %>
 
 <main role="main" class="col-md-9 col-lg-10 pt-3 px-4">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap
                     align-items-center pb-2 mb-3 border-bottom">
         <h1 class="h2">
-            <spring:message code="label.searchResults"/>: ${searchQuery.query}
+            <spring:message code="label.searchResults"/>: <c:out value="${searchQuery.query}"/>
         </h1>
     </div>
 
     <div class="row">
         <c:forEach items="${users}" var="user">
-            <c:url var="userLink" value="/profile/${user.id}"/>
+            <c:url var="userLink" value="${Constants.PROFILE_BASE_PATH}/${user.id}"/>
 
             <div class="card m-1" style="width: 18rem;">
                 <c:set var="emailHash" value="${HashingUtil.md5Hex(user.getEmail())}"/>

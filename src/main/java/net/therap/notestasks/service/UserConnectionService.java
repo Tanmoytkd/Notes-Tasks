@@ -20,7 +20,6 @@ import java.util.Arrays;
  * @since 4/24/20
  */
 @Service
-@Transactional
 public class UserConnectionService {
 
     @Autowired
@@ -32,6 +31,7 @@ public class UserConnectionService {
     @Autowired
     private UserDao userDao;
 
+    @Transactional
     public void sendConnectionRequest(ConnectionRequest connectionRequest) {
         if (isRequestAlreadySent(connectionRequest)) {
             throw new DuplicateConnectionRequestException();
@@ -51,6 +51,7 @@ public class UserConnectionService {
         createConnectionRequest(connectionRequest);
     }
 
+    @Transactional
     public void acceptConnectionRequest(ConnectionRequest connectionRequest) {
 
         User sender = connectionRequest.getSender();
@@ -63,20 +64,24 @@ public class UserConnectionService {
         createConnection(sender, receiver);
     }
 
+    @Transactional
     public void cancelConnectionRequest(ConnectionRequest connectionRequest) {
         deleteConnectionRequest(connectionRequest);
     }
 
+    @Transactional
     public void removeUserConnection(UserConnection connection) {
         for (User user : connection.getUsers()) {
             user.getConnections().remove(connection);
             userDao.saveOrUpdate(user);
         }
 
-        connectionDao.delete(connection);
+        connection.setDeleted(true);
+        connectionDao.saveOrUpdate(connection);
     }
 
-    private void createConnection(User sender, User receiver) {
+    @Transactional
+    public void createConnection(User sender, User receiver) {
         UserConnection connection = new UserConnection();
         connection.setUsers(Arrays.asList(sender, receiver));
 
@@ -86,7 +91,8 @@ public class UserConnectionService {
         connection = connectionDao.saveOrUpdate(connection);
     }
 
-    private void deleteConnectionRequest(ConnectionRequest connectionRequest) {
+    @Transactional
+    public void deleteConnectionRequest(ConnectionRequest connectionRequest) {
         User sender = connectionRequest.getSender();
         User receiver = connectionRequest.getReceiver();
 
@@ -95,7 +101,22 @@ public class UserConnectionService {
 
         userDao.saveOrUpdate(sender);
         userDao.saveOrUpdate(receiver);
-        connectionRequestDao.delete(connectionRequest);
+
+        connectionRequest.setDeleted(true);
+        connectionRequestDao.saveOrUpdate(connectionRequest);
+    }
+
+    @Transactional
+    public void createConnectionRequest(ConnectionRequest connectionRequest) {
+        User sender = userDao.find(connectionRequest.getSender()).orElseThrow(InvalidUserException::new);
+        User receiver = userDao.find(connectionRequest.getReceiver()).orElseThrow(InvalidUserException::new);
+
+        connectionRequestDao.saveOrUpdate(connectionRequest);
+
+        sender.getSentConnectionRequests().add(connectionRequest);
+        receiver.getReceivedConnectionRequests().add(connectionRequest);
+        userDao.saveOrUpdate(sender);
+        userDao.saveOrUpdate(receiver);
     }
 
     public boolean isRequestAlreadySent(User sender, User receiver) {
@@ -117,17 +138,5 @@ public class UserConnectionService {
 
     public boolean isRequestAlreadyReceived(User currentUser, User user) {
         return isRequestAlreadySent(user, currentUser);
-    }
-
-    private void createConnectionRequest(ConnectionRequest connectionRequest) {
-        User sender = userDao.find(connectionRequest.getSender()).orElse(null);
-        User receiver = userDao.find(connectionRequest.getReceiver()).orElse(null);
-
-        connectionRequestDao.saveOrUpdate(connectionRequest);
-
-        sender.getSentConnectionRequests().add(connectionRequest);
-        receiver.getReceivedConnectionRequests().add(connectionRequest);
-        userDao.saveOrUpdate(sender);
-        userDao.saveOrUpdate(receiver);
     }
 }

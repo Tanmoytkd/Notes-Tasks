@@ -16,7 +16,6 @@ import java.util.Optional;
  * @since 4/24/20
  */
 @Service
-@Transactional
 public class NoteService {
 
     @Autowired
@@ -31,6 +30,7 @@ public class NoteService {
     @Autowired
     private NoteAccessDao noteAccessDao;
 
+    @Transactional
     public void createNote(Note note) {
         User writer = note.getWriter();
         writer.getOwnNotes().add(note);
@@ -39,10 +39,12 @@ public class NoteService {
         userDao.saveOrUpdate(writer);
     }
 
+    @Transactional
     public void updateNote(Note note) {
         noteDao.saveOrUpdate(note);
     }
 
+    @Transactional
     public void deleteNote(Note note) {
         User writer = note.getWriter();
         writer.getOwnNotes().remove(note);
@@ -52,9 +54,11 @@ public class NoteService {
 
         note.getNoteAccesses().forEach(this::deleteNoteAccess);
 
-        noteDao.delete(note);
+        note.setDeleted(true);
+        noteDao.saveOrUpdate(note);
     }
 
+    @Transactional
     public void createNoteComment(NoteComment noteComment) {
         noteCommentDao.saveOrUpdate(noteComment);
 
@@ -67,10 +71,12 @@ public class NoteService {
         userDao.saveOrUpdate(writer);
     }
 
+    @Transactional
     public void updateNoteComment(NoteComment noteComment) {
         noteCommentDao.saveOrUpdate(noteComment);
     }
 
+    @Transactional
     public void deleteNoteComment(NoteComment noteComment) {
         Note note = noteComment.getNote();
         note.getComments().remove(noteComment);
@@ -80,9 +86,11 @@ public class NoteService {
         writer.getNoteComments().remove(noteComment);
         userDao.saveOrUpdate(writer);
 
-        noteCommentDao.delete(noteComment);
+        noteComment.setDeleted(true);
+        noteCommentDao.saveOrUpdate(noteComment);
     }
 
+    @Transactional
     public void createNoteAccess(NoteAccess noteAccess) {
         Note note = noteAccess.getNote();
         User user = noteAccess.getUser();
@@ -104,10 +112,12 @@ public class NoteService {
         }
     }
 
+    @Transactional
     public void updateNoteAccess(NoteAccess noteAccess) {
         noteAccessDao.saveOrUpdate(noteAccess);
     }
 
+    @Transactional
     public void deleteNoteAccess(NoteAccess noteAccess) {
         Note note = noteAccess.getNote();
         note.getNoteAccesses().remove(noteAccess);
@@ -117,7 +127,8 @@ public class NoteService {
         user.getSharedNoteAccesses().remove(noteAccess);
         userDao.saveOrUpdate(user);
 
-        noteAccessDao.delete(noteAccess);
+        noteAccess.setDeleted(true);
+        noteAccessDao.saveOrUpdate(noteAccess);
     }
 
     public Optional<Note> findNoteById(long noteId) {

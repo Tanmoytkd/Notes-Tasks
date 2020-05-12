@@ -7,6 +7,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<%@ page import="net.therap.notestasks.util.Constants" %>
+
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -24,8 +26,8 @@
                     <form:errors path="loginUserCommand.*" cssClass="alert-danger text-center my-3" element="div"/>
                 </div>
                 <div class="d-flex flex-column text-center">
-                    <c:url var="noteAccessLink" value="/login"/>
-                    <form:form method="post" action="${noteAccessLink}" modelAttribute="loginUserCommand">
+                    <c:url var="loginLink" value="${Constants.LOGIN_PATH}"/>
+                    <form:form method="post" action="${loginLink}" modelAttribute="loginUserCommand">
                         <div class="form-group">
                             <form:input type="email" path="email" class="form-control" id="email1"
                                         placeholder="Your email address..."/>

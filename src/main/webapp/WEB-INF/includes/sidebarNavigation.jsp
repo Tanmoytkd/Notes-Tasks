@@ -7,12 +7,14 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<%@ page import="net.therap.notestasks.util.Constants" %>
+
 <nav class="col-md-2 col-xl-1 d-none d-md-block bg-light sidebar p-0">
     <div class="sidebar-sticky">
         <ul class="nav flex-column">
             <li class="nav-item justify-content-center text-center">
-                <c:url var="rootLink" value="/"/>
-                <a class="nav-link <c:if test="${isDashboardPage}">active</c:if>" href="${rootLink}">
+                <c:url var="dashboardLink" value="${Constants.DASHBOARD_PAGE_PATH}"/>
+                <a class="nav-link <c:if test="${isDashboardPage}">active</c:if>" href="${dashboardLink}">
                     <em class="fa fa-home fa-3x circle-icon"></em>
                     <spring:message code="label.dashboard"/>
                     <c:if test="${isDashboardPage}">
@@ -22,7 +24,7 @@
             </li>
 
             <li class="nav-item justify-content-center text-center">
-                <c:url var="messagesLink" value="/messages"/>
+                <c:url var="messagesLink" value="${Constants.MESSAGES_PAGE_PATH}"/>
                 <a class="nav-link <c:if test="${isMessagesPage}">active</c:if>" href="${messagesLink}">
                     <em class="fa fa-envelope fa-3x circle-icon"></em>
                     <spring:message code="label.messages"/>
@@ -33,7 +35,7 @@
             </li>
 
             <li class="nav-item justify-content-center text-center">
-                <c:url var="notesLink" value="/notes"/>
+                <c:url var="notesLink" value="${Constants.NOTES_PAGE_PATH}"/>
                 <a class="nav-link <c:if test="${isNotesPage}">active</c:if>" href="${notesLink}">
                     <em class="fa fa-book fa-3x circle-icon"></em>
                     <spring:message code="label.notes"/>
@@ -44,7 +46,7 @@
             </li>
 
             <li class="nav-item justify-content-center text-center">
-                <c:url var="tasksLink" value="/tasks"/>
+                <c:url var="tasksLink" value="${Constants.TASKS_PAGE_PATH}"/>
                 <a class="nav-link <c:if test="${isTasksPage}">active</c:if>" href="${tasksLink}">
                     <em class="fa fa-tasks fa-3x circle-icon"></em>
                     <spring:message code="label.tasks"/>
@@ -55,7 +57,7 @@
             </li>
 
             <li class="d-none nav-item justify-content-center text-center">
-                <c:url var="reportsLink" value="/reports"/>
+                <c:url var="reportsLink" value="${Constants.REPORTS_PAGE_PATH}"/>
                 <a class="nav-link <c:if test="${isReportsPage}">active</c:if>" href="${reportsLink}">
                     <em class="fa fa-flag fa-3x circle-icon"></em>
                     <spring:message code="label.reports"/>
@@ -66,7 +68,7 @@
             </li>
 
             <li class="nav-item justify-content-center text-center">
-                <c:url var="profileLink" value="/profile"/>
+                <c:url var="profileLink" value="${Constants.PROFILE_PAGE_PATH}"/>
                 <a class="nav-link <c:if test="${isProfilePage}">active</c:if>" href="${profileLink}">
                     <em class="fa fa-user fa-3x circle-icon"></em>
                     <spring:message code="label.profile"/>

@@ -2,6 +2,7 @@ package net.therap.notestasks.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @author tanmoy.das
@@ -11,10 +12,11 @@ import javax.validation.constraints.NotNull;
         @NamedQuery(name = "Message.findAll",
                 query = "FROM Message message WHERE message.deleted = false")
 })
-
 @Entity
-@Table(name = "messages")
-public class Message extends BasicEntity {
+@Table(name = "message")
+public class Message extends BasicEntity implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     @NotNull
     @ManyToOne

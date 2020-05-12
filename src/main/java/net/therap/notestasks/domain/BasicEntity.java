@@ -1,6 +1,7 @@
 package net.therap.notestasks.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -8,7 +9,9 @@ import java.util.Date;
  * @since 4/12/20
  */
 @MappedSuperclass
-public class BasicEntity {
+public class BasicEntity implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

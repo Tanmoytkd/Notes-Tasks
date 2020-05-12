@@ -2,12 +2,13 @@ package net.therap.notestasks.service;
 
 import net.therap.notestasks.dao.UserDao;
 import net.therap.notestasks.domain.User;
-import net.therap.notestasks.exception.DuplicateEmailException;
 import net.therap.notestasks.exception.InvalidUserException;
+import net.therap.notestasks.util.HashingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,33 +24,18 @@ public class UserService {
     private UserDao userDao;
 
     @Transactional
-    public User createUser(User user) {
-        if (userDao.findByEmail(user.getEmail()).isPresent()) {
-            throw new DuplicateEmailException();
-        }
-
+    public User createOrUpdateUser(User user) throws NoSuchAlgorithmException {
+        user.setPassword(HashingUtil.sha256Hash(user.getPassword()));
         return userDao.saveOrUpdate(user);
-    }
-
-    @Transactional
-    public void updateUser(User user) {
-        if (!userDao.find(user).isPresent()) {
-            throw new InvalidUserException("User does not exist");
-        }
-
-        userDao.saveOrUpdate(user);
     }
 
     public User findUserWithSameEmail(User user) {
         return userDao.findByEmail(user.getEmail()).orElseThrow(InvalidUserException::new);
     }
 
-    public List<User> findUsersByName(String name) {
-        return userDao.findUsersContainingName(name);
-    }
 
-    public List<User> findUsersWithString(String s) {
-        List<User> users = findUsersByName(s);
+    public List<User> findUsersByNameOrEmail(String s) {
+        List<User> users = userDao.findUsersContainingName(s);
 
         findUserByEmail(s).ifPresent(users::add);
 
@@ -60,8 +46,8 @@ public class UserService {
         return userDao.findByEmail(email);
     }
 
-    public Optional<User> findUserByEmailAndPassword(String email, String password) {
-        return userDao.findByEmailAndPassword(email, password);
+    public Optional<User> findUserByEmailAndPassword(String email, String password) throws NoSuchAlgorithmException {
+        return userDao.findByEmailAndPassword(email, HashingUtil.sha256Hash(password));
     }
 
     public Optional<User> findUserBySecret(String secret) {
@@ -70,16 +56,6 @@ public class UserService {
 
     public List<User> findAllUsers() {
         return userDao.findAll();
-    }
-
-    @Transactional
-    public void destroyUser(User user) {
-        userDao.destroy(user);
-    }
-
-    @Transactional
-    public void deleteUser(User user) {
-        userDao.delete(user);
     }
 
     public Optional<User> findUserById(long id) {

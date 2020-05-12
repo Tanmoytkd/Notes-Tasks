@@ -7,6 +7,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<%@ page import="net.therap.notestasks.util.Constants" %>
 
 <!doctype html>
 <html lang="en">
@@ -16,7 +17,7 @@
     <meta name="description" content="<spring:message code="label.appName"/>">
     <meta name="author" content="<spring:message code="label.authorName"/>">
 
-    <c:url var="iconLink" value="/img/spidey.png"/>
+    <c:url var="iconLink" value="${Constants.NOTES_TASKS_FAVICON_LINK}"/>
     <link rel="icon" href="${iconLink}">
 
     <title><spring:message code="label.welcome"/></title>
@@ -36,13 +37,13 @@
                     <div>
                         <c:url var="bnLink" value="?locale=bn"/>
                         <a href="${bnLink}">
-                            <c:url var="bdFlagLink" value="/img/bd-flag.png"/>
+                            <c:url var="bdFlagLink" value="${Constants.BD_FLAG_IMG_LINK}"/>
                             <img src="${bdFlagLink}" class="" alt="Bengali">
                         </a>
 
                         <c:url var="enLink" value="?locale=en"/>
                         <a href="${enLink}">
-                            <c:url var="usFlagLink" value="/img/us-flag.png"/>
+                            <c:url var="usFlagLink" value="${Constants.US_FLAG_IMG_LINK}"/>
                             <img src="${usFlagLink}" class="" alt="English">
                         </a>
                     </div>

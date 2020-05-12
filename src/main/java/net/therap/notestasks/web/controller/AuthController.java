@@ -2,7 +2,6 @@ package net.therap.notestasks.web.controller;
 
 import net.therap.notestasks.domain.User;
 import net.therap.notestasks.service.UserService;
-import net.therap.notestasks.util.HashingUtil;
 import net.therap.notestasks.validator.UserPersistedWithCredentialValidator;
 import net.therap.notestasks.validator.UserWithDistinctEmailValidator;
 import org.slf4j.Logger;
@@ -20,8 +19,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 import static net.therap.notestasks.helper.UrlHelper.redirectTo;
-import static net.therap.notestasks.util.Constants.CURRENT_USER;
-import static net.therap.notestasks.util.Constants.DASHBOARD_PATH;
+import static net.therap.notestasks.util.Constants.*;
 
 /**
  * @author tanmoy.das
@@ -51,7 +49,7 @@ public class AuthController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String showHomePage(ModelMap model, HttpSession session) {
         if (isAuthenticated(session)) {
-            return redirectTo(DASHBOARD_PATH);
+            return redirectTo(DASHBOARD_PAGE_PATH);
         } else {
             setupModelUserCommands(model, new User(), new User());
 
@@ -79,8 +77,7 @@ public class AuthController {
             return INDEX_PAGE;
         }
 
-        user.setPassword(HashingUtil.sha256Hash(user.getPassword()));
-        User persistedUser = userService.createUser(user);
+        User persistedUser = userService.createOrUpdateUser(user);
         logger.info("User created with email {}", persistedUser.getEmail());
 
         session.setAttribute(CURRENT_USER, persistedUser);
@@ -93,13 +90,12 @@ public class AuthController {
                               ModelMap model,
                               HttpSession session) throws NoSuchAlgorithmException {
 
-        user.setPassword(HashingUtil.sha256Hash(user.getPassword()));
         userPersistedWithCredentialValidator.validate(user, bindingResult);
 
         if (bindingResult.hasErrors()) {
             user.setPassword("");
             setupModelUserCommands(model, new User(), user);
-            return redirectTo(INDEX_PAGE);
+            return INDEX_PAGE;
         }
 
         Optional<User> userOptional = userService.findUserByEmailAndPassword(user.getEmail(), user.getPassword());

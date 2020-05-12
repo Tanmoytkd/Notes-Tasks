@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ReportDao extends GenericDao<Report> {
 
-    protected ReportDao() {
+    public ReportDao() {
         super(Report.class);
     }
 }

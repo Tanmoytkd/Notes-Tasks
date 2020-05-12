@@ -49,7 +49,7 @@ public class DashboardController {
         model.addAttribute(CONNECTION_REQUESTS, connectionRequests);
     }
 
-    @ModelAttribute(SEARCH_QUERY)
+    @ModelAttribute(SEARCH_QUERY_LABEL)
     private SearchQuery searchQuery() {
         return new SearchQuery();
     }

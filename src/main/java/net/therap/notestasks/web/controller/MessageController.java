@@ -4,15 +4,13 @@ import net.therap.notestasks.command.SearchQuery;
 import net.therap.notestasks.domain.Message;
 import net.therap.notestasks.domain.User;
 import net.therap.notestasks.service.MessageService;
+import net.therap.notestasks.service.UserConnectionService;
 import net.therap.notestasks.service.UserService;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,19 +37,19 @@ public class MessageController {
     private UserService userService;
 
     @Autowired
-    private Logger logger;
+    private UserConnectionService userConnectionService;
 
-    @RequestMapping(value = {"/message"}, method = RequestMethod.POST)
+    @RequestMapping(value = "/message", method = RequestMethod.POST)
     public String sendMessage(@ModelAttribute("messageCommand") Message message) {
 
-        if (messageService.canSendMessage(message.getSender(), message.getReceiver())) {
+        if (canSendMessage(message.getSender(), message.getReceiver())) {
             messageService.sendMessage(message);
         }
 
         return redirectTo(getMessageUrl(message.getReceiver()));
     }
 
-    @RequestMapping(value = {"/message/delete/{messageId}"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/message/delete/{messageId}", method = RequestMethod.GET)
     public String deleteMessage(@PathVariable("messageId") Message message,
                                 @SessionAttribute(CURRENT_USER) User currentUser) {
 
@@ -63,12 +61,12 @@ public class MessageController {
         return redirectTo(getMessageUrl(message.getReceiver()));
     }
 
-    @RequestMapping(value = {"/messages/{userId}"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/messages/{userId}", method = RequestMethod.GET)
     public String showMessagesFromUser(@PathVariable("userId") User user,
                                        @SessionAttribute(CURRENT_USER) User currentUser,
-                                       ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+                                       ModelMap model) {
         currentUser = userService.findUserWithSameEmail(currentUser);
-        if (!messageService.canSendMessage(currentUser, user)) {
+        if (!canSendMessage(currentUser, user)) {
             return REDIRECT_MESSAGES;
         }
 
@@ -79,11 +77,12 @@ public class MessageController {
         Collections.reverse(messages);
         model.addAttribute("messages", messages);
 
-        return showMessages(currentUser, model, req, resp);
+        return showMessages(currentUser, model);
     }
 
-    @RequestMapping(value = {"/messages"}, method = RequestMethod.GET)
-    public String showMessages(@SessionAttribute(CURRENT_USER) User currentUser, ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
+    @RequestMapping(value = "/messages", method = RequestMethod.GET)
+    public String showMessages(@SessionAttribute(CURRENT_USER) User currentUser,
+                               ModelMap model) {
         model.addAttribute("searchQuery", new SearchQuery());
         model.addAttribute("isMessagesPage", true);
 
@@ -97,5 +96,23 @@ public class MessageController {
         model.addAttribute("allMessageGroupedByUsers", allMessageGroupedByUsers);
 
         return MESSAGES_PAGE;
+    }
+
+    public boolean canSendMessage(User sender, User receiver) {
+        if (userConnectionService.isAlreadyConnected(sender, receiver)) {
+            return true;
+        } else {
+            return hasSentMessage(sender, receiver) || hasReceivedMessage(sender, receiver);
+        }
+    }
+
+    private boolean hasReceivedMessage(User sender, User receiver) {
+        return sender.getReceivedMessages().stream()
+                .anyMatch(message -> message.getSender().equals(receiver));
+    }
+
+    private boolean hasSentMessage(User sender, User receiver) {
+        return sender.getSentMessages().stream()
+                .anyMatch(message -> message.getReceiver().equals(receiver));
     }
 }

@@ -6,7 +6,6 @@ import net.therap.notestasks.domain.BasicEntity;
 import net.therap.notestasks.domain.Message;
 import net.therap.notestasks.domain.User;
 import net.therap.notestasks.exception.InvalidUserException;
-import net.therap.notestasks.exception.MessagingNotPermittedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
  * @since 4/24/20
  */
 @Service
-@Transactional
 public class MessageService {
 
     @Autowired
@@ -30,13 +28,10 @@ public class MessageService {
     @Autowired
     private UserDao userDao;
 
+    @Transactional
     public void sendMessage(Message message) {
         User sender = message.getSender();
         User receiver = message.getReceiver();
-
-        if (!canSendMessage(sender, receiver)) {
-            throw new MessagingNotPermittedException(sender, receiver);
-        }
 
         sender.getSentMessages().add(message);
         receiver.getReceivedMessages().add(message);
@@ -46,10 +41,12 @@ public class MessageService {
         userDao.saveOrUpdate(receiver);
     }
 
+    @Transactional
     public void updateMessage(Message message) {
         messageDao.saveOrUpdate(message);
     }
 
+    @Transactional
     public void deleteMessage(Message message) {
         User sender = message.getSender();
         User receiver = message.getReceiver();
@@ -60,9 +57,11 @@ public class MessageService {
         userDao.saveOrUpdate(sender);
         userDao.saveOrUpdate(receiver);
 
-        messageDao.delete(message);
+        message.setDeleted(true);
+        messageDao.saveOrUpdate(message);
     }
 
+    @Transactional
     public void markMessageAsRead(Message message) {
         message.setSeen(true);
         messageDao.saveOrUpdate(message);
@@ -89,24 +88,6 @@ public class MessageService {
 
     public List<User> findAllMessagedUsers(User user) {
         return new ArrayList<>(findAllMessagesGroupedByUsers(user).keySet());
-    }
-
-    public boolean canSendMessage(User sender, User receiver) {
-        if (userConnectionService.isAlreadyConnected(sender, receiver)) {
-            return true;
-        } else {
-            return hasSentMessage(sender, receiver) || hasReceivedMessage(sender, receiver);
-        }
-    }
-
-    private boolean hasReceivedMessage(User sender, User receiver) {
-        return sender.getReceivedMessages().stream()
-                .anyMatch(message -> message.getSender().equals(receiver));
-    }
-
-    private boolean hasSentMessage(User sender, User receiver) {
-        return sender.getSentMessages().stream()
-                .anyMatch(message -> message.getReceiver().equals(receiver));
     }
 
     public Optional<Message> findMessageById(long userId) {

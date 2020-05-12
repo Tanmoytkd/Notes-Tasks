@@ -23,7 +23,7 @@ public class ConnectionRequestDao extends GenericDao<ConnectionRequest> {
         return query.getResultList().stream().findFirst();
     }
 
-    protected ConnectionRequestDao() {
+    public ConnectionRequestDao() {
         super(ConnectionRequest.class);
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ReportCommentDao extends GenericDao<ReportComment> {
 
-    protected ReportCommentDao() {
+    public ReportCommentDao() {
         super(ReportComment.class);
     }
 }

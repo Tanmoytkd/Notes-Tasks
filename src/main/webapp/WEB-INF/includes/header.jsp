@@ -7,6 +7,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<%@ page import="net.therap.notestasks.util.Constants" %>
+
 <c:url var="bootstrapCssLink" value="/css/bootstrap.min.css"/>
 <link rel="stylesheet" type="text/css" href="${bootstrapCssLink}">
 

@@ -7,6 +7,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<%@ page import="net.therap.notestasks.util.Constants" %>
+
 <main role="main" class="col-md-10 col-xl-11 vh-100 py-2 px-1 d-flex">
     <div class="d-flex flex-column flex-grow-1 vh-100 overflow-auto">
         <div class="row flex-grow-1 overflow-auto">

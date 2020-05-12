@@ -2,6 +2,7 @@ package net.therap.notestasks.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,16 +14,17 @@ import java.util.List;
         @NamedQuery(name = "Report.findAll",
                 query = "FROM Report report WHERE report.deleted = false")
 })
-
 @Entity
-@Table(name = "reports")
-public class Report extends BasicEntity {
+@Table(name = "report")
+public class Report extends BasicEntity implements Serializable {
 
-    public enum ReportStatus {
+    public enum ReportStatus implements Serializable {
         OPEN,
         RESOLVED,
         REJECTED
     }
+
+    private static final long serialVersionUID = 1;
 
     @NotNull
     @ManyToOne

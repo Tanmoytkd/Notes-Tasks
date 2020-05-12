@@ -4,6 +4,7 @@ import net.therap.notestasks.util.RandomGeneratorUtil;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -22,30 +23,31 @@ import java.util.List;
         @NamedQuery(name = "User.findBySecret",
                 query = "FROM User user WHERE user.secret = :secret AND user.deleted = false"),
         @NamedQuery(name = "User.findByEmailAndPassword",
-                query = "FROM User user WHERE user.email=:email AND user.password=:password " +
+                query = "FROM User user WHERE user.email = :email AND user.password = :password " +
                         "AND user.deleted = false"),
         @NamedQuery(name = "User.findByExample",
-                query = "FROM User user WHERE user.email=:email AND user.password=:password " +
+                query = "FROM User user WHERE user.email = :email AND user.password = :password " +
                         "AND user.deleted = false"),
         @NamedQuery(name = "User.findContainingName",
-                query = "From User user WHERE user.name like CONCAT('%',:name,'%')" +
+                query = "FROM User user WHERE user.name LIKE CONCAT('%',:name,'%') " +
                         "AND user.deleted = false")
 })
-
 @Entity
-@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
+@Table(name = "user")
 public class User extends BasicEntity implements Serializable {
 
+    private static final long serialVersionUID = 1;
+
     @Email
-    @NotNull(message = "Email must not be null")
-    @Size(min = 6, message = "Email must be at least 6 letters")
+    @NotEmpty(message = "{email.notEmpty}")
     private String email;
 
-    @Size(min = 3, max = 30, message = "Name must not be null, length between 3 and 30")
+    @Size(min = 3, max = 30, message = "{name.sizeMismatch}")
     private String name;
 
-    @Size(min = 8, message = "Password must be at least 8 characters")
+    @Size(min = 8, message = "{password.sizeMismatch}")
     private String password;
+
     private String phone;
 
     private String about;
