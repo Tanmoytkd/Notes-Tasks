@@ -35,7 +35,8 @@
                                  alt="Avatar from Gravatar">
                         </div>
                         <div class="flex-fill">
-                            <c:url var="noteCommentWriterLink" value="${Constants.PROFILE_BASE_PATH}/${taskComment.writer.id}"/>
+                            <c:url var="noteCommentWriterLink"
+                                   value="${Constants.PROFILE_BASE_PATH}/${taskComment.writer.id}"/>
                             <div class="card-title">
                                 <a href="${noteCommentWriterLink}">
                                     <h5 class="mb-0 pb-0">
@@ -53,7 +54,8 @@
                         </div>
                         <c:if test="${taskService.canDeleteTaskComment(currentUser, taskComment)}">
                             <div>
-                                <c:url var="deleteNoteCommentLink" value="${Constants.DELETE_TASK_COMMENT_PATH}/${taskComment.id}"/>
+                                <c:url var="deleteNoteCommentLink"
+                                       value="${Constants.DELETE_TASK_COMMENT_PATH}/${taskComment.id}"/>
                                 <a href="${deleteNoteCommentLink}">
                                     <em class="fa fa-trash fa-2x text-muted"></em>
                                 </a>

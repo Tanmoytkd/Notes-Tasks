@@ -14,8 +14,8 @@
     <c:url var="noteCommentLink" value="${Constants.CREATE_NOTE_COMMENT_PATH}"/>
     <form:form modelAttribute="noteCommentCommand" cssClass="form-inline flex-fill d-flex px-1"
                action="${noteCommentLink}" method="post">
-        <form:hidden path="writer" value="${currentUser.id}"/>
-        <form:hidden path="note" value="${noteCommand.id}"/>
+        <%--        <form:hidden path="writer" value="${currentUser.id}"/>--%>
+        <%--        <form:hidden path="note" value="${noteCommand.id}"/>--%>
         <form:input path="content.text" cssClass="form-control form-control-lg flex-fill"/>
         <button class="btn btn-lg btn-info" type="submit">
             <spring:message code="label.comment"/>
@@ -34,7 +34,8 @@
                             <img class="img-thumbnail" src="${profilePictureUrl}" alt="Avatar from Gravatar">
                         </div>
                         <div class="flex-fill">
-                            <c:url var="noteCommentWriterLink" value="${Constants.PROFILE_BASE_PATH}/${noteComment.writer.id}"/>
+                            <c:url var="noteCommentWriterLink"
+                                   value="${Constants.PROFILE_BASE_PATH}/${noteComment.writer.id}"/>
                             <div class="card-title">
                                 <a href="${noteCommentWriterLink}">
                                     <h5 class="mb-0 pb-0">
@@ -49,7 +50,8 @@
                         </div>
                         <c:if test="${noteService.hasCommentDeleteAccess(currentUser, noteComment)}">
                             <div>
-                                <c:url var="deleteNoteCommentLink" value="${Constants.DELETE_NOTE_COMMENT_PATH}/${noteComment.id}"/>
+                                <c:url var="deleteNoteCommentLink"
+                                       value="${Constants.DELETE_NOTE_COMMENT_PATH}/${noteComment.id}"/>
                                 <a href="${deleteNoteCommentLink}">
                                     <em class="fa fa-trash fa-2x text-muted"></em>
                                 </a>

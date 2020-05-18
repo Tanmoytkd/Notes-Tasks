@@ -19,7 +19,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 import static net.therap.notestasks.helper.UrlHelper.redirectTo;
-import static net.therap.notestasks.util.Constants.*;
+import static net.therap.notestasks.util.Constants.CURRENT_USER_LABEL;
+import static net.therap.notestasks.util.Constants.DASHBOARD_PAGE_PATH;
 
 /**
  * @author tanmoy.das
@@ -80,7 +81,7 @@ public class AuthController {
         User persistedUser = userService.createOrUpdateUser(user);
         logger.info("User created with email {}", persistedUser.getEmail());
 
-        session.setAttribute(CURRENT_USER, persistedUser);
+        session.setAttribute(CURRENT_USER_LABEL, persistedUser);
         return redirectTo(HOMEPAGE_PATH);
     }
 
@@ -99,7 +100,7 @@ public class AuthController {
         }
 
         Optional<User> userOptional = userService.findUserByEmailAndPassword(user.getEmail(), user.getPassword());
-        userOptional.ifPresent(value -> session.setAttribute(CURRENT_USER, value));
+        userOptional.ifPresent(value -> session.setAttribute(CURRENT_USER_LABEL, value));
 
         return redirectTo(HOMEPAGE_PATH);
     }
@@ -110,6 +111,6 @@ public class AuthController {
     }
 
     private boolean isAuthenticated(HttpSession session) {
-        return session.getAttribute(CURRENT_USER) != null;
+        return session.getAttribute(CURRENT_USER_LABEL) != null;
     }
 }

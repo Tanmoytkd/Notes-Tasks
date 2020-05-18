@@ -5,6 +5,7 @@ import net.therap.notestasks.dao.NoteCommentDao;
 import net.therap.notestasks.dao.NoteDao;
 import net.therap.notestasks.dao.UserDao;
 import net.therap.notestasks.domain.*;
+import net.therap.notestasks.exception.InvalidUserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,7 +67,7 @@ public class NoteService {
         note.getComments().add(noteComment);
         noteDao.saveOrUpdate(note);
 
-        User writer = noteComment.getWriter();
+        User writer = userDao.find(noteComment.getWriter()).orElseThrow(InvalidUserException::new);
         writer.getNoteComments().add(noteComment);
         userDao.saveOrUpdate(writer);
     }

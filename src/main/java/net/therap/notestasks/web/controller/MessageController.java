@@ -18,8 +18,8 @@ import java.util.Map;
 
 import static net.therap.notestasks.helper.UrlHelper.getMessageUrl;
 import static net.therap.notestasks.helper.UrlHelper.redirectTo;
-import static net.therap.notestasks.util.Constants.CURRENT_USER;
-import static net.therap.notestasks.util.Constants.REDIRECT_MESSAGES;
+import static net.therap.notestasks.util.Constants.CURRENT_USER_LABEL;
+import static net.therap.notestasks.util.Constants.MESSAGES_PAGE_PATH;
 
 /**
  * @author tanmoy.das
@@ -51,7 +51,7 @@ public class MessageController {
 
     @RequestMapping(value = "/message/delete/{messageId}", method = RequestMethod.GET)
     public String deleteMessage(@PathVariable("messageId") Message message,
-                                @SessionAttribute(CURRENT_USER) User currentUser) {
+                                @SessionAttribute(CURRENT_USER_LABEL) User currentUser) {
 
         User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
         if (message.getSender().getId() == persistedCurrentUser.getId()) {
@@ -63,11 +63,11 @@ public class MessageController {
 
     @RequestMapping(value = "/messages/{userId}", method = RequestMethod.GET)
     public String showMessagesFromUser(@PathVariable("userId") User user,
-                                       @SessionAttribute(CURRENT_USER) User currentUser,
+                                       @SessionAttribute(CURRENT_USER_LABEL) User currentUser,
                                        ModelMap model) {
         currentUser = userService.findUserWithSameEmail(currentUser);
         if (!canSendMessage(currentUser, user)) {
-            return REDIRECT_MESSAGES;
+            return redirectTo(MESSAGES_PAGE_PATH);
         }
 
         model.addAttribute("currentMessagedUser", user);
@@ -81,7 +81,7 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/messages", method = RequestMethod.GET)
-    public String showMessages(@SessionAttribute(CURRENT_USER) User currentUser,
+    public String showMessages(@SessionAttribute(CURRENT_USER_LABEL) User currentUser,
                                ModelMap model) {
         model.addAttribute("searchQuery", new SearchQuery());
         model.addAttribute("isMessagesPage", true);

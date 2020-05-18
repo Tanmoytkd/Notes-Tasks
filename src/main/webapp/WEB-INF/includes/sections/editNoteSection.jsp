@@ -7,7 +7,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<%@ page import="net.therap.notestasks.util.Constants" %>
 <%@ page import="net.therap.notestasks.domain.Privacy" %>
 
 <c:url var="updateNoteLink" value="${Constants.UPDATE_NOTE_PATH}"/>

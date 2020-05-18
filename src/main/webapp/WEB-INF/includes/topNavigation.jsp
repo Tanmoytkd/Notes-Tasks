@@ -14,7 +14,7 @@
     <a class="navbar-brand mx-3 px-2" href="${homePageLink}">
         <c:url var="iconLink" value="${Constants.NOTES_TASKS_LOGO_LINK}"/>
         <img src="${iconLink}" alt="icon">
-        <spring:message code="label.appName"/>
+        <spring:message code="label.app.name"/>
     </a>
 
     <c:url var="bnLink" value="?locale=bn"/>

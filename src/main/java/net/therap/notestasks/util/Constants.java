@@ -10,17 +10,14 @@ public class Constants {
 
     public static final String SEARCH_QUERY_LABEL = "searchQuery";
 
-    public static final String CURRENT_USER = "currentUser";
+    public static final String CURRENT_USER_LABEL = "currentUser";
 
     public static final String USER_LABEL = "user";
     public static final String IS_USER_CONNECTED = "isUserConnected";
     public static final String IS_REQUEST_SENT = "isRequestSent";
     public static final String IS_REQUEST_RECEIVED = "isRequestReceived";
     public static final String IS_MYSELF = "isMyself";
-    public static final String REDIRECT_MESSAGES = "redirect:/messages";
-    public static final String REDIRECT_NOTES = "redirect:/notes";
-    public static final String REDIRECT_TASKS = "redirect:/tasks";
-    public static final String CONNECTION_REQUESTS = "connectionRequests";
+    public static final String CONNECTION_REQUESTS_LABEL = "connectionRequests";
 
     public static final String ACCEPT_CONNECTION_PATH = "/connection/accept";
     public static final String BD_FLAG_IMG_LINK = "/img/bd-flag.png";
@@ -62,4 +59,5 @@ public class Constants {
     public static final String UPDATE_PROFILE_PATH = "/profile/update";
     public static final String UPDATE_TASK_PATH = "/task/update";
     public static final String US_FLAG_IMG_LINK = "/img/us-flag.png";
+    public static final String NOTE_COMMENT_COMMAND_NAME = "noteCommentCommand";
 }

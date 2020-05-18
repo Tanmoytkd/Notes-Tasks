@@ -47,7 +47,8 @@
                 <div>Assigned to:</div>
                 <c:forEach items="${taskAssignments}" var="taskAssignment">
                     <span class="btn btn-round btn-xs">
-                        <c:url var="taskAssignmentUserLink" value="${Constants.PROFILE_BASE_PATH}/${taskAssignment.user.id}"/>
+                        <c:url var="taskAssignmentUserLink"
+                               value="${Constants.PROFILE_BASE_PATH}/${taskAssignment.user.id}"/>
                         <a href="${taskAssignmentUserLink}">${taskAssignment.user.name}</a>
 
                         <c:choose>
@@ -60,7 +61,8 @@
                         </c:choose>
 
 
-                        <c:url var="taskAssignmentDeleteLink" value="${Constants.DELETE_TASK_ASSIGNMENT_PATH}/${taskAssignment.id}"/>
+                        <c:url var="taskAssignmentDeleteLink"
+                               value="${Constants.DELETE_TASK_ASSIGNMENT_PATH}/${taskAssignment.id}"/>
                         <a href="${taskAssignmentDeleteLink}">
                             <em class="fa fa-times"></em>
                         </a>

@@ -95,7 +95,8 @@
                                 <small class="text-muted">${task.creator.name}</small>
                             </a>
                         </div>
-                        <c:url var="deleteTaskAssignmentLink" value="${Constants.DELETE_TASK_ASSIGNMENT_PATH}/${taskAssignment.id}"/>
+                        <c:url var="deleteTaskAssignmentLink"
+                               value="${Constants.DELETE_TASK_ASSIGNMENT_PATH}/${taskAssignment.id}"/>
                         <div>
                             <c:url var="markTaskAssignmentAsComplete"
                                    value="/taskAssignment/markAsComplete/${taskAssignment.id}"/>
@@ -138,7 +139,8 @@
                                 Mark as Incomplete
                             </a>
 
-                            <c:url var="deleteTaskAssignmentLink" value="${Constants.DELETE_TASK_ASSIGNMENT_PATH}/${taskAssignment.id}"/>
+                            <c:url var="deleteTaskAssignmentLink"
+                                   value="${Constants.DELETE_TASK_ASSIGNMENT_PATH}/${taskAssignment.id}"/>
                             <a href="${deleteTaskAssignmentLink}" class="mx-2 text-info text-lg">
                                 <em class="fa fa-times"></em>
                             </a>

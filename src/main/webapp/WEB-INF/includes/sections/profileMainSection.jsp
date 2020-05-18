@@ -45,37 +45,37 @@
                             <c:url var="showUserMessagesLink" value="${Constants.MESSAGES_BASE_PATH}/${user.id}"/>
                             <a href="${showUserMessagesLink}" class="btn btn-secondary">
                                 <em class="fa fa-envelope"></em>
-                                Send Message
+                                <spring:message code="label.sendMessage"/>
                             </a>
                         </c:when>
                         <c:when test="${isRequestSent}">
-                            <c:url var="cancelConnectionRequestLink" value="${Constants.CANCEL_CONNECTION_PATH}/${user.id}"/>
+                            <c:url var="cancelConnectionRequestLink"
+                                   value="${Constants.CANCEL_CONNECTION_PATH}/${user.id}"/>
                             <a href="${cancelConnectionRequestLink}" class="btn btn-info">
                                 <spring:message code="label.cancelConnectionRequest"/>
                             </a>
                         </c:when>
                         <c:when test="${isRequestReceived}">
-                            <c:url var="acceptConnectionReqeustLink" value="${Constants.ACCEPT_CONNECTION_PATH}/${user.id}"/>
+                            <c:url var="acceptConnectionReqeustLink"
+                                   value="${Constants.ACCEPT_CONNECTION_PATH}/${user.id}"/>
                             <a href="${acceptConnectionReqeustLink}" class="btn btn-success">
                                 <spring:message code="label.acceptConnection"/>
                             </a>
 
-                            <c:url var="rejectConnectionRequestLink" value="${Constants.REJECT_CONNECTION_PATH}/${user.id}"/>
+                            <c:url var="rejectConnectionRequestLink"
+                                   value="${Constants.REJECT_CONNECTION_PATH}/${user.id}"/>
                             <a href="${rejectConnectionRequestLink}" class="btn btn-danger">
                                 <spring:message code="label.rejectConnection"/>
                             </a>
                         </c:when>
                         <c:otherwise>
-                            <c:url var="sendConnectionRequestLink" value="${Constants.SEND_CONNECTION_REQUEST_PATH}/${user.id}"/>
+                            <c:url var="sendConnectionRequestLink"
+                                   value="${Constants.SEND_CONNECTION_REQUEST_PATH}/${user.id}"/>
                             <a href="${sendConnectionRequestLink}" class="btn btn-primary">
                                 <spring:message code="label.sendConnectionRequest"/>
                             </a>
                         </c:otherwise>
                     </c:choose>
-                    <c:if test="">
-
-                    </c:if>
-
                 </c:if>
 
                 <c:if test="${isMyself}">
@@ -116,11 +116,11 @@
                                    placeholder="New Password">
                         </div>
 
-                        <button type="submit" class="btn btn-primary my-3">Update Profile</button>
+                        <button type="submit" class="btn btn-primary my-3">
+                            <spring:message code="label.updateProfile"/>
+                        </button>
                     </form:form>
                 </c:if>
-
-
             </div>
         </div>
 
@@ -185,7 +185,7 @@
                                     <div class="d-flex list-group-item">
                                         <c:url var="noteLink" value="${Constants.NOTE_BASE_PATH}/${note.id}"/>
                                         <a href="${noteLink}">
-                                            <h2>${note.title}</h2>
+                                            <h2><c:out value="${note.title}"/></h2>
                                         </a>
                                     </div>
                                 </c:forEach>
@@ -195,6 +195,5 @@
                 </div>
             </div>
         </div>
-
     </div>
 </main>

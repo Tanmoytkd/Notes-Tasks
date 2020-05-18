@@ -7,8 +7,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<%@ page import="net.therap.notestasks.util.Constants" %>
 <%@ page import="net.therap.notestasks.domain.AccessLevel" %>
+<%@ page import="net.therap.notestasks.util.Constants" %>
 
 <div class="modal fade" id="noteShareModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
@@ -64,7 +64,8 @@
                         <c:forEach items="${noteAccess.accessLevels}" var="level">
                             <span class="text-muted">(<spring:message code="${level}"/>)</span>
                         </c:forEach>
-                        <c:url var="noteAccessDeleteLink" value="${Constants.DELETE_NOTE_ACCESS_PATH}/${noteAccess.id}"/>
+                        <c:url var="noteAccessDeleteLink"
+                               value="${Constants.DELETE_NOTE_ACCESS_PATH}/${noteAccess.id}"/>
                         <a href="${noteAccessDeleteLink}">
                             <em class="fa fa-times"></em>
                         </a>

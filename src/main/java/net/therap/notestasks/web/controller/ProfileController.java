@@ -49,7 +49,7 @@ public class ProfileController {
     private UserPersistedWithCredentialValidator userPersistedWithCredentialValidator;
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
-    public String showOwnProfile(@SessionAttribute(CURRENT_USER) User currentUser, ModelMap model) {
+    public String showOwnProfile(@SessionAttribute(CURRENT_USER_LABEL) User currentUser, ModelMap model) {
         model.addAttribute(CURRENT_USER_COMMAND_NAME, currentUser);
         setupUserDataInModel(model, currentUser, currentUser);
 
@@ -58,7 +58,7 @@ public class ProfileController {
 
     @RequestMapping(value = "/profile/{id}", method = RequestMethod.GET)
     public String showUserProfile(@PathVariable("id") User user,
-                                  @SessionAttribute(CURRENT_USER) User currentUser,
+                                  @SessionAttribute(CURRENT_USER_LABEL) User currentUser,
                                   ModelMap model) {
 
         if (user.getId() == currentUser.getId()) {
@@ -73,7 +73,7 @@ public class ProfileController {
     public String updateUserProfile(@Valid @ModelAttribute(CURRENT_USER_COMMAND_NAME) User userCommand,
                                     BindingResult bindingResult,
                                     @RequestParam("newPassword") String newPassword,
-                                    @SessionAttribute(CURRENT_USER) User currentUser,
+                                    @SessionAttribute(CURRENT_USER_LABEL) User currentUser,
                                     ModelMap model,
                                     HttpSession session) throws NoSuchAlgorithmException {
 
@@ -91,7 +91,7 @@ public class ProfileController {
         }
         userService.createOrUpdateUser(userCommand);
 
-        session.setAttribute(CURRENT_USER, userCommand);
+        session.setAttribute(CURRENT_USER_LABEL, userCommand);
 
         return redirectTo(PROFILE_PAGE_PATH);
     }

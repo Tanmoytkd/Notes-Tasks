@@ -61,7 +61,8 @@
                                 <small class="text-muted">${note.writer.name}</small>
                             </a>
                         </div>
-                        <c:url var="deleteNoteAccessLink" value="${Constants.DELETE_NOTE_ACCESS_PATH}/${noteAccess.id}"/>
+                        <c:url var="deleteNoteAccessLink"
+                               value="${Constants.DELETE_NOTE_ACCESS_PATH}/${noteAccess.id}"/>
                         <div>
                             <a href="${deleteNoteAccessLink}" class="mx-2 text-info text-lg">
                                 <em class="fa fa-times"></em>

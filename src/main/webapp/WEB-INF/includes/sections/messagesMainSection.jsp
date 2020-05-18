@@ -30,7 +30,8 @@
                     <ul class="list-group list-group-flush">
                         <c:forEach items="${allMessagedUsers}" var="messagedUser">
                             <li class="list-group-item">
-                                <c:url var="userMessageLink" value="${Constants.MESSAGES_BASE_PATH}/${messagedUser.id}"/>
+                                <c:url var="userMessageLink"
+                                       value="${Constants.MESSAGES_BASE_PATH}/${messagedUser.id}"/>
                                 <a href="${userMessageLink}">
                                     <div class="row">
                                         <c:set var="emailHash" value="${HashingUtil.md5Hex(messagedUser.getEmail())}"/>
@@ -106,7 +107,8 @@
                                 </div>
                                 <div class="flex-item mx-2">
                                     <c:if test="${message.sender.id == currentUser.id}">
-                                        <c:url var="messageDeleteLink" value="${Constants.DELETE_MESSAGE_PATH}/${message.id}"/>
+                                        <c:url var="messageDeleteLink"
+                                               value="${Constants.DELETE_MESSAGE_PATH}/${message.id}"/>
                                         <a href="${messageDeleteLink}">
                                             <em class="fa fa-trash text-muted fa-1x align-self-baseline"></em>
                                         </a>

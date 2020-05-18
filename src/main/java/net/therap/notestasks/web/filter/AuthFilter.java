@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static net.therap.notestasks.util.Constants.CURRENT_USER;
+import static net.therap.notestasks.util.Constants.CURRENT_USER_LABEL;
 
 /**
  * @author tanmoy.das
@@ -84,7 +84,7 @@ public class AuthFilter implements Filter {
     }
 
     public boolean isUserLoggedIn(HttpServletRequest request) {
-        return request.getSession().getAttribute(CURRENT_USER) != null;
+        return request.getSession().getAttribute(CURRENT_USER_LABEL) != null;
     }
 
     public boolean isGuest(HttpServletRequest request) {

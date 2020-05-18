@@ -7,15 +7,13 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<%@ page import="net.therap.notestasks.util.Constants" %>
-
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="<spring:message code="label.appDescription"/>">
-    <meta name="author" content="<spring:message code="label.authorName"/>">
+    <meta name="description" content="<spring:message code="label.app.description"/>">
+    <meta name="author" content="<spring:message code="label.author.name"/>">
 
     <c:url var="iconLink" value="/img/spidey.png"/>
     <link rel="icon" href="${iconLink}">

@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
 
 import static net.therap.notestasks.helper.UrlHelper.getUrl;
 import static net.therap.notestasks.helper.UrlHelper.redirectTo;
-import static net.therap.notestasks.util.Constants.*;
+import static net.therap.notestasks.util.Constants.CURRENT_USER_LABEL;
+import static net.therap.notestasks.util.Constants.TASKS_PAGE_PATH;
 
 /**
  * @author tanmoy.das
@@ -38,7 +39,7 @@ public class TaskController {
     private TaskService taskService;
 
     @RequestMapping(value = {"/task/new"}, method = {RequestMethod.GET})
-    public String createNewTask(@SessionAttribute(CURRENT_USER) User currentUser, ModelMap model,
+    public String createNewTask(@SessionAttribute(CURRENT_USER_LABEL) User currentUser, ModelMap model,
                                 HttpServletRequest req, HttpServletResponse resp) {
 
         User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
@@ -56,7 +57,7 @@ public class TaskController {
     }
 
     @RequestMapping(value = {"/tasks"}, method = RequestMethod.GET)
-    public String showTasks(@SessionAttribute(CURRENT_USER) User currentUser, ModelMap model,
+    public String showTasks(@SessionAttribute(CURRENT_USER_LABEL) User currentUser, ModelMap model,
                             HttpServletRequest req, HttpServletResponse resp) {
         model.addAttribute("searchQuery", new SearchQuery());
         model.addAttribute("isTasksPage", true);
@@ -72,13 +73,13 @@ public class TaskController {
 
     @RequestMapping(value = {"/task/{taskId}"}, method = RequestMethod.GET)
     public String showTask(@PathVariable("taskId") Task task,
-                           @SessionAttribute(CURRENT_USER) User currentUser,
+                           @SessionAttribute(CURRENT_USER_LABEL) User currentUser,
                            ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
 
         User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 
         if (!canViewTask(persistedCurrentUser, task)) {
-            return REDIRECT_NOTES;
+            return redirectTo(TASKS_PAGE_PATH);
         }
 
         setupModelTaskPermissions(task, model, persistedCurrentUser);
@@ -115,7 +116,7 @@ public class TaskController {
 
     @RequestMapping(value = {"/task/update"}, method = RequestMethod.POST)
     public String updateTask(@ModelAttribute("taskCommand") Task task,
-                             @SessionAttribute(CURRENT_USER) User currentUser) {
+                             @SessionAttribute(CURRENT_USER_LABEL) User currentUser) {
         User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 
         if (!taskService.hasWriteAccess(persistedCurrentUser, task)) {
@@ -129,22 +130,20 @@ public class TaskController {
 
     @RequestMapping(value = {"/task/delete/{taskId}"}, method = RequestMethod.GET)
     public String deleteTask(@PathVariable("taskId") Task task,
-                             @SessionAttribute(CURRENT_USER) User currentUser) {
+                             @SessionAttribute(CURRENT_USER_LABEL) User currentUser) {
         User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 
-        if (!taskService.hasDeleteAccess(persistedCurrentUser, task)) {
-            return REDIRECT_NOTES;
+        if (taskService.hasDeleteAccess(persistedCurrentUser, task)) {
+            taskService.deleteTask(task);
         }
 
-        taskService.deleteTask(task);
-
-        return REDIRECT_TASKS;
+        return redirectTo(TASKS_PAGE_PATH);
     }
 
     @RequestMapping(value = "/taskAssignment", method = RequestMethod.POST)
     public String createTaskAssignment(@Valid @ModelAttribute("taskAssignmentCommand") TaskAssignment taskAssignment,
                                        Errors errors,
-                                       @SessionAttribute(CURRENT_USER) User currentUser,
+                                       @SessionAttribute(CURRENT_USER_LABEL) User currentUser,
                                        ModelMap model,
                                        HttpServletRequest req, HttpServletResponse resp) {
 
@@ -156,54 +155,51 @@ public class TaskController {
 
         User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 
-        if (!taskService.hasAssignmentCreateAccess(persistedCurrentUser, taskAssignment.getTask())) {
-            return redirectTo(getUrl(taskAssignment.getTask()));
+        if (taskService.hasAssignmentCreateAccess(persistedCurrentUser, taskAssignment.getTask())) {
+            taskService.createTaskAssignment(taskAssignment);
         }
-
-        taskService.createTaskAssignment(taskAssignment);
         return redirectTo(getUrl(taskAssignment.getTask()));
     }
 
     @RequestMapping(value = "/taskAssignment/delete/{taskAssignmentId}", method = RequestMethod.GET)
     public String deleteTaskAssignment(@PathVariable("taskAssignmentId") TaskAssignment taskAssignment,
-                                       @SessionAttribute(CURRENT_USER) User currentUser) {
+                                       @SessionAttribute(CURRENT_USER_LABEL) User currentUser) {
         User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 
-        if (!taskService.hasAssignmentDeleteAccess(persistedCurrentUser, taskAssignment)) {
-            return REDIRECT_TASKS;
+        if (taskService.hasAssignmentDeleteAccess(persistedCurrentUser, taskAssignment)) {
+            taskService.deleteTaskAssignment(taskAssignment);
         }
 
-        taskService.deleteTaskAssignment(taskAssignment);
-        return REDIRECT_TASKS;
+        return redirectTo(TASKS_PAGE_PATH);
     }
 
     @RequestMapping(value = "/taskAssignment/markAsComplete/{taskAssignmentId}", method = RequestMethod.GET)
     public String markTaskAssignmentAsComplete(@PathVariable("taskAssignmentId") TaskAssignment taskAssignment,
-                                               @SessionAttribute(CURRENT_USER) User currentUser) {
+                                               @SessionAttribute(CURRENT_USER_LABEL) User currentUser) {
         User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 
         if (taskService.hasAssignmentUpdateAccess(persistedCurrentUser, taskAssignment)) {
             taskService.updateTaskAssignmentCompleteStatus(taskAssignment, true);
         }
 
-        return REDIRECT_TASKS;
+        return redirectTo(TASKS_PAGE_PATH);
     }
 
     @RequestMapping(value = "/taskAssignment/markAsIncomplete/{taskAssignmentId}", method = RequestMethod.GET)
     public String markTaskAssignmentAsIncomplete(@PathVariable("taskAssignmentId") TaskAssignment taskAssignment,
-                                                 @SessionAttribute(CURRENT_USER) User currentUser) {
+                                                 @SessionAttribute(CURRENT_USER_LABEL) User currentUser) {
         User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 
         if (taskService.hasAssignmentUpdateAccess(persistedCurrentUser, taskAssignment)) {
             taskService.updateTaskAssignmentCompleteStatus(taskAssignment, false);
         }
 
-        return REDIRECT_TASKS;
+        return redirectTo(TASKS_PAGE_PATH);
     }
 
     @RequestMapping(value = "/taskComment", method = RequestMethod.POST)
     public String createTaskComment(@ModelAttribute("taskCommentCommand") TaskComment taskComment, Errors errors,
-                                    @SessionAttribute(CURRENT_USER) User currentUser, ModelMap model,
+                                    @SessionAttribute(CURRENT_USER_LABEL) User currentUser, ModelMap model,
                                     HttpServletRequest req, HttpServletResponse resp) {
         if (errors.hasErrors()) {
             String taskPage = showTask(taskComment.getTask(), currentUser, model, req, resp);
@@ -231,7 +227,7 @@ public class TaskController {
 
     @RequestMapping(value = {"/taskComment/delete/{taskCommentId}"}, method = RequestMethod.GET)
     public String deleteNoteComment(@PathVariable("taskCommentId") TaskComment taskComment,
-                                    @SessionAttribute(CURRENT_USER) User currentUser,
+                                    @SessionAttribute(CURRENT_USER_LABEL) User currentUser,
                                     ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
         User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 

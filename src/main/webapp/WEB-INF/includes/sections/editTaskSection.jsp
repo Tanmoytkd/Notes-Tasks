@@ -7,8 +7,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<%@ page import="net.therap.notestasks.util.Constants" %>
-
 <c:url var="updateTaskLink" value="${Constants.UPDATE_TASK_PATH}"/>
 <div class="d-flex flex-column">
     <form:form cssClass="form" action="${updateTaskLink}" method="post"

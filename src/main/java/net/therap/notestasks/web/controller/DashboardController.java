@@ -33,7 +33,7 @@ public class DashboardController {
     private UserService userService;
 
     @RequestMapping(value = "dashboard", method = RequestMethod.GET)
-    public String showDashboard(@SessionAttribute(CURRENT_USER) User currentUser, ModelMap model) {
+    public String showDashboard(@SessionAttribute(CURRENT_USER_LABEL) User currentUser, ModelMap model) {
         User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
         setupConnectionRequestsInModel(model, persistedCurrentUser);
 
@@ -46,7 +46,7 @@ public class DashboardController {
                 .sorted(Comparator.comparing(BasicEntity::getUpdatedOn))
                 .collect(Collectors.toList());
 
-        model.addAttribute(CONNECTION_REQUESTS, connectionRequests);
+        model.addAttribute(CONNECTION_REQUESTS_LABEL, connectionRequests);
     }
 
     @ModelAttribute(SEARCH_QUERY_LABEL)

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import static net.therap.notestasks.helper.UrlHelper.getUrl;
 import static net.therap.notestasks.helper.UrlHelper.redirectTo;
-import static net.therap.notestasks.util.Constants.CURRENT_USER;
+import static net.therap.notestasks.util.Constants.CURRENT_USER_LABEL;
 
 /**
  * @author tanmoy.das
@@ -35,7 +35,7 @@ public class ConnectionController {
 
     @RequestMapping(value = "/connection/remove/{userId}", method = RequestMethod.GET)
     public String removeConnection(@PathVariable("userId") User user,
-                                   @SessionAttribute(CURRENT_USER) User currentUser) {
+                                   @SessionAttribute(CURRENT_USER_LABEL) User currentUser) {
 
         user.getConnections().stream()
                 .filter(connection -> connection.getUsers().contains(userService.findUserWithSameEmail(currentUser)))
@@ -48,7 +48,7 @@ public class ConnectionController {
 
     @RequestMapping(value = "/connection/cancel/{userId}", method = RequestMethod.GET)
     public String cancelConnectionRequest(@PathVariable("userId") User user,
-                                          @SessionAttribute(CURRENT_USER) User currentUser) {
+                                          @SessionAttribute(CURRENT_USER_LABEL) User currentUser) {
         currentUser = userService.findUserWithSameEmail(currentUser);
 
         currentUser.getSentConnectionRequests().stream()
@@ -62,7 +62,7 @@ public class ConnectionController {
 
     @RequestMapping(value = "/connection/reject/{userId}", method = RequestMethod.GET)
     public String rejectConnectionRequest(@PathVariable("userId") User user,
-                                          @SessionAttribute(CURRENT_USER) User currentUser) {
+                                          @SessionAttribute(CURRENT_USER_LABEL) User currentUser) {
         currentUser = userService.findUserWithSameEmail(currentUser);
 
         currentUser.getReceivedConnectionRequests().stream()
@@ -76,7 +76,7 @@ public class ConnectionController {
 
     @RequestMapping(value = "/connection/accept/{userId}", method = RequestMethod.GET)
     public String acceptConnectionRequest(@PathVariable("userId") User user,
-                                          @SessionAttribute(CURRENT_USER) User currentUser) {
+                                          @SessionAttribute(CURRENT_USER_LABEL) User currentUser) {
 
         User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
         if (userConnectionService.isAlreadyConnected(persistedCurrentUser, user)) {
@@ -94,7 +94,7 @@ public class ConnectionController {
 
     @RequestMapping(value = "/connection/send/{userId}", method = RequestMethod.GET)
     public String sendConnectionRequest(@PathVariable("userId") User user,
-                                        @SessionAttribute(CURRENT_USER) User currentUser) {
+                                        @SessionAttribute(CURRENT_USER_LABEL) User currentUser) {
         User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 
         if (userConnectionService.isAlreadyConnected(persistedCurrentUser, user)) {
