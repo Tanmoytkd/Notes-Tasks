@@ -1,6 +1,6 @@
 package net.therap.notestasks.config;
 
-import net.therap.notestasks.converter.StringToUserConverter;
+import net.therap.notestasks.converter.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -25,6 +25,30 @@ import java.util.Locale;
 @EnableWebMvc
 @ComponentScan({"net.therap.notestasks"})
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Autowired
+    private StringToUserConverter stringToUserConverter;
+
+    @Autowired
+    private StringToMessageConverter stringToMessageConverter;
+
+    @Autowired
+    private StringToNoteConverter stringToNoteConverter;
+
+    @Autowired
+    private StringToNoteCommentConverter stringToNoteCommentConverter;
+
+    @Autowired
+    private StringToNoteAccessConverter stringToNoteAccessConverter;
+
+    @Autowired
+    private StringToTaskConverter stringToTaskConverter;
+
+    @Autowired
+    private StringToTaskAssignmentConverter stringToTaskAssignmentConverter;
+
+    @Autowired
+    private StringToTaskCommentConverter stringToTaskCommentConverter;
 
     @Bean(name = "viewResolver")
     public InternalResourceViewResolver createViewResolver() {
@@ -73,11 +97,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/webfonts/**").addResourceLocations("/webfonts/");
     }
 
-    @Autowired
-    private StringToUserConverter stringToUserConverter;
-
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(stringToUserConverter);
+        registry.addConverter(stringToMessageConverter);
+        registry.addConverter(stringToNoteConverter);
+        registry.addConverter(stringToNoteCommentConverter);
+        registry.addConverter(stringToNoteAccessConverter);
+        registry.addConverter(stringToTaskConverter);
+        registry.addConverter(stringToTaskCommentConverter);
+        registry.addConverter(stringToTaskAssignmentConverter);
     }
 }

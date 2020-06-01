@@ -4,14 +4,12 @@ import net.therap.notestasks.dao.NoteAccessDao;
 import net.therap.notestasks.dao.NoteCommentDao;
 import net.therap.notestasks.dao.NoteDao;
 import net.therap.notestasks.dao.UserDao;
-import net.therap.notestasks.domain.Note;
-import net.therap.notestasks.domain.NoteAccess;
-import net.therap.notestasks.domain.NoteComment;
-import net.therap.notestasks.domain.User;
+import net.therap.notestasks.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 /**
  * @author tanmoy.das
@@ -86,15 +84,24 @@ public class NoteService {
     }
 
     public void createNoteAccess(NoteAccess noteAccess) {
-        noteAccessDao.saveOrUpdate(noteAccess);
-
         Note note = noteAccess.getNote();
-        note.getNoteAccesses().add(noteAccess);
-        noteAccessDao.saveOrUpdate(noteAccess);
-
         User user = noteAccess.getUser();
-        user.getSharedNoteAccesses().add(noteAccess);
-        userDao.saveOrUpdate(user);
+
+        NoteAccess persistedNoteAccess = note.getNoteAccesses().stream()
+                .filter(noteAccess1 -> !noteAccess1.isDeleted())
+                .filter(noteAccess1 -> noteAccess1.getUser().getId()==user.getId())
+                .findFirst()
+                .orElse(null);
+
+        if(persistedNoteAccess!=null) {
+            persistedNoteAccess.setAccessLevels(noteAccess.getAccessLevels());
+            noteAccessDao.saveOrUpdate(persistedNoteAccess);
+        } else {
+            noteAccessDao.saveOrUpdate(noteAccess);
+
+            note.getNoteAccesses().add(noteAccess);
+            user.getSharedNoteAccesses().add(noteAccess);
+        }
     }
 
     public void updateNoteAccess(NoteAccess noteAccess) {
@@ -111,5 +118,78 @@ public class NoteService {
         userDao.saveOrUpdate(user);
 
         noteAccessDao.delete(noteAccess);
+    }
+
+    public Optional<Note> findNoteById(long noteId) {
+        return noteDao.find(noteId);
+    }
+
+    public boolean canAccessNote(User persistedCurrentUser, Note note) {
+        if (persistedCurrentUser.getId() == note.getWriter().getId()) {
+            return true;
+        }
+
+        if (note.getPrivacy().equals(Privacy.PUBLIC)) {
+            return true;
+        }
+
+        return note.getNoteAccesses().stream()
+                .filter(noteAccess -> !noteAccess.isDeleted())
+                .filter(noteAccess -> noteAccess.getUser().getId() == persistedCurrentUser.getId())
+                .anyMatch(noteAccess -> !noteAccess.getAccessLevels().isEmpty());
+    }
+
+    public boolean hasSpecificAccess(User persistedCurrentUser, Note note, AccessLevel accessLevel) {
+        if (persistedCurrentUser.getId() == note.getWriter().getId()) {
+            return true;
+        }
+
+        return note.getNoteAccesses().stream()
+                .filter(noteAccess -> !noteAccess.isDeleted())
+                .filter(noteAccess -> noteAccess.getUser().getId() == persistedCurrentUser.getId())
+                .anyMatch(noteAccess -> noteAccess.getAccessLevels().contains(accessLevel));
+    }
+
+    public boolean hasReadAccess(User persistedCurrentUser, Note note) {
+        return note.getPrivacy().equals(Privacy.PUBLIC) ||
+                hasSpecificAccess(persistedCurrentUser, note, AccessLevel.READ);
+    }
+
+    public boolean hasWriteAccess(User persistedCurrentUser, Note note) {
+        return hasSpecificAccess(persistedCurrentUser, note, AccessLevel.WRITE);
+    }
+
+    public boolean hasShareAccess(User persistedCurrentUser, Note note) {
+        return hasSpecificAccess(persistedCurrentUser, note, AccessLevel.SHARE);
+    }
+
+    public boolean hasDeleteAccess(User persistedCurrentUser, Note note) {
+        return hasSpecificAccess(persistedCurrentUser, note, AccessLevel.DELETE);
+    }
+
+    public boolean hasCommentDeleteAccess(User user, NoteComment noteComment) {
+        User persistedUser = userDao.findByEmail(user.getEmail()).orElse(null);
+
+        if (persistedUser.getId() == noteComment.getWriter().getId()) {
+            return true;
+        }
+
+        return persistedUser.getId() == noteComment.getNote().getWriter().getId();
+    }
+
+    public Optional<NoteComment> findNoteCommentById(long noteCommendId) {
+        return noteCommentDao.find(noteCommendId);
+    }
+
+    public boolean canDeleteNoteAccess(User persistedCurrentUser, NoteAccess noteAccess) {
+        if (hasShareAccess(persistedCurrentUser, noteAccess.getNote())) {
+            return true;
+        }
+
+        return noteAccess.getUser().getId() == persistedCurrentUser.getId();
+    }
+
+    public Optional<NoteAccess> findNoteAccessById(long noteAccessId) {
+        return noteAccessDao.find(noteAccessId);
     }
 }

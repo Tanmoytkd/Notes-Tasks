@@ -4,9 +4,7 @@ import net.therap.notestasks.domain.User;
 import net.therap.notestasks.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.core.convert.converter.GenericConverter;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 /**
  * @author tanmoy.das

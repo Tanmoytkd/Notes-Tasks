@@ -1,6 +1,7 @@
 package net.therap.notestasks.web.controller;
 
 import net.therap.notestasks.domain.User;
+import net.therap.notestasks.service.UserConnectionService;
 import net.therap.notestasks.service.UserService;
 import net.therap.notestasks.util.HashingUtil;
 import org.slf4j.Logger;
@@ -36,6 +37,9 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserConnectionService userConnectionService;
+
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public String handleLogout(HttpServletRequest req, HttpServletResponse resp) {
         HttpSession session = req.getSession();
@@ -67,7 +71,7 @@ public class AuthController {
         }
 
         user = userService.createUser(user);
-        req.getSession().setAttribute(CURRENT_USER_TXT, user);
+        req.getSession().setAttribute(CURRENT_USER, user);
         logger.info("User created with email {}", user.getEmail());
 
         return REDIRECT_ROOT;
@@ -94,7 +98,7 @@ public class AuthController {
             return INDEX_PAGE;
         }
 
-        req.getSession().setAttribute(CURRENT_USER_TXT, optionalUser.get());
+        req.getSession().setAttribute(CURRENT_USER, optionalUser.get());
         return REDIRECT_ROOT;
     }
 }

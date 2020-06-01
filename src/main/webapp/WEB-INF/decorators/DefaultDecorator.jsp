@@ -14,7 +14,7 @@
     <%@ include file="/WEB-INF/includes/header.jsp" %>
 </head>
 
-<body>
+<body class="border border-secondary mh-100">
 <%@ include file="/WEB-INF/includes/jsScripts.jsp" %>
 
 <sitemesh:write property="body"/>

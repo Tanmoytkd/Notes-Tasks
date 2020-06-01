@@ -35,7 +35,7 @@
                         </h5>
                     </a>
                     <p class="card-text">
-                        ${user.about}
+                            ${user.about}
                     </p>
                     <a href="${userLink}" class="btn btn-primary w-100">
                         View Profile

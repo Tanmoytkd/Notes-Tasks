@@ -11,12 +11,10 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Locale;
+
+import static net.therap.notestasks.config.Constants.DASHBOARD_PAGE;
 
 /**
  * @author tanmoy.das
@@ -38,6 +36,6 @@ public class SearchController {
         List<User> users = userService.findUsersWithString(searchQuery.getQuery());
         model.addAttribute("users", users);
 
-        return "dashboard";
+        return DASHBOARD_PAGE;
     }
 }

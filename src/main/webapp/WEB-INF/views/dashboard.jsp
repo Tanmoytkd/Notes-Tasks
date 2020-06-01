@@ -26,24 +26,25 @@
 
 <body>
 
-<%@ include file="/WEB-INF/includes/topNavigation.jsp" %>
+<div class="d-flex flex-column flex-shrink-0 mh-100 overflow-auto">
 
-<div class="container-fluid">
-    <div class="row">
+    <%@ include file="/WEB-INF/includes/topNavigation.jsp" %>
+
+    <div class="flex-fill d-flex">
         <%@ include file="/WEB-INF/includes/sidebarNavigation.jsp" %>
 
         <c:choose>
             <c:when test="${isDashboardPage}">
-
+                <%@ include file="/WEB-INF/includes/sections/dashboardMainSection.jsp" %>
             </c:when>
             <c:when test="${isMessagesPage}">
-
+                <%@ include file="/WEB-INF/includes/sections/messagesMainSection.jsp" %>
             </c:when>
             <c:when test="${isNotesPage}">
-
+                <%@ include file="/WEB-INF/includes/sections/NotesMainSection.jsp" %>
             </c:when>
             <c:when test="${isTasksPage}">
-
+                <%@ include file="/WEB-INF/includes/sections/tasksMainSection.jsp" %>
             </c:when>
             <c:when test="${isReportsPage}">
 

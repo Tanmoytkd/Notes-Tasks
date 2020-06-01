@@ -9,25 +9,20 @@
 
 <%@ page import="net.therap.notestasks.util.HashingUtil" %>
 
-<main role="main" class="col-md-9 col-lg-10 pt-3 px-4">
-    <%--    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap--%>
-    <%--                    align-items-center pb-2 mb-3 border-bottom">--%>
-    <%--        <h1 class="h2">--%>
-    <%--            <spring:message code="label.searchResults"/>: ${searchQuery.query}--%>
-    <%--        </h1>--%>
-    <%--    </div>--%>
-
-    <div class="row">
+<main role="main" class="flex-fill d-flex pt-3 px-4">
+    <div class="d-flex flex-fill">
         <c:url var="userLink" value="/profile/${user.id}"/>
-
         <div class="card col-6 col-md-6 mx-2 my-1 p-3">
             <c:set var="emailHash" value="${HashingUtil.md5Hex(user.getEmail())}"/>
             <c:url var="profilePictureUrl" value="https://www.gravatar.com/avatar/${emailHash}.jpg?s=800"/>
             <a href="${userLink}">
                 <img class="card-img-top" src="${profilePictureUrl}" alt="Avatar from Gravatar">
             </a>
-            <div class="small text-muted text-right">Profile picture taken from <a href="https://en.gravatar.com/"
-                                                                                   class="text-muted"><u>Gravatar</u></a>
+            <div class="small text-muted text-right">
+                <span>Profile picture taken from</span>
+                <a href="https://en.gravatar.com/" class="text-muted">
+                    <u>Gravatar</u>
+                </a>
             </div>
             <div class="card-body">
                 <c:if test="${!isMyself}">
@@ -39,6 +34,47 @@
                     <p class="card-text">
                             ${user.about}
                     </p>
+                    <c:choose>
+                        <c:when test="${isUserConnected}">
+                            <c:url var="removeConnectionLink" value="/connection/remove/${user.id}"/>
+                            <a href="${removeConnectionLink}" class="btn btn-danger">
+                                <spring:message code="label.removeConnection"/>
+                            </a>
+
+                            <c:url var="showUserMessagesLink" value="/messages/${user.id}"/>
+                            <a href="${showUserMessagesLink}" class="btn btn-secondary">
+                                <em class="fa fa-envelope"></em>
+                                Send Message
+                            </a>
+                        </c:when>
+                        <c:when test="${isRequestSent}">
+                            <c:url var="cancelConnectionRequestLink" value="/connection/cancel/${user.id}"/>
+                            <a href="${cancelConnectionRequestLink}" class="btn btn-info">
+                                <spring:message code="label.cancelConnectionRequest"/>
+                            </a>
+                        </c:when>
+                        <c:when test="${isRequestReceived}">
+                            <c:url var="acceptConnectionReqeustLink" value="/connection/accept/${user.id}"/>
+                            <a href="${acceptConnectionReqeustLink}" class="btn btn-success">
+                                <spring:message code="label.acceptConnection"/>
+                            </a>
+
+                            <c:url var="rejectConnectionRequestLink" value="/connection/reject/${user.id}"/>
+                            <a href="${rejectConnectionRequestLink}" class="btn btn-danger">
+                                <spring:message code="label.rejectConnection"/>
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <c:url var="sendConnectionRequestLink" value="/connection/send/${user.id}"/>
+                            <a href="${sendConnectionRequestLink}" class="btn btn-primary">
+                                <spring:message code="label.sendConnectionRequest"/>
+                            </a>
+                        </c:otherwise>
+                    </c:choose>
+                    <c:if test="">
+
+                    </c:if>
+
                 </c:if>
 
                 <c:if test="${isMyself}">
@@ -70,7 +106,7 @@
                         <div class="form-group">
                             <label for="password"><spring:message code="label.passwordTxt"/>: </label>
                             <input id="password" name="password" type="password" class="form-control" value=""
-                                        placeholder="Enter Password to update profile"/>
+                                   placeholder="Enter Password to update profile"/>
                         </div>
 
                         <div class="form-group">
@@ -84,6 +120,78 @@
                 </c:if>
 
 
+            </div>
+        </div>
+
+        <div class="flex-fill flex-fill">
+            <div class="accordion" id="accordionExample">
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <div class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                                    aria-expanded="true" aria-controls="collapseOne">
+                                <strong><spring:message code="label.connections"/></strong>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <div class="d-flex flex-column">
+                                <c:forEach items="${connectedUsers}" var="user">
+                                    <c:url var="userLink" value="/profile/${user.id}"/>
+
+                                    <div class="flex-fill d-flex my-2">
+                                        <c:set var="emailHash" value="${HashingUtil.md5Hex(user.getEmail())}"/>
+                                        <c:url var="profilePictureUrl"
+                                               value="https://www.gravatar.com/avatar/${emailHash}.jpg?s=64"/>
+                                        <a href="${userLink}">
+                                            <img class="card-img-top" src="${profilePictureUrl}"
+                                                 alt="Avatar from Gravatar">
+                                        </a>
+                                        <div class="d-flex flex-column flex-fill mx-2">
+                                            <a href="${userLink}">
+                                                <h5 class="card-title text-dark font-weight-bold">
+                                                        ${user.name}
+                                                </h5>
+                                            </a>
+                                            <p class="card-text">
+                                                    ${user.about}
+                                            </p>
+                                        </div>
+                                        <a href="${userLink}" class="btn btn-primary">
+                                            View Profile
+                                        </a>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingTwo">
+                        <div class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                                    data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <strong><spring:message code="label.notes"/></strong>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <div class="d-flex flex-column list-group">
+                                <c:forEach items="${accessibleNotes}" var="note">
+                                    <div class="d-flex list-group-item">
+                                        <c:url var="noteLink" value="/note/${note.id}"/>
+                                        <a href="${noteLink}">
+                                                <h2>${note.title}</h2>
+                                        </a>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

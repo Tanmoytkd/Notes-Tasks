@@ -150,8 +150,8 @@
         </div>
     </div>
 
-    <%@ include file="/WEB-INF/includes/loginForm.jsp" %>
-    <%@ include file="/WEB-INF/includes/registerForm.jsp" %>
+    <%@ include file="/WEB-INF/includes/sections/forms/loginForm.jsp" %>
+    <%@ include file="/WEB-INF/includes/sections/forms/registerForm.jsp" %>
 
 </main>
 

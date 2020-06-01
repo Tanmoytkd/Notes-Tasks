@@ -24,15 +24,15 @@ public class UrlHelper {
     }
 
     public static String getUrl(Task task) {
-        return "/task/"+task.getId();
+        return "/task/" + task.getId();
     }
 
     public static String getUrl(Report report) {
-        return "/task/"+report.getId();
+        return "/task/" + report.getId();
     }
 
     public static String getMessageUrl(User user) {
-        return "/messages/"+user.getId();
+        return "/messages/" + user.getId();
     }
 
 

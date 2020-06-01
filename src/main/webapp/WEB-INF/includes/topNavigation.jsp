@@ -29,7 +29,7 @@
     <c:url var="searchLink" value="/search"/>
     <form:form action="${searchLink}" method="get" cssClass="form-inline w-100 mx-3 my-1" modelAttribute="searchQuery">
         <form:input path="query" cssClass="form-control rounded form-control-dark w-75" type="text"
-                    placeholder="Search" aria-label="Search" required="required" />
+                    placeholder="Search" aria-label="Search" required="required"/>
         <button type="submit" class="btn btn-light mx-2">
             <spring:message code="label.submit"/>
         </button>
