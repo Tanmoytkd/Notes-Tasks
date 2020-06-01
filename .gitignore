@@ -4,6 +4,7 @@ bin/
 .gradle/
 gradle/
 
+logs/
 
 .idea/
 .vscode/
