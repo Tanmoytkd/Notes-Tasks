@@ -1,31 +1,28 @@
 package net.therap.notestasks.web.controller;
 
 import net.therap.notestasks.command.SearchQuery;
-import net.therap.notestasks.config.Constants;
 import net.therap.notestasks.domain.BasicEntity;
 import net.therap.notestasks.domain.Note;
 import net.therap.notestasks.domain.User;
 import net.therap.notestasks.service.NoteService;
 import net.therap.notestasks.service.UserConnectionService;
 import net.therap.notestasks.service.UserService;
-import net.therap.notestasks.util.HashingUtil;
-import org.slf4j.Logger;
+import net.therap.notestasks.validator.UserPersistedWithCredentialValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.Errors;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static net.therap.notestasks.config.Constants.CURRENT_USER;
-import static net.therap.notestasks.config.Constants.DASHBOARD_PAGE;
+import static net.therap.notestasks.helper.UrlHelper.redirectTo;
+import static net.therap.notestasks.util.Constants.*;
 
 /**
  * @author tanmoy.das
@@ -34,8 +31,10 @@ import static net.therap.notestasks.config.Constants.DASHBOARD_PAGE;
 @Controller
 public class ProfileController {
 
-    @Autowired
-    private Logger logger;
+    private static final String PROFILE_PAGE = "profile";
+    private static final String IS_PROFILE_PAGE = "isProfilePage";
+
+    public static final String CURRENT_USER_COMMAND_NAME = "currentUserCommand";
 
     @Autowired
     private UserService userService;
@@ -46,67 +45,64 @@ public class ProfileController {
     @Autowired
     private UserConnectionService userConnectionService;
 
-    @RequestMapping(value = {"/profile"}, method = RequestMethod.GET)
-    public String showOwnProfile(@SessionAttribute(CURRENT_USER) User currentUser, ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
-        return showUserProfile(currentUser, currentUser, model, req, resp);
+    @Autowired
+    private UserPersistedWithCredentialValidator userPersistedWithCredentialValidator;
+
+    @RequestMapping(value = "/profile", method = RequestMethod.GET)
+    public String showOwnProfile(@SessionAttribute(CURRENT_USER_LABEL) User currentUser, ModelMap model) {
+        model.addAttribute(CURRENT_USER_COMMAND_NAME, currentUser);
+        setupUserDataInModel(model, currentUser, currentUser);
+
+        return PROFILE_PAGE;
     }
 
-    @RequestMapping(value = {"/profile/{id}"}, method = RequestMethod.GET)
-    public String showUserProfile(@PathVariable("id") User user, @SessionAttribute(CURRENT_USER) User currentUser,
-                                  ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
-        model.addAttribute("searchQuery", new SearchQuery());
+    @RequestMapping(value = "/profile/{id}", method = RequestMethod.GET)
+    public String showUserProfile(@PathVariable("id") User user,
+                                  @SessionAttribute(CURRENT_USER_LABEL) User currentUser,
+                                  ModelMap model) {
 
-        currentUser = userService.findUserByEmail(currentUser.getEmail()).orElse(null);
-        setupUserDataInModel(user, currentUser, model);
-
-        return Constants.DASHBOARD_PAGE;
-    }
-
-    @RequestMapping(value = {"/profile/update"}, method = RequestMethod.POST)
-    public String updateUserProfile(@Valid @ModelAttribute(CURRENT_USER) User user, Errors errors,
-                                    @RequestParam("newPassword") String newPassword,
-                                    @SessionAttribute(CURRENT_USER) User currentUser, ModelMap model,
-                                    HttpServletRequest req, HttpServletResponse resp) throws NoSuchAlgorithmException {
-
-        currentUser = userService.refreshUser(currentUser);
-        model.addAttribute(CURRENT_USER, currentUser);
-
-        user.setPassword(HashingUtil.sha256Hash(user.getPassword()));
-
-        if (!hasSameCredentials(user, currentUser)) {
-            setupUserDataInModel(user, currentUser, model);
-
-            model.addAttribute("searchQuery", new SearchQuery());
-            errors.rejectValue(null, "credentialIncorrect");
-            model.addAttribute(CURRENT_USER, user);
-
-
-            return DASHBOARD_PAGE;
+        if (user.getId() == currentUser.getId()) {
+            model.addAttribute(CURRENT_USER_COMMAND_NAME, currentUser);
         }
 
-        userService.updateUser(user);
+        setupUserDataInModel(model, user, currentUser);
+        return PROFILE_PAGE;
+    }
+
+    @RequestMapping(value = "/profile/update", method = RequestMethod.POST)
+    public String updateUserProfile(@Valid @ModelAttribute(CURRENT_USER_COMMAND_NAME) User userCommand,
+                                    BindingResult bindingResult,
+                                    @RequestParam("newPassword") String newPassword,
+                                    @SessionAttribute(CURRENT_USER_LABEL) User currentUser,
+                                    ModelMap model,
+                                    HttpSession session) throws NoSuchAlgorithmException {
+
+        userPersistedWithCredentialValidator.validate(userCommand, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            setupUserDataInModel(model, currentUser, currentUser);
+            model.addAttribute(CURRENT_USER_COMMAND_NAME, userCommand);
+
+            return PROFILE_PAGE;
+        }
 
         if (!newPassword.isEmpty()) {
-            userService.changePassword(user, HashingUtil.sha256Hash(newPassword));
+            userCommand.setPassword(newPassword);
         }
+        userService.createOrUpdateUser(userCommand);
 
-        return Constants.REDIRECT_PROFILE;
+        session.setAttribute(CURRENT_USER_LABEL, userCommand);
+
+        return redirectTo(PROFILE_PAGE_PATH);
     }
 
-    private void setupUserDataInModel(User user, User currentUser, ModelMap model) {
-        User persistedCurrentUser = userService.refreshUser(currentUser);
-        model.addAttribute(CURRENT_USER, persistedCurrentUser);
+    private void setupUserDataInModel(ModelMap model, User user, User currentUser) {
+        User persistedUser = userService.findUserWithSameEmail(user);
+        model.put(USER_LABEL, persistedUser);
 
-        User persistedUser = userService.refreshUser(user);
-        model.put(Constants.USER_TXT, persistedUser);
+        User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 
-        model.addAttribute("isProfilePage", true);
-
-        if (persistedUser.getId() == currentUser.getId()) {
-            model.addAttribute(Constants.IS_MYSELF_TXT, true);
-        }
-
-        List<User> connectedUsers = userService.getConnectedUsers(persistedUser);
+        List<User> connectedUsers = userService.findConnectedUsers(persistedUser);
         model.addAttribute("connectedUsers", connectedUsers);
 
         List<Note> accessibleNotes = persistedUser.getOwnNotes().stream()
@@ -116,23 +112,25 @@ public class ProfileController {
                 .collect(Collectors.toList());
         model.addAttribute("accessibleNotes", accessibleNotes);
 
-        boolean alreadyConnected = userConnectionService.isAlreadyConnected(currentUser, persistedUser);
-        if (alreadyConnected) {
-            model.addAttribute(Constants.IS_USER_CONNECTED_TXT, true);
-        }
+        model.addAttribute(IS_MYSELF, persistedCurrentUser.getId() == persistedUser.getId());
 
-        boolean requestAlreadySent = userConnectionService.isRequestAlreadySent(currentUser, persistedUser);
-        if (requestAlreadySent) {
-            model.addAttribute(Constants.IS_REQUEST_SENT_TXT, true);
-        }
+        model.addAttribute(IS_USER_CONNECTED,
+                userConnectionService.isAlreadyConnected(persistedCurrentUser, persistedUser));
 
-        boolean requestAlreadyReceived = userConnectionService.isRequestAlreadyReceived(currentUser, persistedUser);
-        if (requestAlreadyReceived) {
-            model.addAttribute(Constants.IS_REQUEST_RECEIVED_TXT, true);
-        }
+        model.addAttribute(IS_REQUEST_SENT,
+                userConnectionService.isRequestAlreadySent(persistedCurrentUser, persistedUser));
+
+        model.addAttribute(IS_REQUEST_RECEIVED,
+                userConnectionService.isRequestAlreadyReceived(persistedCurrentUser, persistedUser));
     }
 
-    private boolean hasSameCredentials(@Valid User user1, User user2) {
-        return user2.getEmail().equals(user1.getEmail()) && user2.getPassword().equals(user1.getPassword());
+    @ModelAttribute(SEARCH_QUERY_LABEL)
+    private SearchQuery searchQuery() {
+        return new SearchQuery();
+    }
+
+    @ModelAttribute(IS_PROFILE_PAGE)
+    private boolean isProfilePage() {
+        return true;
     }
 }

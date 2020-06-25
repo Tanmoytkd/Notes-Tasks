@@ -3,6 +3,7 @@ package net.therap.notestasks.domain;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,19 +13,20 @@ import java.util.List;
  */
 @NamedQueries({
         @NamedQuery(name = "Task.findAll",
-                query = "FROM Task task WHERE task.isDeleted = false")
+                query = "FROM Task task WHERE task.deleted = false")
 })
-
 @Entity
-@Table(name = "tasks")
-public class Task extends BasicEntity {
+@Table(name = "task")
+public class Task extends BasicEntity implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     @NotEmpty
     private String title;
     private String description;
 
     @Column(name = "is_complete")
-    private boolean isComplete;
+    private boolean completed;
 
     @NotNull
     @ManyToOne
@@ -84,11 +86,11 @@ public class Task extends BasicEntity {
         this.comments = taskComments;
     }
 
-    public boolean getIsComplete() {
-        return isComplete;
+    public boolean isCompleted() {
+        return completed;
     }
 
-    public void setIsComplete(boolean complete) {
-        isComplete = complete;
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

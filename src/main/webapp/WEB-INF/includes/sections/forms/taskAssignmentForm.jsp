@@ -7,6 +7,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<%@ page import="net.therap.notestasks.util.Constants" %>
+
 <div class="modal fade" id="taskAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -24,7 +26,7 @@
                     <form:errors path="taskAssignmentCommand.*" cssClass="alert-danger text-center my-3" element="div"/>
                 </div>
                 <div class="d-flex flex-column text-center">
-                    <c:url var="taskAssignmentLink" value="/taskAssignment"/>
+                    <c:url var="taskAssignmentLink" value="${Constants.TASK_ASSIGNMENT_PATH}"/>
                     <form:form method="post" action="${taskAssignmentLink}" modelAttribute="taskAssignmentCommand">
                         <form:hidden path="task" value="${taskAssignmentCommand.task.id}"/>
 
@@ -45,10 +47,22 @@
                 <div>Assigned to:</div>
                 <c:forEach items="${taskAssignments}" var="taskAssignment">
                     <span class="btn btn-round btn-xs">
-                        <c:url var="taskAssignmentUserLink" value="/user/${taskAssignment.user.id}"/>
+                        <c:url var="taskAssignmentUserLink"
+                               value="${Constants.PROFILE_BASE_PATH}/${taskAssignment.user.id}"/>
                         <a href="${taskAssignmentUserLink}">${taskAssignment.user.name}</a>
 
-                        <c:url var="taskAssignmentDeleteLink" value="/taskAssignment/delete/${taskAssignment.id}"/>
+                        <c:choose>
+                            <c:when test="${taskAssignment.completed}">
+                                <span class="text-muted">(Complete)</span>
+                            </c:when>
+                            <c:otherwise>
+                                <span class="text-muted">(Incomplete)</span>
+                            </c:otherwise>
+                        </c:choose>
+
+
+                        <c:url var="taskAssignmentDeleteLink"
+                               value="${Constants.DELETE_TASK_ASSIGNMENT_PATH}/${taskAssignment.id}"/>
                         <a href="${taskAssignmentDeleteLink}">
                             <em class="fa fa-times"></em>
                         </a>

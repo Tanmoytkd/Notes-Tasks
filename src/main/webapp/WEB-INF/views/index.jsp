@@ -7,16 +7,15 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="<spring:message code="label.appName"/>">
-    <meta name="author" content="<spring:message code="label.authorName"/>">
+    <meta name="description" content="<spring:message code="label.app.name"/>">
+    <meta name="author" content="<spring:message code="label.author.name"/>">
 
-    <c:url var="iconLink" value="/img/spidey.png"/>
+    <c:url var="iconLink" value="${Constants.NOTES_TASKS_FAVICON_LINK}"/>
     <link rel="icon" href="${iconLink}">
 
     <title><spring:message code="label.welcome"/></title>
@@ -29,20 +28,20 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-8 col-md-7 py-4">
-                    <h4 class="text-white"><spring:message code="label.appName"/></h4>
-                    <p class="text-muted"><spring:message code="label.appDescription"/></p>
+                    <h4 class="text-white"><spring:message code="label.app.name"/></h4>
+                    <p class="text-muted"><spring:message code="label.app.description"/></p>
                 </div>
                 <div class="col-sm-4 offset-md-1 py-4 justify-content-end">
                     <div>
                         <c:url var="bnLink" value="?locale=bn"/>
                         <a href="${bnLink}">
-                            <c:url var="bdFlagLink" value="/img/bd-flag.png"/>
+                            <c:url var="bdFlagLink" value="${Constants.BD_FLAG_IMG_LINK}"/>
                             <img src="${bdFlagLink}" class="" alt="Bengali">
                         </a>
 
                         <c:url var="enLink" value="?locale=en"/>
                         <a href="${enLink}">
-                            <c:url var="usFlagLink" value="/img/us-flag.png"/>
+                            <c:url var="usFlagLink" value="${Constants.US_FLAG_IMG_LINK}"/>
                             <img src="${usFlagLink}" class="" alt="English">
                         </a>
                     </div>
@@ -82,9 +81,9 @@
 
     <section class="jumbotron text-center">
         <div class="container">
-            <h1 class="jumbotron-heading"><spring:message code="label.appName"/></h1>
+            <h1 class="jumbotron-heading"><spring:message code="label.app.name"/></h1>
             <p class="lead text-muted">
-                <spring:message code="label.appDescription"/>
+                <spring:message code="label.app.description"/>
             </p>
             <p>
                 <a href="#" class="btn btn-primary my-2" data-toggle="modal" data-target="#loginModal">
@@ -160,7 +159,7 @@
         <p class="float-right">
             <a href="#"><spring:message code="label.backToTop"/></a>
         </p>
-        <p>&copy;<spring:message code="label.authorName"/></p>
+        <p>&copy;<spring:message code="label.author.name"/></p>
     </div>
 </footer>
 </body>

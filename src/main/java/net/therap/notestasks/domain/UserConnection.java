@@ -1,6 +1,7 @@
 package net.therap.notestasks.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,18 +11,19 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "UserConnection.findByExample",
                 query = "FROM UserConnection connection WHERE connection.users = :users " +
-                        "AND connection.isDeleted = false"),
+                        "AND connection.deleted = false"),
         @NamedQuery(name = "UserConnection.findAll",
-                query = "FROM UserConnection connection WHERE connection.isDeleted = false")
+                query = "FROM UserConnection connection WHERE connection.deleted = false")
 })
-
 @Entity
-@Table(name = "user_connections")
-public class UserConnection extends BasicEntity {
+@Table(name = "user_connection")
+public class UserConnection extends BasicEntity implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     @ManyToMany
     @JoinTable(
-            name = "connections",
+            name = "connection",
             joinColumns = @JoinColumn(name = "user_connection_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )

@@ -2,6 +2,7 @@ package net.therap.notestasks.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @author tanmoy.das
@@ -9,12 +10,13 @@ import javax.validation.constraints.NotNull;
  */
 @NamedQueries({
         @NamedQuery(name = "TaskComment.findAll",
-                query = "FROM TaskComment taskComment WHERE taskComment.isDeleted = false")
+                query = "FROM TaskComment taskComment WHERE taskComment.deleted = false")
 })
-
 @Entity
-@Table(name = "task_comments")
-public class TaskComment extends Comment {
+@Table(name = "task_comment")
+public class TaskComment extends Comment implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     @NotNull
     @ManyToOne

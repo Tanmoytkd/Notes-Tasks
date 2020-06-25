@@ -7,6 +7,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<%@ page import="net.therap.notestasks.util.Constants" %>
+
 <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -25,7 +27,7 @@
                                  element="div"/><br>
                 </div>
                 <div class="d-flex flex-column text-center">
-                    <c:url value="/register" var="registerLink"/>
+                    <c:url var="registerLink" value="${Constants.REGISTER_PATH}"/>
                     <form:form method="post" action="${registerLink}" modelAttribute="registerUserCommand">
                         <div class="form-group">
                             <form:input type="text" path="name" class="form-control" id="name"
@@ -36,8 +38,8 @@
                                         placeholder="Your email address..."/>
                         </div>
                         <div class="form-group">
-                            <form:input type="password" path="password" class="form-control" id="password1"
-                                        placeholder="Your password..."/>
+                            <form:password path="password" class="form-control"
+                                           placeholder="Your password..."/>
                         </div>
                         <button type="submit" class="btn btn-info btn-block btn-round">
                             <spring:message code="label.registerTxt"/>

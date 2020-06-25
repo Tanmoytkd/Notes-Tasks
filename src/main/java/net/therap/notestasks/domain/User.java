@@ -3,6 +3,8 @@ package net.therap.notestasks.domain;
 import net.therap.notestasks.util.RandomGeneratorUtil;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -15,41 +17,43 @@ import java.util.List;
  */
 @NamedQueries({
         @NamedQuery(name = "User.findAll",
-                query = "FROM User user WHERE user.isDeleted = false"),
+                query = "FROM User user WHERE user.deleted = false"),
         @NamedQuery(name = "User.findByEmail",
-                query = "FROM User user WHERE user.email = :email AND user.isDeleted = false"),
+                query = "FROM User user WHERE user.email = :email AND user.deleted = false"),
         @NamedQuery(name = "User.findBySecret",
-                query = "FROM User user WHERE user.secret = :secret AND user.isDeleted = false"),
+                query = "FROM User user WHERE user.secret = :secret AND user.deleted = false"),
         @NamedQuery(name = "User.findByEmailAndPassword",
-                query = "FROM User user WHERE user.email=:email AND user.password=:password " +
-                        "AND user.isDeleted = false"),
+                query = "FROM User user WHERE user.email = :email AND user.password = :password " +
+                        "AND user.deleted = false"),
         @NamedQuery(name = "User.findByExample",
-                query = "FROM User user WHERE user.email=:email AND user.password=:password " +
-                        "AND user.isDeleted = false"),
+                query = "FROM User user WHERE user.email = :email AND user.password = :password " +
+                        "AND user.deleted = false"),
         @NamedQuery(name = "User.findContainingName",
-                query = "From User user WHERE user.name like CONCAT('%',:name,'%')" +
-                        "AND user.isDeleted = false")
+                query = "FROM User user WHERE user.name LIKE CONCAT('%',:name,'%') " +
+                        "AND user.deleted = false")
 })
-
 @Entity
-@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
+@Table(name = "user")
 public class User extends BasicEntity implements Serializable {
 
-    @NotNull(message = "Email must not be null")
-    @Size(min = 6, message = "Email must be at least 6 letters")
+    private static final long serialVersionUID = 1;
+
+    @Email
+    @NotEmpty(message = "{email.notEmpty}")
     private String email;
 
-    @Size(min = 3, max = 30, message = "Name must not be null, length between 3 and 30")
+    @Size(min = 3, max = 30, message = "{name.sizeMismatch}")
     private String name;
 
-    @Size(min = 8, message = "Password must be at least 8 characters")
+    @Size(min = 8, message = "{password.sizeMismatch}")
     private String password;
+
     private String phone;
 
     private String about;
 
     @Column(name = "is_email_verified")
-    private boolean isEmailVerified;
+    private boolean emailVerified;
 
     @NotNull
     private String secret;
@@ -262,11 +266,11 @@ public class User extends BasicEntity implements Serializable {
     }
 
     public boolean isEmailVerified() {
-        return isEmailVerified;
+        return emailVerified;
     }
 
     public void setEmailVerified(boolean emailVerified) {
-        isEmailVerified = emailVerified;
+        this.emailVerified = emailVerified;
     }
 
     public String getSecret() {

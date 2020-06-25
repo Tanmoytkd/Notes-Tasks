@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
-import static net.therap.notestasks.config.Constants.DASHBOARD_PAGE;
 
 /**
  * @author tanmoy.das
@@ -23,6 +22,7 @@ import static net.therap.notestasks.config.Constants.DASHBOARD_PAGE;
 @Controller
 public class SearchController {
 
+    private static final String SEARCH_PAGE = "search";
     @Autowired
     private Logger logger;
 
@@ -33,9 +33,9 @@ public class SearchController {
     public String listReports(@ModelAttribute("searchQuery") SearchQuery searchQuery, Errors errors, ModelMap model) {
         model.addAttribute("isSearchPage", true);
 
-        List<User> users = userService.findUsersWithString(searchQuery.getQuery());
+        List<User> users = userService.findUsersByNameOrEmail(searchQuery.getQuery());
         model.addAttribute("users", users);
 
-        return DASHBOARD_PAGE;
+        return SEARCH_PAGE;
     }
 }

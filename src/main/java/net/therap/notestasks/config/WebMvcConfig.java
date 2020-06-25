@@ -2,11 +2,13 @@ package net.therap.notestasks.config;
 
 import net.therap.notestasks.converter.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -25,6 +27,8 @@ import java.util.Locale;
 @EnableWebMvc
 @ComponentScan({"net.therap.notestasks"})
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    public static final String NOTES_TASKS_LOCALE_COOKIE = "notesTasksLocaleCookie";
 
     @Autowired
     private StringToUserConverter stringToUserConverter;
@@ -61,7 +65,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Bean(name = "messageSource")
-    public ReloadableResourceBundleMessageSource createMessageSource() {
+    public MessageSource createMessageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
 
         messageSource.setBasename("classpath:messages");
@@ -75,10 +79,18 @@ public class WebMvcConfig implements WebMvcConfigurer {
         CookieLocaleResolver localeResolver = new CookieLocaleResolver();
 
         localeResolver.setDefaultLocale(Locale.ENGLISH);
-        localeResolver.setCookieName("myAppLocaleCookie");
+        localeResolver.setCookieName(NOTES_TASKS_LOCALE_COOKIE);
         localeResolver.setCookieMaxAge(3600);
 
         return localeResolver;
+    }
+
+    @Bean
+    @Override
+    public LocalValidatorFactoryBean getValidator() {
+        LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
+        bean.setValidationMessageSource(createMessageSource());
+        return bean;
     }
 
     @Override

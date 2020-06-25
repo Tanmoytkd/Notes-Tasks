@@ -3,13 +3,16 @@ package net.therap.notestasks.domain;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * @author tanmoy.das
  * @since 4/22/20
  */
 @Embeddable
-public class ReportContent {
+public class ReportContent implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     @NotEmpty
     @Size(min = 3, max = 1000)

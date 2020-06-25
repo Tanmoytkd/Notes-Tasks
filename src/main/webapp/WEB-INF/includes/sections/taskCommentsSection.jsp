@@ -7,12 +7,14 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<%@ page import="net.therap.notestasks.util.Constants" %>
+
 <div class="d-flex flex-column">
     <form:errors cssClass="alert-danger" element="div" path="taskCommentCommand.*"/>
-    <c:url var="taskCommentLink" value="/taskComment"/>
+    <c:url var="createTaskCommentLink" value="${Constants.CREATE_TASK_COMMENT_PATH}"/>
     <form:form modelAttribute="taskCommentCommand" cssClass="form-inline flex-fill d-flex px-1"
-               action="${taskCommentLink}" method="post">
-        <form:hidden path="writer" value="${currentUserCommand.id}"/>
+               action="${createTaskCommentLink}" method="post">
+        <form:hidden path="writer" value="${currentUser.id}"/>
         <form:hidden path="task" value="${taskCommand.id}"/>
         <form:input path="content.text" cssClass="form-control form-control-lg flex-fill"/>
         <button class="btn btn-lg btn-info" type="submit">
@@ -33,19 +35,27 @@
                                  alt="Avatar from Gravatar">
                         </div>
                         <div class="flex-fill">
-                            <c:url var="noteCommentWriterLink" value="/user/${taskComment.writer.id}"/>
+                            <c:url var="noteCommentWriterLink"
+                                   value="${Constants.PROFILE_BASE_PATH}/${taskComment.writer.id}"/>
                             <div class="card-title">
                                 <a href="${noteCommentWriterLink}">
-                                    <h5 class="mb-0 pb-0">${taskComment.writer.name}</h5>
+                                    <h5 class="mb-0 pb-0">
+                                        <c:out value="${taskComment.writer.name}"/>
+                                    </h5>
                                 </a>
-                                <small class="text-muted">${taskComment.updatedOn}</small>
+                                <small class="text-muted">
+                                    <c:out value="${taskComment.updatedOn}"/>
+                                </small>
                             </div>
 
-                            <p class="card-text">${taskComment.content.text}</p>
+                            <p class="card-text">
+                                <c:out value="${taskComment.content.text}"/>
+                            </p>
                         </div>
-                        <c:if test="${taskService.canDeleteTaskComment(currentUserCommand, taskComment)}">
+                        <c:if test="${taskService.canDeleteTaskComment(currentUser, taskComment)}">
                             <div>
-                                <c:url var="deleteNoteCommentLink" value="/taskComment/delete/${taskComment.id}"/>
+                                <c:url var="deleteNoteCommentLink"
+                                       value="${Constants.DELETE_TASK_COMMENT_PATH}/${taskComment.id}"/>
                                 <a href="${deleteNoteCommentLink}">
                                     <em class="fa fa-trash fa-2x text-muted"></em>
                                 </a>

@@ -3,7 +3,6 @@ package net.therap.notestasks.dao;
 import net.therap.notestasks.domain.User;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,49 +13,52 @@ import java.util.Optional;
 @Repository
 public class UserDao extends GenericDao<User> {
 
-    public static final String EMAIL_TXT = "email";
-    public static final String PASSWORD_TXT = "password";
-    public static final String SECRET_TXT = "secret";
+    public static final String EMAIL_LABEL = "email";
+    public static final String PASSWORD_LABEL = "password";
+    public static final String SECRET_LABEL = "secret";
 
-    protected UserDao() {
+    public UserDao() {
         super(User.class);
     }
 
     @Override
-    public Optional<User> findByExample(User user) {
-        TypedQuery<User> query = em.createNamedQuery("User.findByExample", User.class);
-        query.setParameter(EMAIL_TXT, user.getEmail());
-        query.setParameter(PASSWORD_TXT, user.getPassword());
-
-        return query.getResultList().stream().findFirst();
+    public Optional<User> find(User user) {
+        return em.createNamedQuery("User.findByExample", User.class)
+                .setParameter(EMAIL_LABEL, user.getEmail())
+                .setParameter(PASSWORD_LABEL, user.getPassword())
+                .getResultList()
+                .stream()
+                .findFirst();
     }
 
     public Optional<User> findByEmail(String email) {
-        TypedQuery<User> query = em.createNamedQuery("User.findByEmail", User.class);
-        query.setParameter(EMAIL_TXT, email);
-
-        return query.getResultList().stream().findFirst();
+        return em.createNamedQuery("User.findByEmail", User.class)
+                .setParameter(EMAIL_LABEL, email)
+                .getResultList()
+                .stream()
+                .findFirst();
     }
 
     public Optional<User> findBySecret(String secret) {
-        TypedQuery<User> query = em.createNamedQuery("User.findBySecret", User.class);
-        query.setParameter(SECRET_TXT, secret);
-
-        return query.getResultList().stream().findFirst();
+        return em.createNamedQuery("User.findBySecret", User.class)
+                .setParameter(SECRET_LABEL, secret)
+                .getResultList()
+                .stream()
+                .findFirst();
     }
 
     public Optional<User> findByEmailAndPassword(String email, String password) {
-        TypedQuery<User> query = em.createNamedQuery("User.findByEmailAndPassword", User.class);
-        query.setParameter(EMAIL_TXT, email);
-        query.setParameter(PASSWORD_TXT, password);
-
-        return query.getResultList().stream().findFirst();
+        return em.createNamedQuery("User.findByEmailAndPassword", User.class)
+                .setParameter(EMAIL_LABEL, email)
+                .setParameter(PASSWORD_LABEL, password)
+                .getResultList()
+                .stream()
+                .findFirst();
     }
 
     public List<User> findUsersContainingName(String name) {
-        TypedQuery<User> query = em.createNamedQuery("User.findContainingName", User.class);
-        query.setParameter("name", name);
-
-        return query.getResultList();
+        return em.createNamedQuery("User.findContainingName", User.class)
+                .setParameter("name", name)
+                .getResultList();
     }
 }

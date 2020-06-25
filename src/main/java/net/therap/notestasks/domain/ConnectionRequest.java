@@ -2,6 +2,7 @@ package net.therap.notestasks.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @author tanmoy.das
@@ -9,15 +10,17 @@ import javax.validation.constraints.NotNull;
  */
 @NamedQueries({
         @NamedQuery(name = "ConnectionRequest.findAll",
-                query = "FROM ConnectionRequest request WHERE request.isDeleted = false"),
+                query = "FROM ConnectionRequest request WHERE request.deleted = false"),
         @NamedQuery(name = "ConnectionRequest.findByExample",
-                query = "FROM ConnectionRequest request WHERE request.sender=:sender AND request.receiver=:receiver " +
-                        "AND request.isDeleted = false")
+                query = "FROM ConnectionRequest request WHERE request.sender = :sender " +
+                        "AND request.receiver = :receiver " +
+                        "AND request.deleted = false")
 })
-
 @Entity
-@Table(name = "connection_requests")
-public class ConnectionRequest extends BasicEntity {
+@Table(name = "connection_request")
+public class ConnectionRequest extends BasicEntity implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     @NotNull
     @ManyToOne

@@ -8,13 +8,15 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static net.therap.notestasks.util.Constants.PERSISTENCE_UNIT_NAME;
+
 /**
  * @author tanmoy.das
  * @since 4/23/20
  */
 public abstract class GenericDao<T extends BasicEntity> implements Dao<T> {
 
-    @PersistenceContext(unitName = "notestasks")
+    @PersistenceContext(unitName = PERSISTENCE_UNIT_NAME)
     protected EntityManager em;
 
     private final Class<T> persistentClass;
@@ -30,15 +32,8 @@ public abstract class GenericDao<T extends BasicEntity> implements Dao<T> {
     }
 
     @Override
-    public Optional<T> findByExample(T item) {
+    public Optional<T> find(T item) {
         return find(item.getId());
-    }
-
-    @Override
-    @Transactional
-    public T refresh(T item) {
-        em.refresh(item);
-        return item;
     }
 
     @Override
@@ -65,16 +60,10 @@ public abstract class GenericDao<T extends BasicEntity> implements Dao<T> {
 
     @Override
     @Transactional
-    public void delete(T item) {
-        item.setDeleted(true);
-        em.merge(item);
-        em.flush();
-    }
-
-    @Override
-    @Transactional
     public void destroy(T item) {
-        findByExample(item).ifPresent(persistedItem -> em.remove(persistedItem));
-        em.flush();
+        find(item).ifPresent(persistedItem -> {
+            em.remove(persistedItem);
+            em.flush();
+        });
     }
 }

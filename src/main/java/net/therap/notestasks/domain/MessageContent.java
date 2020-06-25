@@ -2,13 +2,16 @@ package net.therap.notestasks.domain;
 
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 
 /**
  * @author tanmoy.das
  * @since 4/21/20
  */
 @Embeddable
-public class MessageContent {
+public class MessageContent implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     @NotEmpty
     private String text;

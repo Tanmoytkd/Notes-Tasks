@@ -4,66 +4,67 @@ import net.therap.notestasks.command.SearchQuery;
 import net.therap.notestasks.domain.*;
 import net.therap.notestasks.service.NoteService;
 import net.therap.notestasks.service.UserService;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static net.therap.notestasks.config.Constants.*;
 import static net.therap.notestasks.helper.UrlHelper.getUrl;
 import static net.therap.notestasks.helper.UrlHelper.redirectTo;
+import static net.therap.notestasks.util.Constants.*;
 
 /**
  * @author tanmoy.das
  * @since 5/3/20
  */
 @Controller
+@SessionAttributes(NOTE_COMMENT_COMMAND_NAME)
 public class NoteController {
 
+    private static final String NOTES_PAGE = "notes";
     @Autowired
     private UserService userService;
 
     @Autowired
     private NoteService noteService;
 
-    @Autowired
-    private Logger logger;
-
     @RequestMapping(value = {"/notes"}, method = RequestMethod.GET)
-    public String showNotes(@SessionAttribute(CURRENT_USER) User currentUser,
+    public String showNotes(@SessionAttribute(CURRENT_USER_LABEL) User currentUser,
                             ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
         model.addAttribute("searchQuery", new SearchQuery());
         model.addAttribute("isNotesPage", true);
 
-        User persistedCurrentUser = userService.refreshUser(currentUser);
-        model.addAttribute(CURRENT_USER, persistedCurrentUser);
+        User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 
         List<Note> ownNotes = persistedCurrentUser.getOwnNotes().stream()
                 .filter(note -> !note.isDeleted())
                 .sorted(Comparator.comparing(BasicEntity::getUpdatedOn))
                 .collect(Collectors.toList());
+        Collections.reverse(ownNotes);
         model.addAttribute("ownNotes", ownNotes);
 
         List<NoteAccess> sharedNoteAccesses = persistedCurrentUser.getSharedNoteAccesses().stream()
                 .filter(noteAccess -> !noteAccess.isDeleted())
+                .sorted(Comparator.comparing(noteAccess -> noteAccess.getNote().getUpdatedOn()))
                 .collect(Collectors.toList());
         model.addAttribute("sharedNoteAccesses", sharedNoteAccesses);
 
-        return DASHBOARD_PAGE;
+        return NOTES_PAGE;
     }
 
     @RequestMapping(value = {"/note/new"}, method = RequestMethod.GET)
-    public String createNote(@SessionAttribute(CURRENT_USER) User currentUser) {
-        User persistedCurrentUser = userService.refreshUser(currentUser);
+    public String createNote(@SessionAttribute(CURRENT_USER_LABEL) User currentUser) {
+        User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 
         Note note = new Note();
         note.setWriter(persistedCurrentUser);
@@ -77,7 +78,11 @@ public class NoteController {
     }
 
     @RequestMapping(value = {"/note/update"}, method = RequestMethod.POST)
-    public String updateNote(@ModelAttribute("noteCommand") Note note) {
+    public String updateNote(@Valid @ModelAttribute("noteCommand") Note note, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            //TODO: SHOW ERRORS
+            return redirectTo(getUrl(note));
+        }
 
         noteService.updateNote(note);
 
@@ -87,7 +92,7 @@ public class NoteController {
     @RequestMapping(value = {"/noteAccess"}, method = RequestMethod.POST)
     public String createNoteAccess(@Valid @ModelAttribute("noteAccessCommand") NoteAccess noteAccess,
                                    Errors errors,
-                                   @SessionAttribute(CURRENT_USER) User currentUser,
+                                   @SessionAttribute(CURRENT_USER_LABEL) User currentUser,
                                    ModelMap model,
                                    HttpServletRequest req, HttpServletResponse resp) {
         if (errors.hasErrors()) {
@@ -103,26 +108,26 @@ public class NoteController {
 
     @RequestMapping(value = {"/note/delete/{noteId}"}, method = RequestMethod.GET)
     public String deleteNote(@PathVariable("noteId") Note note,
-                             @SessionAttribute(CURRENT_USER) User currentUser) {
-        User persistedCurrentUser = userService.refreshUser(currentUser);
+                             @SessionAttribute(CURRENT_USER_LABEL) User currentUser) {
+        User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 
         if (!noteService.hasDeleteAccess(persistedCurrentUser, note)) {
-            return REDIRECT_NOTES;
+            return redirectTo(NOTES_PAGE_PATH);
         }
 
         noteService.deleteNote(note);
-        return REDIRECT_NOTES;
+        return redirectTo(NOTES_PAGE_PATH);
     }
 
     @RequestMapping(value = {"/note/{noteId}"}, method = RequestMethod.GET)
     public String showNote(@PathVariable("noteId") Note note,
-                           @SessionAttribute(CURRENT_USER) User currentUser,
+                           @SessionAttribute(CURRENT_USER_LABEL) User currentUser,
                            ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
 
-        User persistedCurrentUser = userService.refreshUser(currentUser);
+        User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 
         if (!noteService.canAccessNote(persistedCurrentUser, note)) {
-            return REDIRECT_NOTES;
+            return redirectTo(NOTES_PAGE_PATH);
         }
 
         setupModelNotePermissions(note, model, persistedCurrentUser);
@@ -145,13 +150,13 @@ public class NoteController {
         NoteComment noteComment = new NoteComment();
         noteComment.setNote(note);
         noteComment.setWriter(currentUser);
-        model.addAttribute("noteCommentCommand", noteComment);
+        model.addAttribute(NOTE_COMMENT_COMMAND_NAME, noteComment);
 
         NoteAccess noteAccess = new NoteAccess();
         noteAccess.setNote(note);
         model.addAttribute("noteAccessCommand", noteAccess);
 
-        List<User> connectedUsers = userService.getConnectedUsers(persistedCurrentUser);
+        List<User> connectedUsers = userService.findConnectedUsers(persistedCurrentUser);
         model.addAttribute("connectedUsers", connectedUsers);
 
         return showNotes(currentUser, model, req, resp);
@@ -172,13 +177,13 @@ public class NoteController {
     }
 
     @RequestMapping(value = {"/noteComment"}, method = RequestMethod.POST)
-    public String createNoteComment(@Valid @ModelAttribute("noteCommentCommand") NoteComment noteComment,
+    public String createNoteComment(@Valid @ModelAttribute(NOTE_COMMENT_COMMAND_NAME) NoteComment noteComment,
                                     Errors errors,
-                                    @SessionAttribute(CURRENT_USER) User currentUser,
+                                    @SessionAttribute(CURRENT_USER_LABEL) User currentUser,
                                     ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
         if (errors.hasErrors()) {
             String notePage = showNote(noteComment.getNote(), currentUser, model, req, resp);
-            model.addAttribute("noteCommentCommand", noteComment);
+            model.addAttribute(NOTE_COMMENT_COMMAND_NAME, noteComment);
             return notePage;
         }
 
@@ -188,9 +193,9 @@ public class NoteController {
 
     @RequestMapping(value = {"/noteComment/delete/{noteCommentId}"}, method = RequestMethod.GET)
     public String deleteNoteComment(@PathVariable("noteCommentId") NoteComment noteComment,
-                                    @SessionAttribute(CURRENT_USER) User currentUser,
+                                    @SessionAttribute(CURRENT_USER_LABEL) User currentUser,
                                     ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
-        User persistedCurrentUser = userService.refreshUser(currentUser);
+        User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 
         if (noteService.hasCommentDeleteAccess(persistedCurrentUser, noteComment)) {
             noteService.deleteNoteComment(noteComment);
@@ -201,15 +206,15 @@ public class NoteController {
 
     @RequestMapping(value = {"/noteAccess/delete/{noteAccessId}"}, method = RequestMethod.GET)
     public String deleteNoteAccess(@PathVariable("noteAccessId") NoteAccess noteAccess,
-                                   @SessionAttribute(CURRENT_USER) User currentUser,
+                                   @SessionAttribute(CURRENT_USER_LABEL) User currentUser,
                                    ModelMap model, HttpServletRequest req, HttpServletResponse resp) {
-        User persistedCurrentUser = userService.refreshUser(currentUser);
+        User persistedCurrentUser = userService.findUserWithSameEmail(currentUser);
 
         if (noteService.canDeleteNoteAccess(persistedCurrentUser, noteAccess)) {
             noteService.deleteNoteAccess(noteAccess);
         }
 
-        return REDIRECT_NOTES;
+        return redirectTo(NOTES_PAGE_PATH);
     }
 
 }

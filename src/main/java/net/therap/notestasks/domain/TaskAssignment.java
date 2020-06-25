@@ -2,6 +2,7 @@ package net.therap.notestasks.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @author tanmoy.das
@@ -9,12 +10,13 @@ import javax.validation.constraints.NotNull;
  */
 @NamedQueries({
         @NamedQuery(name = "TaskAssignment.findAll",
-                query = "FROM TaskAssignment taskAssignment WHERE taskAssignment.isDeleted = false")
+                query = "FROM TaskAssignment taskAssignment WHERE taskAssignment.deleted = false")
 })
-
 @Entity
-@Table(name = "task_assignments")
-public class TaskAssignment extends BasicEntity {
+@Table(name = "task_assignment")
+public class TaskAssignment extends BasicEntity implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     @NotNull
     @ManyToOne
@@ -28,10 +30,10 @@ public class TaskAssignment extends BasicEntity {
 
     @NotNull
     @Column(name = "is_completed")
-    private boolean isCompleted;
+    private boolean completed;
 
     public TaskAssignment() {
-        this.isCompleted = false;
+        this.completed = false;
     }
 
     public User getUser() {
@@ -50,11 +52,11 @@ public class TaskAssignment extends BasicEntity {
         this.task = task;
     }
 
-    public boolean getIsCompleted() {
-        return isCompleted;
+    public boolean isCompleted() {
+        return completed;
     }
 
-    public void setIsCompleted(boolean completed) {
-        isCompleted = completed;
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

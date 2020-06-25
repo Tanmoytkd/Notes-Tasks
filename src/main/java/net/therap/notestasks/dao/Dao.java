@@ -11,15 +11,11 @@ public interface Dao<T> {
 
     Optional<T> find(long id);
 
-    Optional<T> findByExample(T item);
-
-    T refresh(T item);
+    Optional<T> find(T item);
 
     List<T> findAll();
 
     T saveOrUpdate(T item);
-
-    void delete(T item);
 
     void destroy(T item);
 }

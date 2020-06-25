@@ -2,6 +2,7 @@ package net.therap.notestasks.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @author tanmoy.das
@@ -9,12 +10,13 @@ import javax.validation.constraints.NotNull;
  */
 @NamedQueries({
         @NamedQuery(name = "Message.findAll",
-                query = "FROM Message message WHERE message.isDeleted = false")
+                query = "FROM Message message WHERE message.deleted = false")
 })
-
 @Entity
-@Table(name = "messages")
-public class Message extends BasicEntity {
+@Table(name = "message")
+public class Message extends BasicEntity implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     @NotNull
     @ManyToOne
@@ -32,7 +34,7 @@ public class Message extends BasicEntity {
 
     @NotNull
     @Column(name = "is_seen")
-    private boolean isSeen;
+    private boolean seen;
 
     public User getSender() {
         return sender;
@@ -59,10 +61,10 @@ public class Message extends BasicEntity {
     }
 
     public boolean isSeen() {
-        return isSeen;
+        return seen;
     }
 
     public void setSeen(boolean seen) {
-        isSeen = seen;
+        this.seen = seen;
     }
 }

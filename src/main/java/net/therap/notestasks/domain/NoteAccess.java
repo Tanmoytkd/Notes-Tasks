@@ -1,6 +1,7 @@
 package net.therap.notestasks.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,12 +11,13 @@ import java.util.List;
  */
 @NamedQueries({
         @NamedQuery(name = "NoteAccess.findAll",
-                query = "FROM NoteAccess noteAccess WHERE noteAccess.isDeleted = false")
+                query = "FROM NoteAccess noteAccess WHERE noteAccess.deleted = false")
 })
-
 @Entity
-@Table(name = "note_accesses")
-public class NoteAccess extends BasicEntity {
+@Table(name = "note_access")
+public class NoteAccess extends BasicEntity implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     @ManyToOne
     @JoinColumn(name = "note_id")
@@ -26,7 +28,7 @@ public class NoteAccess extends BasicEntity {
     private User user;
 
     @ElementCollection(targetClass = AccessLevel.class)
-    @JoinTable(name = "note_access_levels", joinColumns = @JoinColumn(name = "note_access_id"))
+    @JoinTable(name = "note_access_level", joinColumns = @JoinColumn(name = "note_access_id"))
     @Column(name = "access_level", nullable = false)
     @Enumerated(EnumType.STRING)
     private List<AccessLevel> accessLevels;

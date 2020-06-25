@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MessageDao extends GenericDao<Message> {
 
-    protected MessageDao() {
+    public MessageDao() {
         super(Message.class);
     }
 }

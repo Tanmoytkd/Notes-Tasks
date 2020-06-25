@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class NoteDao extends GenericDao<Note> {
 
-    protected NoteDao() {
+    public NoteDao() {
         super(Note.class);
     }
 }

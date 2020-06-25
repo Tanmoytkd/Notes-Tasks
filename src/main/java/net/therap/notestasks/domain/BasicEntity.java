@@ -1,6 +1,7 @@
 package net.therap.notestasks.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -8,7 +9,9 @@ import java.util.Date;
  * @since 4/12/20
  */
 @MappedSuperclass
-public class BasicEntity {
+public class BasicEntity implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +30,7 @@ public class BasicEntity {
     protected Date deletedOn;
 
     @Column(name = "is_deleted")
-    protected boolean isDeleted;
+    protected boolean deleted;
 
     @PrePersist
     private void onCreate() {
@@ -61,11 +64,11 @@ public class BasicEntity {
     }
 
     public boolean isDeleted() {
-        return isDeleted;
+        return deleted;
     }
 
     public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+        this.deleted = deleted;
         onDelete();
     }
 

@@ -14,7 +14,7 @@ import java.util.Optional;
 public class UserConnectionDao extends GenericDao<UserConnection> {
 
     @Override
-    public Optional<UserConnection> findByExample(UserConnection connection) {
+    public Optional<UserConnection> find(UserConnection connection) {
         TypedQuery<UserConnection> query =
                 em.createNamedQuery("UserConnection.findByExample", UserConnection.class);
         query.setParameter("users", connection.getUsers());
@@ -22,7 +22,7 @@ public class UserConnectionDao extends GenericDao<UserConnection> {
         return query.getResultList().stream().findFirst();
     }
 
-    protected UserConnectionDao() {
+    public UserConnectionDao() {
         super(UserConnection.class);
     }
 }

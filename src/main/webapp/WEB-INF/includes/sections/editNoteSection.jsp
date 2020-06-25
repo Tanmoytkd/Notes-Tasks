@@ -9,23 +9,19 @@
 
 <%@ page import="net.therap.notestasks.domain.Privacy" %>
 
-<c:url var="updateNoteLink" value="/note/update"/>
+<c:url var="updateNoteLink" value="${Constants.UPDATE_NOTE_PATH}"/>
 <div class="d-flex flex-column">
-    <c:if test="${!hasWriteAccess}">
-        <c:set var="inputReadOnly" value="${true}"/>
-    </c:if>
-
     <form:form cssClass="form" action="${updateNoteLink}" method="post"
                modelAttribute="noteCommand">
         <form:hidden path="id"/>
         <form:hidden path="writer" value="${noteCommand.writer.id}"/>
 
         <div class="flex-item form-group d-flex flex-row">
-            <form:input path="title" readonly="${inputReadOnly}"
+            <form:input path="title" readonly="${!hasWriteAccess}"
                         cssClass="col-6 form-control form-control-lg"/>
 
 
-            <form:select path="privacy" disabled="${inputReadOnly}"
+            <form:select path="privacy" disabled="${!hasWriteAccess}"
                          cssClass="col-2 ml-2 form-control form-control-lg">
                 <c:forEach var="notePrivacy" items="${Privacy.values()}">
                     <form:option value="${notePrivacy}">
@@ -50,7 +46,7 @@
                 </c:if>
 
                 <c:if test="${hasDeleteAccess}">
-                    <c:url var="deleteNoteLink" value="/note/delete/${noteCommand.id}"/>
+                    <c:url var="deleteNoteLink" value="${Constants.DELETE_NOTE_PATH}/${noteCommand.id}"/>
                     <a href="${deleteNoteLink}" class="btn btn-lg btn-outline-danger">
                         <em class="fa fa-trash"></em>
                     </a>
@@ -61,7 +57,7 @@
         </div>
 
 
-        <c:url var="noteCommandWriterLink" value="/profile/${noteCommand.writer.id}"/>
+        <c:url var="noteCommandWriterLink" value="${Constants.PROFILE_BASE_PATH}/${noteCommand.writer.id}"/>
         <small class="text-muted">
             <span>Author: </span>
             <a href="${noteCommandWriterLink}">${noteCommand.writer.name}</a>
@@ -69,13 +65,15 @@
 
 
         <div class="form-group">
-            <form:textarea rows="15" readonly="${inputReadOnly}" disabled="${inputReadOnly}"
+            <form:textarea rows="15"
                            path="content.text"
                            cssClass="tinymce-editor form-control form-control-lg"/>
         </div>
     </form:form>
 
     <%@ include file="/WEB-INF/includes/sections/forms/noteShareForm.jsp" %>
+
+    <c:set var="tinymceReadOnly" value="${hasWriteAccess ? 0 : 1}"/>
 
     <script>
         tinymce.init({
@@ -99,7 +97,8 @@
                 'bold italic underline | alignleft aligncenter alignright alignjustify | ' +
                 'formatselect | blockquote quicklink',
             contextmenu: 'undo redo | link image media codesample | inserttable | ' +
-                'cell row column deletetable | help'
+                'cell row column deletetable | help',
+            readonly: ${tinymceReadOnly}
         });
     </script>
 </div>

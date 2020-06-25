@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%@ page import="net.therap.notestasks.domain.AccessLevel" %>
+<%@ page import="net.therap.notestasks.util.Constants" %>
 
 <div class="modal fade" id="noteShareModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
@@ -26,7 +27,7 @@
                     <form:errors path="noteAccessCommand.*" cssClass="alert-danger text-center my-3" element="div"/>
                 </div>
                 <div class="d-flex flex-column text-center">
-                    <c:url var="noteAccessLink" value="/noteAccess"/>
+                    <c:url var="noteAccessLink" value="${Constants.NOTE_ACCESS_PATH}"/>
                     <form:form method="post" action="${noteAccessLink}" modelAttribute="noteAccessCommand">
                         <form:hidden path="note" value="${noteAccessCommand.note.id}"/>
 
@@ -57,13 +58,14 @@
                 <div>Shared with:</div>
                 <c:forEach items="${noteAccesses}" var="noteAccess">
                     <span class="btn btn-round btn-xs">
-                        <c:url var="noteAccessUserLink" value="/user/${noteAccess.user.id}"/>
+                        <c:url var="noteAccessUserLink" value="${Constants.PROFILE_BASE_PATH}/${noteAccess.user.id}"/>
                         <a href="${noteAccessUserLink}">${noteAccess.user.name}</a>
 
                         <c:forEach items="${noteAccess.accessLevels}" var="level">
                             <span class="text-muted">(<spring:message code="${level}"/>)</span>
                         </c:forEach>
-                        <c:url var="noteAccessDeleteLink" value="/noteAccess/delete/${noteAccess.id}"/>
+                        <c:url var="noteAccessDeleteLink"
+                               value="${Constants.DELETE_NOTE_ACCESS_PATH}/${noteAccess.id}"/>
                         <a href="${noteAccessDeleteLink}">
                             <em class="fa fa-times"></em>
                         </a>

@@ -31,7 +31,7 @@
     <div class="flex-fill d-flex">
         <%@ include file="/WEB-INF/includes/sidebarNavigation.jsp" %>
 
-        <%@ include file="/WEB-INF/includes/sections/dashboardMainSection.jsp" %>
+        <%@ include file="/WEB-INF/includes/sections/messagesMainSection.jsp" %>
     </div>
 </div>
 </body>

@@ -15,6 +15,9 @@
     <meta name="description" content="<spring:message code="label.app.description"/>">
     <meta name="author" content="<spring:message code="label.author.name"/>">
 
+    <c:url var="iconLink" value="/img/spidey.png"/>
+    <link rel="icon" href="${iconLink}">
+
     <title><spring:message code="label.dashboard"/></title>
 
     <!-- Custom styles for this template -->
@@ -31,7 +34,7 @@
     <div class="flex-fill d-flex">
         <%@ include file="/WEB-INF/includes/sidebarNavigation.jsp" %>
 
-        <%@ include file="/WEB-INF/includes/sections/dashboardMainSection.jsp" %>
+        <%@ include file="/WEB-INF/includes/sections/searchResultMainSection.jsp" %>
     </div>
 </div>
 </body>
